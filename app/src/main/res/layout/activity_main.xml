@@ -8,18 +8,6 @@
     android:padding="24dp"
     tools:context=".MainActivity">
 
-    <!-- Trident Icon (Trishul) -->
-    <ImageView
-        android:id="@+id/trishul_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_trishul"
-        android:contentDescription="Trishul Icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <!-- Top Banner Ad -->
     <com.google.android.gms.ads.AdView
         android:id="@+id/topAdView"
@@ -30,7 +18,7 @@
         app:adUnitId="ca-app-pub-2722920301958819/3959238290"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/trishul_icon" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Title -->
     <TextView
