@@ -42,6 +42,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 class MainActivity : AppCompatActivity() {
     private var isRunning = false
     private var timeInMilliSeconds = 0L
+    private var remainingTimeMillis = 0L
+    private var wasPaused = false
     private lateinit var mediaPlayer: MediaPlayer
 
     private lateinit var timeEditText: EditText
@@ -307,21 +309,30 @@ class MainActivity : AppCompatActivity() {
 
         startPauseButton.setOnClickListener {
             if (isRunning) {
+                // Save remaining time before pausing
+                remainingTimeMillis = timeInMilliSeconds
                 stopTimerService()
+                wasPaused = true
                 startPauseButton.text = "Start"
                 resetButton.visibility = View.VISIBLE
             } else {
                 val timeInput = timeEditText.text.toString()
                 if (timeInput.isNotEmpty()) {
-                    timeInMilliSeconds = timeInput.toLong() * 60000L
-                    
-                    // Reset heart rate measurement state for new session
-                    heartRateMeasured = false
-                    startHeartRate = 0
-                    startHRV = 0.0
-                    endHeartRate = 0
-                    endHRV = 0.0
-                    
+                    // If resuming from pause, use remaining time; otherwise use input
+                    if (wasPaused && remainingTimeMillis > 0) {
+                        timeInMilliSeconds = remainingTimeMillis
+                        wasPaused = false
+                    } else {
+                        timeInMilliSeconds = timeInput.toLong() * 60000L
+
+                        // Reset heart rate measurement state for new session
+                        heartRateMeasured = false
+                        startHeartRate = 0
+                        startHRV = 0.0
+                        endHeartRate = 0
+                        endHRV = 0.0
+                    }
+
                     val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                     val heartRateEnabled = prefs.getBoolean(KEY_HEART_RATE_ENABLED, false)
                     if (heartRateEnabled) {
@@ -378,6 +389,8 @@ class MainActivity : AppCompatActivity() {
         timerText.text = "00:00"
         startPauseButton.text = "Start"
         resetButton.visibility = View.INVISIBLE
+        remainingTimeMillis = 0L
+        wasPaused = false
     }
 
     private fun updateTimerText(remainingTime: Long = 0L) {
