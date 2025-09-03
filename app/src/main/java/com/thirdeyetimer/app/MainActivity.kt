@@ -42,7 +42,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 class MainActivity : AppCompatActivity() {
     private var isRunning = false
     private var timeInMilliSeconds = 0L
-    private var remainingTimeMillis = 0L
     private var wasPaused = false
     private lateinit var mediaPlayer: MediaPlayer
 
@@ -98,6 +97,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 TIMER_TICK_ACTION -> {
                     val remainingTime = intent.getLongExtra(MeditationTimerService.EXTRA_REMAINING_TIME, 0L)
+                    timeInMilliSeconds = remainingTime  // Update current time with remaining time
                     updateTimerText(remainingTime)
                 }
             }
@@ -309,8 +309,7 @@ class MainActivity : AppCompatActivity() {
 
         startPauseButton.setOnClickListener {
             if (isRunning) {
-                // Save remaining time before pausing
-                remainingTimeMillis = timeInMilliSeconds
+                // Pausing - stop the timer
                 stopTimerService()
                 wasPaused = true
                 startPauseButton.text = "Start"
@@ -318,11 +317,8 @@ class MainActivity : AppCompatActivity() {
             } else {
                 val timeInput = timeEditText.text.toString()
                 if (timeInput.isNotEmpty()) {
-                    // If resuming from pause, use remaining time; otherwise use input
-                    if (wasPaused && remainingTimeMillis > 0) {
-                        timeInMilliSeconds = remainingTimeMillis
-                        wasPaused = false
-                    } else {
+                    // If resuming from pause, use current remaining time; otherwise use input
+                    if (!wasPaused || timeInMilliSeconds <= 0) {
                         timeInMilliSeconds = timeInput.toLong() * 60000L
 
                         // Reset heart rate measurement state for new session
@@ -389,7 +385,7 @@ class MainActivity : AppCompatActivity() {
         timerText.text = "00:00"
         startPauseButton.text = "Start"
         resetButton.visibility = View.INVISIBLE
-        remainingTimeMillis = 0L
+        timeInMilliSeconds = 0L
         wasPaused = false
     }
 
