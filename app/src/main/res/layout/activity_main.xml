@@ -188,27 +188,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_start_pause" />
 
-    <!-- Reset Total Time Button -->
-    <Button
-        android:id="@+id/button_reset_total_time"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="48dp"
-        android:background="@drawable/secondary_button_background"
-        android:text="Reset Total Time"
-        android:textColor="@color/shiva_text_white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:shadowColor="@color/shiva_text_dark"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_reset"
-        app:layout_constraintBottom_toTopOf="@id/adView" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
@@ -219,6 +198,7 @@
         app:adUnitId="ca-app-pub-2722920301958819/2481160193"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_reset" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
