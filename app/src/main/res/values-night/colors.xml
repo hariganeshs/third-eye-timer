@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="shiva_blue">#0A1E4B</color>
+    <!-- Use a neutral gray for hints/text where this token is used in layouts -->
+    <color name="shiva_ash_gray">#9E9E9E</color>
+    <color name="shiva_white">#FFFFFF</color>
+    <color name="shiva_gold_accent">#FFD700</color>
+    <color name="shiva_deep_blue">#010F3A</color>
+    <color name="shiva_light_gold">#665500</color>
+    <color name="shiva_transparent_white">#33FFFFFF</color>
+    <color name="shiva_text_white">#FFFFFF</color>
+    <color name="shiva_text_gold">#FFD700</color>
+    <color name="shiva_text_dark">#000000</color>
+    <color name="shiva_semi_transparent_white">#80FFFFFF</color>
+    <color name="shiva_semi_transparent_black">#B3000000</color>
+    <color name="achievement_gold">#FFD700</color>
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="shiva_blue">#022582</color>
+    <color name="shiva_ash_gray">#E9D3CE</color>
+    <color name="shiva_white">#FFFFFF</color>
+    <color name="shiva_gold_accent">#FFD700</color>
+    <color name="shiva_deep_blue">#011B5C</color>
+    <color name="shiva_light_gold">#FFF4E6</color>
+    <color name="shiva_transparent_white">#1AFFFFFF</color>
+    <color name="shiva_text_white">#FFFFFF</color>
+    <color name="shiva_text_gold">#FFD700</color>
+    <color name="shiva_text_dark">#1A1A1A</color>
+    <color name="shiva_semi_transparent_white">#CCFFFFFF</color>
+    <color name="shiva_semi_transparent_black">#CC000000</color>
+    <color name="achievement_gold">#FFD700</color>
+</resources>

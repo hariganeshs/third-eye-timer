@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background"
+    android:padding="24dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🔊 Sound Settings"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_gold_accent"
+            android:fontFamily="serif" />
+
+        <Button
+            android:id="@+id/button_close_sound_settings"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="✕"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_text_white"
+            android:background="@drawable/close_button_background"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- Bell Sound Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/sound_section_background"
+        android:padding="20dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🔔 Bell Sound"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_text_white"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choose the sound that plays when your meditation session ends"
+            android:textSize="14sp"
+            android:textColor="@color/shiva_ash_gray"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/button_choose_bell_sound"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Select Bell Sound"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_text_white"
+            android:background="@drawable/sound_button_background"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- Background Sound Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/sound_section_background"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🎵 Background Sound"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_text_white"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choose ambient sounds to play during your meditation"
+            android:textSize="14sp"
+            android:textColor="@color/shiva_ash_gray"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/button_choose_background_sound"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Select Background Sound"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_text_white"
+            android:background="@drawable/sound_button_background"
+            android:gravity="center" />
+    </LinearLayout>
+</LinearLayout> 
