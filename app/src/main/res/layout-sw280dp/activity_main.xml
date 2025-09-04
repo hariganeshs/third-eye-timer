@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shiva_bg"
+    android:fillViewport="true"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/screen_padding">
+
+        <!-- Top Banner Ad -->
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/topAdView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ad_margin_top"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-2722920301958819/3959238290"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/app_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/title_margin_top"
+            android:text="Meditation Timer"
+            android:textSize="@dimen/title_text_size"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_gold_accent"
+            android:fontFamily="serif"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/topAdView" />
+
+        <!-- Time Input -->
+        <EditText
+            android:id="@+id/time_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/input_height"
+            android:layout_marginTop="@dimen/input_margin_top"
+            android:layout_marginStart="@dimen/input_margin_horizontal"
+            android:layout_marginEnd="@dimen/input_margin_horizontal"
+            android:ems="6"
+            android:hint="Enter time (in minutes)"
+            android:inputType="number"
+            android:background="@drawable/edit_text_background"
+            android:padding="@dimen/input_padding"
+            android:textColor="@color/shiva_text_white"
+            android:textColorHint="@color/shiva_ash_gray"
+            android:textSize="@dimen/input_text_size"
+            android:textStyle="bold"
+            android:shadowColor="@color/shiva_text_dark"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:maxLines="1"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/app_title" />
+
+        <!-- Timer Display -->
+        <TextView
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/timer_margin_top"
+            android:text="00:00"
+            android:textSize="@dimen/timer_text_size"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_gold_accent"
+            android:fontFamily="monospace"
+            android:shadowColor="@color/shiva_blue"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_edit_text" />
+
+        <!-- Divider -->
+        <View
+            android:id="@+id/timer_divider"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/divider_height"
+            android:layout_marginTop="@dimen/divider_margin_top"
+            android:background="@color/shiva_gold_accent"
+            app:layout_constraintTop_toBottomOf="@+id/timer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Total Time Display -->
+        <TextView
+            android:id="@+id/total_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/total_time_margin_top"
+            android:text="Total: 00h 00m"
+            android:textSize="@dimen/total_time_text_size"
+            android:textColor="@color/shiva_text_white"
+            android:textStyle="bold"
+            android:fontFamily="serif"
+            android:shadowColor="@color/shiva_text_dark"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"
+            android:background="@drawable/text_background"
+            android:padding="@dimen/total_time_padding"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/timer_divider" />
+
+        <!-- Sound Settings Button -->
+        <Button
+            android:id="@+id/button_choose_sound_options"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/button_margin_top"
+            android:layout_marginStart="@dimen/button_margin_horizontal"
+            android:layout_marginEnd="@dimen/button_margin_horizontal"
+            android:background="@drawable/secondary_button_background"
+            android:text="Sound Settings"
+            android:textColor="@color/shiva_text_white"
+            android:textSize="@dimen/button_text_size"
+            android:textStyle="bold"
+            android:shadowColor="@color/shiva_text_dark"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/total_time_text" />
+
+        <!-- Achievements Button -->
+        <Button
+            android:id="@+id/button_achievements"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/button_margin_top"
+            android:layout_marginStart="@dimen/button_margin_horizontal"
+            android:layout_marginEnd="@dimen/button_margin_horizontal"
+            android:background="@drawable/secondary_button_background"
+            android:text="🏆 Achievements"
+            android:textColor="@color/shiva_text_white"
+            android:textSize="@dimen/button_text_size"
+            android:textStyle="bold"
+            android:shadowColor="@color/shiva_text_dark"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_choose_sound_options" />
+
+        <!-- Start/Pause Button -->
+        <Button
+            android:id="@+id/button_start_pause"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/primary_button_height"
+            android:layout_marginTop="@dimen/primary_button_margin_top"
+            android:layout_marginStart="@dimen/primary_button_margin_horizontal"
+            android:layout_marginEnd="@dimen/primary_button_margin_horizontal"
+            android:layout_marginBottom="@dimen/primary_button_margin_bottom"
+            android:text="Start"
+            android:textSize="@dimen/primary_button_text_size"
+            android:textStyle="bold"
+            android:background="@drawable/primary_button_background"
+            android:textColor="@color/shiva_text_white"
+            android:shadowColor="@color/shiva_text_dark"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_achievements"
+            app:layout_constraintBottom_toTopOf="@id/button_reset" />
+
+        <!-- Reset Timer Button -->
+        <Button
+            android:id="@+id/button_reset"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/reset_button_margin_top"
+            android:layout_marginStart="@dimen/reset_button_margin_horizontal"
+            android:layout_marginEnd="@dimen/reset_button_margin_horizontal"
+            android:layout_marginBottom="@dimen/reset_button_margin_bottom"
+            android:text="Reset Timer"
+            android:textSize="@dimen/button_text_size"
+            android:textStyle="bold"
+            android:background="@drawable/secondary_button_background"
+            android:textColor="@color/shiva_text_white"
+            android:shadowColor="@color/shiva_text_dark"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:visibility="invisible"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_start_pause"
+            app:layout_constraintBottom_toTopOf="@id/adView" />
+
+        <!-- Bottom Ad -->
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/ad_margin_bottom"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-2722920301958819/2481160193"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button_reset" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
