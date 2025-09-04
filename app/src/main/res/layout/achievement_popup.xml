@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/achievement_popup_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="24dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="12dp"
+    app:cardBackgroundColor="@color/achievement_gold">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="@drawable/achievement_gradient_background">
+
+        <!-- Achievement Icon and Title -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <!-- Achievement Icon -->
+            <FrameLayout
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="16dp">
+
+                <ImageView
+                    android:id="@+id/achievement_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_achievement_trophy"
+                    android:scaleType="fitCenter"
+                    android:alpha="0.9" />
+
+                <!-- Glow effect -->
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_achievement_trophy"
+                    android:scaleType="fitCenter"
+                    android:alpha="0.3"
+                    android:background="@drawable/achievement_glow" />
+
+            </FrameLayout>
+
+            <!-- Title -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/achievement_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🎉 ACHIEVEMENT UNLOCKED!"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:gravity="center_vertical"
+                    android:fontFamily="sans-serif-medium" />
+
+                <TextView
+                    android:id="@+id/achievement_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="First Hour"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Achievement Description -->
+        <TextView
+            android:id="@+id/achievement_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Welcome to your meditation journey!"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-light"
+            android:alpha="0.9" />
+
+        <!-- Progress Bar (for future use) -->
+        <ProgressBar
+            android:id="@+id/achievement_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:progress="100"
+            android:progressTint="@color/white"
+            android:progressBackgroundTint="@color/white"
+            android:alpha="0.3"
+            android:visibility="gone" />
+
+        <!-- Continue Button -->
+        <Button
+            android:id="@+id/achievement_continue_button"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Continue"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/achievement_gold"
+            android:background="@drawable/achievement_button_background"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-medium" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView> 

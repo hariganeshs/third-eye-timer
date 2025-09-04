@@ -1,0 +1,18 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.ThirdEyeTimer" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="colorPrimary">@color/shiva_blue</item>
+        <item name="colorPrimaryVariant">@color/shiva_blue</item>
+        <item name="colorOnPrimary">@color/shiva_white</item>
+        <item name="colorSecondary">@color/shiva_gold_accent</item>
+        <item name="colorSecondaryVariant">@color/shiva_gold_accent</item>
+        <item name="colorOnSecondary">@color/shiva_blue</item>
+        <item name="android:textColor">@color/shiva_text_white</item>
+        <item name="android:editTextColor">@color/shiva_text_white</item>
+        <item name="android:textColorHint">@color/shiva_ash_gray</item>
+        <item name="android:statusBarColor">@android:color/black</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="buttonStyle">@style/ShivaButtonStyle</item>
+    </style>
+</resources>
