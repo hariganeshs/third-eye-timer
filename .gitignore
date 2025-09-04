@@ -13,3 +13,22 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Keystore files (should not be in version control)
+*.keystore
+*.jks
+
+# Large media files
+*.mp3
+*.wav
+*.png
+*.jpg
+*.jpeg
+
+# Build outputs
+app/build/
+app/release/
+app/debug/
+
+# Log files
+*.log
