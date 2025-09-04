@@ -1,0 +1,33 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme -->
+    <style name="Theme.ThirdEyeTimer" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/shiva_blue</item>
+        <item name="colorPrimaryVariant">@color/shiva_blue</item>
+        <item name="colorOnPrimary">@color/shiva_white</item>
+        <!-- Secondary color -->
+        <item name="colorSecondary">@color/shiva_gold_accent</item>
+        <item name="colorSecondaryVariant">@color/shiva_gold_accent</item>
+        <item name="colorOnSecondary">@color/shiva_blue</item>
+        <!-- Background and text -->
+        <item name="android:windowBackground">@color/shiva_ash_gray</item>
+        <item name="android:textColor">@color/shiva_white</item>
+        <item name="android:editTextColor">@color/shiva_white</item>
+        <item name="android:textColorHint">@color/shiva_gold_accent</item>
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">@color/shiva_blue</item>
+        <!-- No action bar -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- Custom button style -->
+        <item name="buttonStyle">@style/ShivaButtonStyle</item>
+    </style>
+
+    <!-- Custom button style -->
+    <style name="ShivaButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">@color/shiva_blue</item>
+        <item name="android:textColor">@color/shiva_white</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+</resources>

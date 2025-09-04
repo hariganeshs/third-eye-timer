@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shiva_bg"
+    android:padding="24dp">
+
+    <!-- Trident Icon -->
+    <ImageView
+        android:id="@+id/trishul_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_trishul"
+        android:contentDescription="Trishul Icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/summary_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="🧘 Meditation Complete!"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/shiva_gold_accent"
+        android:fontFamily="serif"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/trishul_icon" />
+
+    <!-- Relaxation Score -->
+    <TextView
+        android:id="@+id/relaxation_score_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="Relaxation Score"
+        android:textSize="20sp"
+        android:textColor="@color/shiva_text_white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/summary_title" />
+
+    <TextView
+        android:id="@+id/relaxation_score_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="12"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        android:textColor="@color/shiva_gold_accent"
+        android:background="@drawable/text_background"
+        android:padding="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/relaxation_score_title" />
+
+    <TextView
+        android:id="@+id/relaxation_score_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Great job!"
+        android:textSize="18sp"
+        android:textColor="@color/shiva_text_white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/relaxation_score_value" />
+
+    <!-- Heart Rate Changes -->
+    <LinearLayout
+        android:id="@+id/heart_rate_changes_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        android:background="@drawable/stats_background"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/relaxation_score_message">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Heart Rate Changes"
+            android:textSize="18sp"
+            android:textColor="@color/shiva_gold_accent"
+            android:textStyle="bold"
+            android:layout_gravity="center" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/start_heart_rate_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Start:"
+                android:textSize="16sp"
+                android:textColor="@color/shiva_text_white"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/end_heart_rate_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="End:"
+                android:textSize="16sp"
+                android:textColor="@color/shiva_text_white"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/heart_rate_change_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Change:"
+                android:textSize="16sp"
+                android:textColor="@color/shiva_text_white"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/start_heart_rate_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="72 BPM"
+                android:textSize="18sp"
+                android:textColor="@color/shiva_gold_accent"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/end_heart_rate_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="60 BPM"
+                android:textSize="18sp"
+                android:textColor="@color/shiva_gold_accent"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/heart_rate_change_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="-12 BPM"
+                android:textSize="18sp"
+                android:textColor="@color/shiva_gold_accent"
+                android:textStyle="bold"
+                android:gravity="center" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <!-- Continue Button -->
+    <Button
+        android:id="@+id/continue_button"
+        android:layout_width="200dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="32dp"
+        android:text="Continue"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:background="@drawable/primary_button_background"
+        android:textColor="@color/shiva_text_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout> 
