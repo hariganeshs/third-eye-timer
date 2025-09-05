@@ -1131,10 +1131,13 @@ class MainActivity : AppCompatActivity() {
         for (i in bellButtons.indices) {
             val button = dialogView.findViewById<Button>(bellButtons[i])
 
-            // Highlight selected bell
+            // Set background and text color based on selection
             if (bellResIds[i] == selectedBellResId) {
                 button.setBackgroundResource(R.drawable.bell_button_highlighted)
-                button.setTextColor(resources.getColor(R.color.shiva_blue))
+                button.setTextColor(resources.getColor(android.R.color.black))
+            } else {
+                button.setBackgroundResource(R.drawable.bell_button_background)
+                button.setTextColor(resources.getColor(R.color.shiva_text_white))
             }
 
             button.setOnClickListener {
@@ -1171,7 +1174,7 @@ class MainActivity : AppCompatActivity() {
                         val otherButton = dialogView.findViewById<Button>(bellButtons[j])
                         if (j == i) {
                             otherButton.setBackgroundResource(R.drawable.bell_button_highlighted)
-                            otherButton.setTextColor(resources.getColor(R.color.shiva_blue))
+                            otherButton.setTextColor(resources.getColor(android.R.color.black))
                         } else {
                             otherButton.setBackgroundResource(R.drawable.bell_button_background)
                             otherButton.setTextColor(resources.getColor(R.color.shiva_text_white))
