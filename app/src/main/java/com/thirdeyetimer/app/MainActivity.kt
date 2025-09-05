@@ -1096,37 +1096,37 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupSoundButtons(dialogView: View, prefs: SharedPreferences, dialog: AlertDialog, currentSoundText: TextView) {
         // Mindfulness & Basic Practices
-        setupSoundButton(dialogView, R.id.btn_mindfulness_breathing, 3, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_breath_counting, 4, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_body_scan, 5, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_walking_meditation, 6, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_choiceless_awareness, 7, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_open_awareness, 8, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_mindfulness_breathing, 1, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_breath_counting, 2, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_body_scan, 3, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_walking_meditation, 4, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_choiceless_awareness, 5, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_open_awareness, 6, prefs, currentSoundText)
 
         // Loving Kindness & Compassion
         setupSoundButton(dialogView, R.id.btn_loving_kindness, 9, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_compassion, 13, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_four_immeasurables, 14, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_compassion, 14, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_four_immeasurables, 15, prefs, currentSoundText)
 
         // Buddhist Practices
-        setupSoundButton(dialogView, R.id.btn_anapanasati, 16, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_four_foundations, 20, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_eightfold_path, 21, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_anapanasati, 18, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_four_foundations, 26, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_eightfold_path, 27, prefs, currentSoundText)
 
         // Nature & Environment
-        setupSoundButton(dialogView, R.id.btn_mountain_meditation, 26, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_ocean_meditation, 27, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_forest_meditation, 28, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_mountain_meditation, 30, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_ocean_meditation, 31, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_forest_meditation, 32, prefs, currentSoundText)
 
         // Chakra Meditations
-        setupSoundButton(dialogView, R.id.btn_chakra_heart, 32, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_chakra_root, 33, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_chakra_third_eye, 36, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_chakra_heart, 43, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_chakra_root, 44, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_chakra_third_eye, 47, prefs, currentSoundText)
 
         // Ambient Sounds
         setupSoundButton(dialogView, R.id.btn_complete_silence, 0, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_birds, 15, prefs, currentSoundText)
-        setupSoundButton(dialogView, R.id.btn_aum_mantra, 16, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_birds, 62, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_aum_mantra, 63, prefs, currentSoundText)
     }
 
     private fun setupSoundButton(dialogView: View, buttonId: Int, soundIndex: Int, prefs: SharedPreferences, currentSoundText: TextView) {
