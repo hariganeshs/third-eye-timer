@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- High density screen dimensions -->
+    <dimen name="screen_padding">14dp</dimen>
+    
+    <!-- Ad margins -->
+    <dimen name="ad_margin_top">14dp</dimen>
+    <dimen name="ad_margin_bottom">14dp</dimen>
+    
+    <!-- Title dimensions -->
+    <dimen name="title_margin_top">7dp</dimen>
+    <dimen name="title_text_size">26sp</dimen>
+    
+    <!-- Input field dimensions -->
+    <dimen name="input_height">58dp</dimen>
+    <dimen name="input_margin_top">22dp</dimen>
+    <dimen name="input_margin_horizontal">14dp</dimen>
+    <dimen name="input_padding">15dp</dimen>
+    <dimen name="input_text_size">15sp</dimen>
+    
+    <!-- Timer dimensions -->
+    <dimen name="timer_margin_top">30dp</dimen>
+    <dimen name="timer_text_size">68sp</dimen>
+    
+    <!-- Divider dimensions -->
+    <dimen name="divider_height">2dp</dimen>
+    <dimen name="divider_margin_top">15dp</dimen>
+    
+    <!-- Total time dimensions -->
+    <dimen name="total_time_margin_top">15dp</dimen>
+    <dimen name="total_time_text_size">19sp</dimen>
+    <dimen name="total_time_padding">7dp</dimen>
+    
+    <!-- Button dimensions -->
+    <dimen name="button_height">46dp</dimen>
+    <dimen name="button_margin_top">7dp</dimen>
+    <dimen name="button_margin_horizontal">15dp</dimen>
+    <dimen name="button_text_size">15sp</dimen>
+    
+    <!-- Primary button dimensions -->
+    <dimen name="primary_button_height">54dp</dimen>
+    <dimen name="primary_button_margin_top">36dp</dimen>
+    <dimen name="primary_button_margin_horizontal">30dp</dimen>
+    <dimen name="primary_button_margin_bottom">15dp</dimen>
+    <dimen name="primary_button_text_size">17sp</dimen>
+    
+    <!-- Reset button dimensions -->
+    <dimen name="reset_button_margin_top">15dp</dimen>
+    <dimen name="reset_button_margin_horizontal">44dp</dimen>
+    <dimen name="reset_button_margin_bottom">22dp</dimen>
+</resources>
