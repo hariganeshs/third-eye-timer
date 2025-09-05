@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var totalTimeText: TextView
     private lateinit var appTitleText: TextView
 
-    private val PREFS_NAME = "MeditationPrefs"
+    private val PREFS_NAME = "meditation_prefs"
     private val KEY_TOTAL_TIME = "total_meditation_time"
     private var totalMeditationTimeMillis: Long = 0L
     private var sessionStartTime: Long = 0L
@@ -140,10 +140,75 @@ class MainActivity : AppCompatActivity() {
     
     private val backgroundSoundNames = arrayOf(
         "Complete Silence",
-        "Guide 1",
-        "Guide 2",
-        "Guide 3",
-        "Guide 4",
+        // Mindfulness & Basic Practices
+        "Mindfulness Breathing",
+        "Breath Counting",
+        "Body Scan Meditation",
+        "Walking Meditation",
+        "Choiceless Awareness",
+        "Open Awareness",
+        "Sound Listening",
+        "Sound Meditation",
+        // Loving Kindness & Compassion
+        "Loving Kindness",
+        "Loving Kindness (Metta Self)",
+        "Loving Kindness (Metta Benefactor)",
+        "Loving Kindness (Metta Neutral)",
+        "Loving Kindness (Metta Difficult)",
+        "Compassion Meditation",
+        "Four Immeasurables",
+        "Tonglen",
+        // Buddhist Practices
+        "Buddhist Breath (Anapanasati)",
+        "Buddhist Loving Kindness (Metta)",
+        "Buddhist Body Scan (Four Elements)",
+        "Buddhist Open Awareness",
+        "Buddhist Walking Gatha",
+        "Buddhist Compassion (Tonglen)",
+        "Buddhist Refuge (Three Jewels)",
+        "Four Foundations",
+        "Eightfold Path",
+        // Hindu Practices
+        "Hindu Mantra Presence",
+        "Hindu Prana Body Scan",
+        "Hindu Om Resonance",
+        "Hindu Nature Dhyana",
+        "Kundalini",
+        // Body & Healing
+        "Body Scan Bottom Up",
+        "Body Scan Top Down",
+        "Body Scan Front Back",
+        "Body Scan Left Right",
+        "Mindful Eating",
+        // Nature & Environment
+        "Mountain Meditation",
+        "Ocean Meditation",
+        "Forest Meditation",
+        "Desert",
+        "Cave",
+        "Garden",
+        "Meadow",
+        "Dawn",
+        "Dusk",
+        "Moon",
+        "Sun",
+        // Positive Emotions
+        "Gratitude Meditation",
+        "Acceptance Meditation",
+        "Forgiveness",
+        "Inner Child",
+        "Resilience",
+        "Courage",
+        "Equanimity",
+        // Chakra Meditations
+        "Chakra Root",
+        "Chakra Sacral",
+        "Chakra Solar",
+        "Chakra Heart",
+        "Chakra Throat",
+        "Chakra Third Eye",
+        "Chakra Crown",
+        // Ambient Sounds
         "Birds",
         "Aum Mantra",
         "Jungle Rain",
@@ -151,10 +216,75 @@ class MainActivity : AppCompatActivity() {
     )
     private val backgroundResIds = arrayOf(
         0, // Complete Silence
-        R.raw.guide_1,
-        R.raw.guide_2,
-        R.raw.guide_3,
-        R.raw.guide_4,
+        // Mindfulness & Basic Practices
+        R.raw.mindfulness_breathing,
+        R.raw.breath_counting,
+        R.raw.body_scan_meditation,
+        R.raw.walking_meditation,
+        R.raw.choiceless_awareness,
+        R.raw.open_awareness,
+        R.raw.sound_listening,
+        R.raw.sound_meditation,
+        // Loving Kindness & Compassion
+        R.raw.loving_kindness_meditation,
+        R.raw.metta_self,
+        R.raw.metta_benefactor,
+        R.raw.metta_neutral,
+        R.raw.metta_difficult,
+        R.raw.compassion_meditation,
+        R.raw.four_immeasurables,
+        R.raw.tonglen,
+        // Buddhist Practices
+        R.raw.buddhist_1_breath_anapanasati,
+        R.raw.buddhist_2_loving_kindness_metta,
+        R.raw.buddhist_3_body_scan_four_elements,
+        R.raw.buddhist_4_open_awareness,
+        R.raw.buddhist_5_walking_gatha,
+        R.raw.buddhist_6_compassion_tonglen,
+        R.raw.buddhist_7_refuge_three_jewels,
+        R.raw.four_foundations,
+        R.raw.eightfold_path,
+        // Hindu Practices
+        R.raw.hindu_1_mantra_presence,
+        R.raw.hindu_2_prana_body_scan,
+        R.raw.hindu_3_om_resonance,
+        R.raw.hindu_4_nature_dhyana,
+        R.raw.kundalini,
+        // Body & Healing
+        R.raw.body_scan_bottom_up,
+        R.raw.body_scan_top_down,
+        R.raw.body_scan_front_back,
+        R.raw.body_scan_left_right,
+        R.raw.mindful_eating_meditation,
+        // Nature & Environment
+        R.raw.mountain_meditation,
+        R.raw.ocean_meditation,
+        R.raw.forest_meditation,
+        R.raw.desert,
+        R.raw.cave,
+        R.raw.garden,
+        R.raw.meadow,
+        R.raw.dawn,
+        R.raw.dusk,
+        R.raw.moon,
+        R.raw.sun,
+        // Positive Emotions
+        R.raw.gratitude_meditation,
+        R.raw.acceptance_meditation,
+        R.raw.forgiveness,
+        R.raw.inner_child,
+        R.raw.resilience,
+        R.raw.courage,
+        R.raw.equanimity,
+        // Chakra Meditations
+        R.raw.chakra_root,
+        R.raw.chakra_sacral,
+        R.raw.chakra_solar,
+        R.raw.chakra_heart,
+        R.raw.chakra_throat,
+        R.raw.chakra_third_eye,
+        R.raw.chakra_crown,
+        // Ambient Sounds
         R.raw.birds,
         R.raw.aum_mantra,
         R.raw.jungle_rain,
@@ -187,7 +317,6 @@ class MainActivity : AppCompatActivity() {
         private const val KEY_ACHIEVEMENTS = "achievements"
         private const val KEY_HEART_RATE_ENABLED = "heart_rate_enabled"
         private const val KEY_DARK_MODE_ENABLED = "dark_mode_enabled"
-        private const val KEY_BACKGROUND_SOUND = "KEY_BACKGROUND_SOUND"
     
         private const val REQUEST_CODE_PERMISSIONS = 101
     }
@@ -230,10 +359,7 @@ class MainActivity : AppCompatActivity() {
             adView.loadAd(adRequest)
             topAdView.loadAd(adRequest)
         } catch (e: Exception) {
-            Log.e("AdMobError", "Failed to load ad: ${e.message}", e)
-            // Hide ad views on error to prevent layout issues
-            adView.visibility = View.GONE
-            topAdView.visibility = View.GONE
+            Log.e("AdMobError", "Failed to load ad: ${e.message}", e) // Log error
         }
         
         // Load interstitial ad
@@ -243,7 +369,7 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         totalMeditationTimeMillis = prefs.getLong(KEY_TOTAL_TIME, 0L)
         selectedBellResId = prefs.getInt(KEY_BELL_SOUND, R.raw.bell)
-        selectedBackgroundResId = prefs.getInt(KEY_BACKGROUND_SOUND, 0)
+        selectedBackgroundResId = prefs.getInt("KEY_BACKGROUND_SOUND", 0)
         
         // Heart rate setting will be loaded in settings dialog
         
@@ -316,23 +442,14 @@ class MainActivity : AppCompatActivity() {
                 // Pausing - stop the timer
                 stopTimerService()
                 wasPaused = true
-                isRunning = false  // Ensure state consistency
                 startPauseButton.text = "Start"
                 resetButton.visibility = View.VISIBLE
             } else {
                 val timeInput = timeEditText.text.toString()
                 if (timeInput.isNotEmpty()) {
-                    try {
-                        val minutes = timeInput.toLong()
-                        if (minutes <= 0 || minutes > 1440) { // Max 24 hours
-                            // Show error message
-                            timeEditText.error = "Please enter a time between 1 and 1440 minutes"
-                            return@setOnClickListener
-                        }
-                        
-                        // If resuming from pause, use current remaining time; otherwise use input
-                        if (!wasPaused || timeInMilliSeconds <= 0) {
-                            timeInMilliSeconds = minutes * 60000L
+                    // If resuming from pause, use current remaining time; otherwise use input
+                    if (!wasPaused || timeInMilliSeconds <= 0) {
+                        timeInMilliSeconds = timeInput.toLong() * 60000L
 
                         // Reset heart rate measurement state for new session
                         heartRateMeasured = false
@@ -549,12 +666,6 @@ class MainActivity : AppCompatActivity() {
         // Check if achievement popup manager is initialized
         if (!::achievementPopupManager.isInitialized) {
             Log.w("MainActivity", "Achievement popup manager not initialized, skipping notification")
-            return
-        }
-        
-        // Additional safety check
-        if (achievementPopupManager == null) {
-            Log.w("MainActivity", "Achievement popup manager is null, skipping notification")
             return
         }
         
@@ -932,17 +1043,11 @@ class MainActivity : AppCompatActivity() {
             try {
                 previewPlayer?.release()
                 previewPlayer = MediaPlayer.create(this, bellResIds[bellWhich])
-                if (previewPlayer != null) {
-                    previewPlayer?.setVolume(1.0f, 1.0f)
-                    previewPlayer?.start()
-                    selectedBellResId = bellResIds[bellWhich]
-                    prefs.edit().putInt(KEY_BELL_SOUND, selectedBellResId).apply()
-                } else {
-                    Log.e("MainActivity", "Failed to create MediaPlayer for bell: $bellWhich")
-                }
-            } catch (e: Exception) {
-                Log.e("MainActivity", "Error playing bell preview: ${e.message}", e)
-            }
+                previewPlayer?.setVolume(1.0f, 1.0f)
+                previewPlayer?.start()
+                selectedBellResId = bellResIds[bellWhich]
+                prefs.edit().putInt(KEY_BELL_SOUND, selectedBellResId).apply()
+            } catch (e: Exception) {}
         }
         bellDialog.setPositiveButton("OK") { dialog, _ ->
             previewPlayer?.release()
@@ -962,19 +1067,13 @@ class MainActivity : AppCompatActivity() {
                 previewBackgroundPlayer?.release()
                 if (backgroundResIds[bgWhich] != 0) {
                     previewBackgroundPlayer = MediaPlayer.create(this, backgroundResIds[bgWhich])
-                    if (previewBackgroundPlayer != null) {
-                        previewBackgroundPlayer?.isLooping = true
-                        previewBackgroundPlayer?.setVolume(1.0f, 1.0f)
-                        previewBackgroundPlayer?.start()
-                    } else {
-                        Log.e("MainActivity", "Failed to create MediaPlayer for background sound: $bgWhich")
-                    }
+                    previewBackgroundPlayer?.isLooping = true
+                    previewBackgroundPlayer?.setVolume(1.0f, 1.0f)
+                    previewBackgroundPlayer?.start()
                 }
                 selectedBackgroundResId = backgroundResIds[bgWhich]
-                prefs.edit().putInt(KEY_BACKGROUND_SOUND, selectedBackgroundResId).apply()
-            } catch (e: Exception) {
-                Log.e("MainActivity", "Error playing background sound preview: ${e.message}", e)
-            }
+                prefs.edit().putInt("KEY_BACKGROUND_SOUND", selectedBackgroundResId).apply()
+            } catch (e: Exception) {}
         }
         bgDialog.setPositiveButton("OK") { dialog, _ ->
             previewBackgroundPlayer?.release()
