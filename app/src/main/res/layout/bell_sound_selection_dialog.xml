@@ -73,14 +73,14 @@
                 <Button
                     android:id="@+id/btn_bell_1"
                     style="@style/BellSelectionButton"
-                    android:text="Bell 1\n(Crystal)"
+                    android:text="Ding"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp" />
 
                 <Button
                     android:id="@+id/btn_bell_2"
                     style="@style/BellSelectionButton"
-                    android:text="Bell 2\n(Gong)"
+                    android:text="Dong"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp" />
@@ -88,7 +88,7 @@
                 <Button
                     android:id="@+id/btn_bell_3"
                     style="@style/BellSelectionButton"
-                    android:text="Bell 3\n(Temple)"
+                    android:text="Ting"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
@@ -102,14 +102,14 @@
                 <Button
                     android:id="@+id/btn_bell_4"
                     style="@style/BellSelectionButton"
-                    android:text="Bell 4\n(Singing)"
+                    android:text="Ring"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp" />
 
                 <Button
                     android:id="@+id/btn_bell_5"
                     style="@style/BellSelectionButton"
-                    android:text="Bell 5\n(Flower)"
+                    android:text="Chime"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp" />
@@ -117,7 +117,7 @@
                 <Button
                     android:id="@+id/btn_bell_6"
                     style="@style/BellSelectionButton"
-                    android:text="Bell 6\n(Harmony)"
+                    android:text="Bong"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp" />
             </LinearLayout>

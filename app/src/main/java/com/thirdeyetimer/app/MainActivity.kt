@@ -959,7 +959,15 @@ class MainActivity : AppCompatActivity() {
         )
         val currentBellIndex = bellResIds.indexOf(selectedBellResId).coerceAtLeast(0)
         val currentBellText = dialogView.findViewById<TextView>(R.id.text_current_bell_sound)
-        currentBellText.text = "Bell ${currentBellIndex + 1}"
+        currentBellText.text = when (currentBellIndex) {
+            0 -> "Ding"
+            1 -> "Dong"
+            2 -> "Ting"
+            3 -> "Ring"
+            4 -> "Chime"
+            5 -> "Bong"
+            else -> "Bell ${currentBellIndex + 1}"
+        }
 
         // Setup bell buttons with highlighting
         setupBellButtons(dialogView, prefs, bellResIds, currentBellText, dialog)
@@ -1126,7 +1134,7 @@ class MainActivity : AppCompatActivity() {
             // Highlight selected bell
             if (bellResIds[i] == selectedBellResId) {
                 button.setBackgroundResource(R.drawable.bell_button_highlighted)
-                button.setTextColor(resources.getColor(R.color.shiva_text_dark))
+                button.setTextColor(resources.getColor(R.color.shiva_blue))
             }
 
             button.setOnClickListener {
@@ -1148,16 +1156,24 @@ class MainActivity : AppCompatActivity() {
                     previewPlayer?.setVolume(1.0f, 1.0f)
                     previewPlayer?.start()
                     selectedBellResId = bellResIds[i]
-                    currentBellText.text = "Bell ${i + 1}"
+                    currentBellText.text = when (i) {
+                        0 -> "Ding"
+                        1 -> "Dong"
+                        2 -> "Ting"
+                        3 -> "Ring"
+                        4 -> "Chime"
+                        5 -> "Bong"
+                        else -> "Bell ${i + 1}"
+                    }
 
                     // Update button highlighting
                     for (j in bellButtons.indices) {
                         val otherButton = dialogView.findViewById<Button>(bellButtons[j])
                         if (j == i) {
                             otherButton.setBackgroundResource(R.drawable.bell_button_highlighted)
-                            otherButton.setTextColor(resources.getColor(R.color.shiva_text_dark))
+                            otherButton.setTextColor(resources.getColor(R.color.shiva_blue))
                         } else {
-                            otherButton.setBackgroundResource(R.drawable.sound_button_background)
+                            otherButton.setBackgroundResource(R.drawable.bell_button_background)
                             otherButton.setTextColor(resources.getColor(R.color.shiva_text_white))
                         }
                     }
