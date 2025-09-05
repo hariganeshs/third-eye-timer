@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var totalTimeText: TextView
     private lateinit var appTitleText: TextView
 
-    private val PREFS_NAME = "meditation_prefs"
+    private val PREFS_NAME = "MeditationPrefs"
     private val KEY_TOTAL_TIME = "total_meditation_time"
     private var totalMeditationTimeMillis: Long = 0L
     private var sessionStartTime: Long = 0L
@@ -187,6 +187,7 @@ class MainActivity : AppCompatActivity() {
         private const val KEY_ACHIEVEMENTS = "achievements"
         private const val KEY_HEART_RATE_ENABLED = "heart_rate_enabled"
         private const val KEY_DARK_MODE_ENABLED = "dark_mode_enabled"
+        private const val KEY_BACKGROUND_SOUND = "KEY_BACKGROUND_SOUND"
     
         private const val REQUEST_CODE_PERMISSIONS = 101
     }
@@ -229,7 +230,10 @@ class MainActivity : AppCompatActivity() {
             adView.loadAd(adRequest)
             topAdView.loadAd(adRequest)
         } catch (e: Exception) {
-            Log.e("AdMobError", "Failed to load ad: ${e.message}", e) // Log error
+            Log.e("AdMobError", "Failed to load ad: ${e.message}", e)
+            // Hide ad views on error to prevent layout issues
+            adView.visibility = View.GONE
+            topAdView.visibility = View.GONE
         }
         
         // Load interstitial ad
@@ -239,7 +243,7 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         totalMeditationTimeMillis = prefs.getLong(KEY_TOTAL_TIME, 0L)
         selectedBellResId = prefs.getInt(KEY_BELL_SOUND, R.raw.bell)
-        selectedBackgroundResId = prefs.getInt("KEY_BACKGROUND_SOUND", 0)
+        selectedBackgroundResId = prefs.getInt(KEY_BACKGROUND_SOUND, 0)
         
         // Heart rate setting will be loaded in settings dialog
         
@@ -312,14 +316,23 @@ class MainActivity : AppCompatActivity() {
                 // Pausing - stop the timer
                 stopTimerService()
                 wasPaused = true
+                isRunning = false  // Ensure state consistency
                 startPauseButton.text = "Start"
                 resetButton.visibility = View.VISIBLE
             } else {
                 val timeInput = timeEditText.text.toString()
                 if (timeInput.isNotEmpty()) {
-                    // If resuming from pause, use current remaining time; otherwise use input
-                    if (!wasPaused || timeInMilliSeconds <= 0) {
-                        timeInMilliSeconds = timeInput.toLong() * 60000L
+                    try {
+                        val minutes = timeInput.toLong()
+                        if (minutes <= 0 || minutes > 1440) { // Max 24 hours
+                            // Show error message
+                            timeEditText.error = "Please enter a time between 1 and 1440 minutes"
+                            return@setOnClickListener
+                        }
+                        
+                        // If resuming from pause, use current remaining time; otherwise use input
+                        if (!wasPaused || timeInMilliSeconds <= 0) {
+                            timeInMilliSeconds = minutes * 60000L
 
                         // Reset heart rate measurement state for new session
                         heartRateMeasured = false
@@ -536,6 +549,12 @@ class MainActivity : AppCompatActivity() {
         // Check if achievement popup manager is initialized
         if (!::achievementPopupManager.isInitialized) {
             Log.w("MainActivity", "Achievement popup manager not initialized, skipping notification")
+            return
+        }
+        
+        // Additional safety check
+        if (achievementPopupManager == null) {
+            Log.w("MainActivity", "Achievement popup manager is null, skipping notification")
             return
         }
         
@@ -913,11 +932,17 @@ class MainActivity : AppCompatActivity() {
             try {
                 previewPlayer?.release()
                 previewPlayer = MediaPlayer.create(this, bellResIds[bellWhich])
-                previewPlayer?.setVolume(1.0f, 1.0f)
-                previewPlayer?.start()
-                selectedBellResId = bellResIds[bellWhich]
-                prefs.edit().putInt(KEY_BELL_SOUND, selectedBellResId).apply()
-            } catch (e: Exception) {}
+                if (previewPlayer != null) {
+                    previewPlayer?.setVolume(1.0f, 1.0f)
+                    previewPlayer?.start()
+                    selectedBellResId = bellResIds[bellWhich]
+                    prefs.edit().putInt(KEY_BELL_SOUND, selectedBellResId).apply()
+                } else {
+                    Log.e("MainActivity", "Failed to create MediaPlayer for bell: $bellWhich")
+                }
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Error playing bell preview: ${e.message}", e)
+            }
         }
         bellDialog.setPositiveButton("OK") { dialog, _ ->
             previewPlayer?.release()
@@ -937,13 +962,19 @@ class MainActivity : AppCompatActivity() {
                 previewBackgroundPlayer?.release()
                 if (backgroundResIds[bgWhich] != 0) {
                     previewBackgroundPlayer = MediaPlayer.create(this, backgroundResIds[bgWhich])
-                    previewBackgroundPlayer?.isLooping = true
-                    previewBackgroundPlayer?.setVolume(1.0f, 1.0f)
-                    previewBackgroundPlayer?.start()
+                    if (previewBackgroundPlayer != null) {
+                        previewBackgroundPlayer?.isLooping = true
+                        previewBackgroundPlayer?.setVolume(1.0f, 1.0f)
+                        previewBackgroundPlayer?.start()
+                    } else {
+                        Log.e("MainActivity", "Failed to create MediaPlayer for background sound: $bgWhich")
+                    }
                 }
                 selectedBackgroundResId = backgroundResIds[bgWhich]
-                prefs.edit().putInt("KEY_BACKGROUND_SOUND", selectedBackgroundResId).apply()
-            } catch (e: Exception) {}
+                prefs.edit().putInt(KEY_BACKGROUND_SOUND, selectedBackgroundResId).apply()
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Error playing background sound preview: ${e.message}", e)
+            }
         }
         bgDialog.setPositiveButton("OK") { dialog, _ ->
             previewBackgroundPlayer?.release()

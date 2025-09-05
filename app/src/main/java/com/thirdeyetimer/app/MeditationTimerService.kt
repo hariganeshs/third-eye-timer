@@ -185,9 +185,22 @@ class MeditationTimerService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         countdownTimer?.cancel()
-        mediaPlayer?.release()
-        backgroundPlayer?.stop()
-        backgroundPlayer?.release()
-        backgroundPlayer = null
+        countdownTimer = null
+        
+        try {
+            mediaPlayer?.stop()
+            mediaPlayer?.release()
+            mediaPlayer = null
+        } catch (e: Exception) {
+            Log.e("MeditationTimerService", "Error releasing mediaPlayer: ${e.message}", e)
+        }
+        
+        try {
+            backgroundPlayer?.stop()
+            backgroundPlayer?.release()
+            backgroundPlayer = null
+        } catch (e: Exception) {
+            Log.e("MeditationTimerService", "Error releasing backgroundPlayer: ${e.message}", e)
+        }
     }
 }
