@@ -18,10 +18,10 @@ local.properties
 *.keystore
 *.jks
 
-# Large media files
-*.mp3
-*.wav
-*.png
+# Large media files (now handled by Git LFS)
+# *.mp3
+# *.wav
+# *.png
 *.jpg
 *.jpeg
 
