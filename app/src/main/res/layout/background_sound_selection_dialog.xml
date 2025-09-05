@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background"
+    android:padding="24dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🎵 Sacred Soundscapes"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_gold_accent"
+            android:fontFamily="serif"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/button_close_bg_sound_dialog"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="✕"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_text_white"
+            android:background="@drawable/close_button_background"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- Description -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Choose your sacred sound companion for meditation"
+        android:textSize="16sp"
+        android:textColor="@color/shiva_ash_gray"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"
+        android:fontFamily="sans-serif-medium" />
+
+    <!-- Sound Grid Container -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="400dp"
+        android:layout_marginBottom="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Mindfulness & Basic Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🧘‍♀️ Mindfulness &amp; Basic"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_gold_accent"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="serif" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <Button
+                        android:id="@+id/btn_mindfulness_breathing"
+                        style="@style/SoundSelectionButton"
+                        android:text="🫁\nMindfulness\nBreathing"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_breath_counting"
+                        style="@style/SoundSelectionButton"
+                        android:text="🔢\nBreath\nCounting"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_body_scan"
+                        style="@style/SoundSelectionButton"
+                        android:text="🫴\nBody\nScan"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_walking_meditation"
+                        style="@style/SoundSelectionButton"
+                        android:text="🚶\nWalking\nMeditation"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_choiceless_awareness"
+                        style="@style/SoundSelectionButton"
+                        android:text="👁️\nChoiceless\nAwareness"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_open_awareness"
+                        style="@style/SoundSelectionButton"
+                        android:text="🌌\nOpen\nAwareness"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Loving Kindness & Compassion Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="💚 Loving Kindness &amp; Compassion"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_gold_accent"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="serif" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <Button
+                        android:id="@+id/btn_loving_kindness"
+                        style="@style/SoundSelectionButton"
+                        android:text="💝\nLoving\nKindness"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_compassion"
+                        style="@style/SoundSelectionButton"
+                        android:text="🤝\nCompassion\nMeditation"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_four_immeasurables"
+                        style="@style/SoundSelectionButton"
+                        android:text="🌟\nFour\nImmeasurables"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Buddhist Practices Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🕉️ Buddhist Practices"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_gold_accent"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="serif" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <Button
+                        android:id="@+id/btn_anapanasati"
+                        style="@style/SoundSelectionButton"
+                        android:text="🫁\nAnapanasati\nBreath"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_four_foundations"
+                        style="@style/SoundSelectionButton"
+                        android:text="🏛️\nFour\nFoundations"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_eightfold_path"
+                        style="@style/SoundSelectionButton"
+                        android:text="🛤️\nEightfold\nPath"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Nature & Environment Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🌿 Nature &amp; Environment"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_gold_accent"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="serif" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <Button
+                        android:id="@+id/btn_mountain_meditation"
+                        style="@style/SoundSelectionButton"
+                        android:text="🏔️\nMountain\nMeditation"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_ocean_meditation"
+                        style="@style/SoundSelectionButton"
+                        android:text="🌊\nOcean\nMeditation"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_forest_meditation"
+                        style="@style/SoundSelectionButton"
+                        android:text="🌲\nForest\nMeditation"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Chakra Meditations Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🔮 Chakra Meditations"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_gold_accent"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="serif" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <Button
+                        android:id="@+id/btn_chakra_heart"
+                        style="@style/SoundSelectionButton"
+                        android:text="❤️\nHeart\nChakra"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_chakra_root"
+                        style="@style/SoundSelectionButton"
+                        android:text="🔴\nRoot\nChakra"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_chakra_third_eye"
+                        style="@style/SoundSelectionButton"
+                        android:text="🧿\nThird Eye\nChakra"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Ambient Sounds Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🎵 Ambient Sounds"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_gold_accent"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="serif" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_complete_silence"
+                        style="@style/SoundSelectionButton"
+                        android:text="🤫\nComplete\nSilence"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_birds"
+                        style="@style/SoundSelectionButton"
+                        android:text="🐦\nBirds\nChirping"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_aum_mantra"
+                        style="@style/SoundSelectionButton"
+                        android:text="🕉️\nAum\nMantra"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Current Selection Display -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/sound_section_background"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Currently Selected:"
+            android:textSize="16sp"
+            android:textColor="@color/shiva_ash_gray"
+            android:fontFamily="sans-serif-medium" />
+
+        <TextView
+            android:id="@+id/text_current_bg_sound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Complete Silence"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_gold_accent"
+            android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/button_stop_preview"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="⏹️ Stop Preview"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_text_white"
+            android:background="@drawable/secondary_button_background"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/button_confirm_bg_sound"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="✅ Confirm Selection"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/shiva_text_white"
+            android:background="@drawable/primary_button_background"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+</LinearLayout>

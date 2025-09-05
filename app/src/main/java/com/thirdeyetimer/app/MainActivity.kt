@@ -25,6 +25,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import java.util.Calendar
@@ -1058,29 +1059,93 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showBackgroundSoundPicker() {
+        val dialogView = layoutInflater.inflate(R.layout.background_sound_selection_dialog, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(true)
+            .create()
+
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val currentBgIndex = backgroundResIds.indexOf(selectedBackgroundResId).coerceAtLeast(0)
-        val bgDialog = AlertDialog.Builder(this)
-        bgDialog.setTitle("🎵 Choose Background Sound")
-        bgDialog.setSingleChoiceItems(backgroundSoundNames, currentBgIndex) { dialog, bgWhich ->
+        val currentSoundText = dialogView.findViewById<TextView>(R.id.text_current_bg_sound)
+        currentSoundText.text = backgroundSoundNames.getOrElse(currentBgIndex) { "Complete Silence" }
+
+        // Setup sound buttons
+        setupSoundButtons(dialogView, prefs, dialog, currentSoundText)
+
+        // Close button
+        dialogView.findViewById<Button>(R.id.button_close_bg_sound_dialog).setOnClickListener {
+            previewBackgroundPlayer?.release()
+            dialog.dismiss()
+        }
+
+        // Stop preview button
+        dialogView.findViewById<Button>(R.id.button_stop_preview).setOnClickListener {
+            previewBackgroundPlayer?.release()
+        }
+
+        // Confirm button
+        dialogView.findViewById<Button>(R.id.button_confirm_bg_sound).setOnClickListener {
+            previewBackgroundPlayer?.release()
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener { previewBackgroundPlayer?.release() }
+        dialog.show()
+    }
+
+    private fun setupSoundButtons(dialogView: View, prefs: SharedPreferences, dialog: AlertDialog, currentSoundText: TextView) {
+        // Mindfulness & Basic Practices
+        setupSoundButton(dialogView, R.id.btn_mindfulness_breathing, 3, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_breath_counting, 4, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_body_scan, 5, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_walking_meditation, 6, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_choiceless_awareness, 7, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_open_awareness, 8, prefs, currentSoundText)
+
+        // Loving Kindness & Compassion
+        setupSoundButton(dialogView, R.id.btn_loving_kindness, 9, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_compassion, 13, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_four_immeasurables, 14, prefs, currentSoundText)
+
+        // Buddhist Practices
+        setupSoundButton(dialogView, R.id.btn_anapanasati, 16, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_four_foundations, 20, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_eightfold_path, 21, prefs, currentSoundText)
+
+        // Nature & Environment
+        setupSoundButton(dialogView, R.id.btn_mountain_meditation, 26, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_ocean_meditation, 27, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_forest_meditation, 28, prefs, currentSoundText)
+
+        // Chakra Meditations
+        setupSoundButton(dialogView, R.id.btn_chakra_heart, 32, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_chakra_root, 33, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_chakra_third_eye, 36, prefs, currentSoundText)
+
+        // Ambient Sounds
+        setupSoundButton(dialogView, R.id.btn_complete_silence, 0, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_birds, 15, prefs, currentSoundText)
+        setupSoundButton(dialogView, R.id.btn_aum_mantra, 16, prefs, currentSoundText)
+    }
+
+    private fun setupSoundButton(dialogView: View, buttonId: Int, soundIndex: Int, prefs: SharedPreferences, currentSoundText: TextView) {
+        dialogView.findViewById<Button>(buttonId)?.setOnClickListener {
             try {
                 previewBackgroundPlayer?.release()
-                if (backgroundResIds[bgWhich] != 0) {
-                    previewBackgroundPlayer = MediaPlayer.create(this, backgroundResIds[bgWhich])
+                if (backgroundResIds[soundIndex] != 0) {
+                    previewBackgroundPlayer = MediaPlayer.create(this, backgroundResIds[soundIndex])
                     previewBackgroundPlayer?.isLooping = true
                     previewBackgroundPlayer?.setVolume(1.0f, 1.0f)
                     previewBackgroundPlayer?.start()
                 }
-                selectedBackgroundResId = backgroundResIds[bgWhich]
+                selectedBackgroundResId = backgroundResIds[soundIndex]
+                currentSoundText.text = backgroundSoundNames.getOrElse(soundIndex) { "Complete Silence" }
                 prefs.edit().putInt("KEY_BACKGROUND_SOUND", selectedBackgroundResId).apply()
-            } catch (e: Exception) {}
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Error playing sound preview: ${e.message}", e)
+            }
         }
-        bgDialog.setPositiveButton("OK") { dialog, _ ->
-            previewBackgroundPlayer?.release()
-            dialog.dismiss()
-        }
-        bgDialog.setOnDismissListener { previewBackgroundPlayer?.release() }
-        bgDialog.show()
     }
 
     private fun getAchievementDisplayName(achievementKey: String): String {
