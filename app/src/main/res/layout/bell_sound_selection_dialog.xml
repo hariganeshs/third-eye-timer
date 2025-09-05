@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="🎵 Sacred Soundscapes"
+            android:text="🔔 Sacred Bell Tones"
             android:textSize="26sp"
             android:textStyle="bold"
             android:textColor="@color/shiva_gold_accent"
@@ -27,7 +27,7 @@
             android:gravity="center" />
 
         <Button
-            android:id="@+id/button_close_bg_sound_dialog"
+            android:id="@+id/button_close_bell_sound_dialog"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:text="✕"
@@ -42,27 +42,85 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Choose your sacred sound companion for meditation"
+        android:text="Choose your sacred bell to signal the end of meditation"
         android:textSize="16sp"
         android:textColor="@color/shiva_ash_gray"
         android:gravity="center"
         android:layout_marginBottom="24dp"
         android:fontFamily="sans-serif-medium" />
 
-    <!-- Sound Grid Container -->
+    <!-- Bell Grid Container -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="350dp"
+        android:maxHeight="250dp"
         android:layout_marginBottom="24dp">
 
         <LinearLayout
-            android:id="@+id/sound_grid_container"
+            android:id="@+id/bell_grid_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="8dp">
 
+            <!-- Bell 1-3 Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <Button
+                    android:id="@+id/btn_bell_1"
+                    style="@style/BellSelectionButton"
+                    android:text="🔔\nBell 1\n(Crystal)"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_bell_2"
+                    style="@style/BellSelectionButton"
+                    android:text="🎵\nBell 2\n(Gong)"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_bell_3"
+                    style="@style/BellSelectionButton"
+                    android:text="🏮\nBell 3\n(Temple)"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+
+            <!-- Bell 4-6 Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_bell_4"
+                    style="@style/BellSelectionButton"
+                    android:text="🕊️\nBell 4\n(Singing)"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_bell_5"
+                    style="@style/BellSelectionButton"
+                    android:text="🌸\nBell 5\n(Flower)"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_bell_6"
+                    style="@style/BellSelectionButton"
+                    android:text="☯️\nBell 6\n(Harmony)"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
@@ -86,10 +144,10 @@
             android:fontFamily="sans-serif-medium" />
 
         <TextView
-            android:id="@+id/text_current_bg_sound"
+            android:id="@+id/text_current_bell_sound"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Complete Silence"
+            android:text="Bell 1"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/shiva_gold_accent"
@@ -104,7 +162,7 @@
         android:gravity="center">
 
         <Button
-            android:id="@+id/button_stop_preview"
+            android:id="@+id/button_stop_bell_preview"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
@@ -116,7 +174,7 @@
             android:layout_marginEnd="8dp" />
 
         <Button
-            android:id="@+id/button_confirm_bg_sound"
+            android:id="@+id/button_confirm_bell_sound"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
