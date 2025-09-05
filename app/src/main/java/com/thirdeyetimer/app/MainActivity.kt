@@ -886,7 +886,7 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun showResetTotalTimeConfirmation() {
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this, R.style.ShivaDialogTheme)
         builder.setTitle("Reset Total Time")
         builder.setMessage("Are you sure you want to reset your total meditation time and achievements? This action cannot be undone.")
         
@@ -926,7 +926,7 @@ class MainActivity : AppCompatActivity() {
             R.raw.bell_1, R.raw.bell_2, R.raw.bell_3, R.raw.bell_4, R.raw.bell_5, R.raw.bell_6
         )
         val currentBellIndex = bellResIds.indexOf(selectedBellResId).coerceAtLeast(0)
-        val bellDialog = AlertDialog.Builder(this)
+        val bellDialog = AlertDialog.Builder(this, R.style.ShivaDialogTheme)
         bellDialog.setTitle("🔔 Choose Bell Sound")
         bellDialog.setSingleChoiceItems(bellOptions, currentBellIndex) { dialog, bellWhich ->
             try {
@@ -955,7 +955,7 @@ class MainActivity : AppCompatActivity() {
     private fun showBackgroundSoundPicker() {
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val currentBgIndex = backgroundResIds.indexOf(selectedBackgroundResId).coerceAtLeast(0)
-        val bgDialog = AlertDialog.Builder(this)
+        val bgDialog = AlertDialog.Builder(this, R.style.ShivaDialogTheme)
         bgDialog.setTitle("🎵 Choose Background Sound")
         bgDialog.setSingleChoiceItems(backgroundSoundNames, currentBgIndex) { dialog, bgWhich ->
             try {
