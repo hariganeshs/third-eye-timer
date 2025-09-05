@@ -2,7 +2,7 @@
 
 A beautifully designed meditation timer app featuring a serene Shiva-inspired interface with heart rate monitoring, customizable sounds, and achievement tracking.
 
-## íº€ Project Overview
+## ï¿½ï¿½ï¿½ Project Overview
 
 **Third Eye Timer** is an Android meditation application that provides users with a comprehensive meditation experience including customizable timers, heart rate monitoring, ambient sounds, and achievement tracking.
 
@@ -25,7 +25,7 @@ A beautifully designed meditation timer app featuring a serene Shiva-inspired in
 - **Ad Integration**: Dual banner ads (top and bottom)
 - **Build Config**: Target SDK 36, Min SDK 21
 
-## í» ï¸ Development Setup
+## ï¿½ï¿½ï¿½ï¸ Development Setup
 
 ```bash
 # Clone the repository
@@ -38,7 +38,7 @@ cd third-eye-timer
 ./gradlew bundleRelease
 ```
 
-## íº« What NOT to Do
+## ï¿½ï¿½ï¿½ What NOT to Do
 
 1. **Don't add large media files directly to Git** - Repository will break
 2. **Don't change timer pause/resume logic without testing**

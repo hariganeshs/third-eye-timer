@@ -139,190 +139,75 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    private val backgroundSoundNames = arrayOf(
-        "acceptance",
-        "acceptance_meditation",
-        "anapanasati",
-        "aum_mantra",
-        "birds",
-        "body_scan_bottom_up",
-        "body_scan_front_back",
-        "body_scan_left_right",
-        "body_scan_meditation",
-        "body_scan_top_down",
-        "breath_counting",
-        "buddhist_1_breath_anapanasati",
-        "buddhist_2_loving_kindness_metta",
-        "buddhist_3_body_scan_four_elements",
-        "buddhist_4_open_awareness",
-        "buddhist_5_walking_gatha",
-        "buddhist_6_compassion_tonglen",
-        "buddhist_7_refuge_three_jewels",
-        "candle_flame",
-        "cave",
-        "chakra_crown",
-        "chakra_heart",
-        "chakra_root",
-        "chakra_sacral",
-        "chakra_solar",
-        "chakra_third_eye",
-        "chakra_throat",
-        "choiceless_awareness",
-        "compassion",
-        "compassion_meditation",
-        "courage",
-        "dawn",
-        "desert",
-        "dusk",
-        "eightfold_path",
-        "equanimity",
-        "forest",
-        "forest_meditation",
-        "forgiveness",
-        "four_foundations",
-        "four_immeasurables",
-        "garden",
-        "gratitude",
-        "gratitude_meditation",
-        "hindu_1_mantra_presence",
-        "hindu_2_prana_body_scan",
-        "hindu_3_om_resonance",
-        "hindu_4_nature_dhyana",
-        "inner_child",
-        "inquiry_self",
-        "jungle_rain",
-        "kundalini",
-        "letting_go",
-        "letting_go_meditation",
-        "light_meditation",
-        "loving_kindness",
-        "loving_kindness_meditation",
-        "mantra",
-        "meadow",
-        "metta_benefactor",
-        "metta_difficult",
-        "metta_neutral",
-        "metta_self",
-        "mindful_eating",
-        "mindful_eating_meditation",
-        "mindfulness_breathing",
-        "moon",
-        "mountain",
-        "mountain_meditation",
-        "ocean",
-        "ocean_meditation",
-        "open_awareness",
-        "pranayama",
-        "rain",
-        "resilience",
-        "river",
-        "shrine",
-        "silence",
-        "sky",
-        "sound_listening",
-        "sound_meditation",
-        "space",
-        "space_meditation",
-        "sun",
-        "temple",
-        "tibetan_chant",
-        "tonglen",
-        "walking",
-        "walking_meditation",
-        "yantra"
+    // Categorized background sounds - only these loop
+    private val ambientSoundNames = arrayOf(
+        "tibetan_chant", "aum_mantra", "birds", "jungle_rain"
     )
-    private val backgroundResIds = arrayOf(
-        R.raw.acceptance,
-        R.raw.acceptance_meditation,
-        R.raw.anapanasati,
-        R.raw.aum_mantra,
-        R.raw.birds,
-        R.raw.body_scan_bottom_up,
-        R.raw.body_scan_front_back,
-        R.raw.body_scan_left_right,
-        R.raw.body_scan_meditation,
-        R.raw.body_scan_top_down,
-        R.raw.breath_counting,
-        R.raw.buddhist_1_breath_anapanasati,
-        R.raw.buddhist_2_loving_kindness_metta,
-        R.raw.buddhist_3_body_scan_four_elements,
-        R.raw.buddhist_4_open_awareness,
-        R.raw.buddhist_5_walking_gatha,
-        R.raw.buddhist_6_compassion_tonglen,
-        R.raw.buddhist_7_refuge_three_jewels,
-        R.raw.candle_flame,
-        R.raw.cave,
-        R.raw.chakra_crown,
-        R.raw.chakra_heart,
-        R.raw.chakra_root,
-        R.raw.chakra_sacral,
-        R.raw.chakra_solar,
-        R.raw.chakra_third_eye,
-        R.raw.chakra_throat,
-        R.raw.choiceless_awareness,
-        R.raw.compassion,
-        R.raw.compassion_meditation,
-        R.raw.courage,
-        R.raw.dawn,
-        R.raw.desert,
-        R.raw.dusk,
-        R.raw.eightfold_path,
-        R.raw.equanimity,
-        R.raw.forest,
-        R.raw.forest_meditation,
-        R.raw.forgiveness,
-        R.raw.four_foundations,
-        R.raw.four_immeasurables,
-        R.raw.garden,
-        R.raw.gratitude,
-        R.raw.gratitude_meditation,
-        R.raw.hindu_1_mantra_presence,
-        R.raw.hindu_2_prana_body_scan,
-        R.raw.hindu_3_om_resonance,
-        R.raw.hindu_4_nature_dhyana,
-        R.raw.inner_child,
-        R.raw.inquiry_self,
-        R.raw.jungle_rain,
-        R.raw.kundalini,
-        R.raw.letting_go,
-        R.raw.letting_go_meditation,
-        R.raw.light_meditation,
-        R.raw.loving_kindness,
-        R.raw.loving_kindness_meditation,
-        R.raw.mantra,
-        R.raw.meadow,
-        R.raw.metta_benefactor,
-        R.raw.metta_difficult,
-        R.raw.metta_neutral,
-        R.raw.metta_self,
-        R.raw.mindful_eating,
-        R.raw.mindful_eating_meditation,
-        R.raw.mindfulness_breathing,
-        R.raw.moon,
-        R.raw.mountain,
-        R.raw.mountain_meditation,
-        R.raw.ocean,
-        R.raw.ocean_meditation,
-        R.raw.open_awareness,
-        R.raw.pranayama,
-        R.raw.rain,
-        R.raw.resilience,
-        R.raw.river,
-        R.raw.shrine,
-        R.raw.silence,
-        R.raw.sky,
-        R.raw.sound_listening,
-        R.raw.sound_meditation,
-        R.raw.space,
-        R.raw.space_meditation,
-        R.raw.sun,
-        R.raw.temple,
-        R.raw.tibetan_chant,
-        R.raw.tonglen,
-        R.raw.walking,
-        R.raw.walking_meditation,
-        R.raw.yantra
+
+    private val guidedSoundNames = arrayOf(
+        "acceptance", "acceptance_meditation", "anapanasati",
+        "body_scan_bottom_up", "body_scan_front_back", "body_scan_left_right",
+        "body_scan_meditation", "body_scan_top_down", "breath_counting",
+        "buddhist_1_breath_anapanasati", "buddhist_2_loving_kindness_metta",
+        "buddhist_3_body_scan_four_elements", "buddhist_4_open_awareness",
+        "buddhist_5_walking_gatha", "buddhist_6_compassion_tonglen",
+        "buddhist_7_refuge_three_jewels", "candle_flame", "cave", "chakra_crown",
+        "chakra_heart", "chakra_root", "chakra_sacral", "chakra_solar",
+        "chakra_third_eye", "chakra_throat", "choiceless_awareness",
+        "compassion", "compassion_meditation", "courage", "dawn", "desert",
+        "dusk", "eightfold_path", "equanimity", "forest", "forest_meditation",
+        "forgiveness", "four_foundations", "four_immeasurables", "garden",
+        "gratitude", "gratitude_meditation", "hindu_1_mantra_presence",
+        "hindu_2_prana_body_scan", "hindu_3_om_resonance", "hindu_4_nature_dhyana",
+        "inner_child", "inquiry_self", "kundalini", "letting_go",
+        "letting_go_meditation", "light_meditation", "loving_kindness",
+        "loving_kindness_meditation", "mantra", "meadow", "metta_benefactor",
+        "metta_difficult", "metta_neutral", "metta_self", "mindful_eating",
+        "mindful_eating_meditation", "mindfulness_breathing", "moon", "mountain",
+        "mountain_meditation", "ocean", "ocean_meditation", "open_awareness",
+        "pranayama", "rain", "resilience", "river", "shrine", "silence", "sky",
+        "sound_listening", "sound_meditation", "space", "space_meditation",
+        "sun", "temple", "tonglen", "walking", "walking_meditation", "yantra"
     )
+
+    private val backgroundSoundNames = ambientSoundNames + guidedSoundNames
+    // Background sound resource IDs (ordered to match backgroundSoundNames)
+    private val ambientResIds = arrayOf(
+        R.raw.tibetan_chant, R.raw.aum_mantra, R.raw.birds, R.raw.jungle_rain
+    )
+
+    private val guidedResIds = arrayOf(
+        R.raw.acceptance, R.raw.acceptance_meditation, R.raw.anapanasati,
+        R.raw.body_scan_bottom_up, R.raw.body_scan_front_back,
+        R.raw.body_scan_left_right, R.raw.body_scan_meditation, R.raw.body_scan_top_down,
+        R.raw.breath_counting, R.raw.buddhist_1_breath_anapanasati,
+        R.raw.buddhist_2_loving_kindness_metta, R.raw.buddhist_3_body_scan_four_elements,
+        R.raw.buddhist_4_open_awareness, R.raw.buddhist_5_walking_gatha,
+        R.raw.buddhist_6_compassion_tonglen, R.raw.buddhist_7_refuge_three_jewels,
+        R.raw.candle_flame, R.raw.cave, R.raw.chakra_crown, R.raw.chakra_heart,
+        R.raw.chakra_root, R.raw.chakra_sacral, R.raw.chakra_solar,
+        R.raw.chakra_third_eye, R.raw.chakra_throat, R.raw.choiceless_awareness,
+        R.raw.compassion, R.raw.compassion_meditation, R.raw.courage, R.raw.dawn,
+        R.raw.desert, R.raw.dusk, R.raw.eightfold_path, R.raw.equanimity, R.raw.forest,
+        R.raw.forest_meditation, R.raw.forgiveness, R.raw.four_foundations,
+        R.raw.four_immeasurables, R.raw.garden, R.raw.gratitude,
+        R.raw.gratitude_meditation, R.raw.hindu_1_mantra_presence,
+        R.raw.hindu_2_prana_body_scan, R.raw.hindu_3_om_resonance,
+        R.raw.hindu_4_nature_dhyana, R.raw.inner_child, R.raw.inquiry_self,
+        R.raw.kundalini, R.raw.letting_go, R.raw.letting_go_meditation,
+        R.raw.light_meditation, R.raw.loving_kindness, R.raw.loving_kindness_meditation,
+        R.raw.mantra, R.raw.meadow, R.raw.metta_benefactor, R.raw.metta_difficult,
+        R.raw.metta_neutral, R.raw.metta_self, R.raw.mindful_eating,
+        R.raw.mindful_eating_meditation, R.raw.mindfulness_breathing, R.raw.moon,
+        R.raw.mountain, R.raw.mountain_meditation, R.raw.ocean,
+        R.raw.ocean_meditation, R.raw.open_awareness, R.raw.pranayama, R.raw.rain,
+        R.raw.resilience, R.raw.river, R.raw.shrine, R.raw.silence, R.raw.sky,
+        R.raw.sound_listening, R.raw.sound_meditation, R.raw.space,
+        R.raw.space_meditation, R.raw.sun, R.raw.temple, R.raw.tonglen,
+        R.raw.walking, R.raw.walking_meditation, R.raw.yantra
+    )
+
+    private val backgroundResIds = ambientResIds + guidedResIds
 
     // Achievement and streak tracking
     private var currentStreak: Int = 0
@@ -1077,7 +962,7 @@ class MainActivity : AppCompatActivity() {
         currentBellText.text = "Bell ${currentBellIndex + 1}"
 
         // Setup bell buttons with highlighting
-        setupBellButtons(dialogView, prefs, bellResIds, currentBellText)
+        setupBellButtons(dialogView, prefs, bellResIds, currentBellText, dialog)
 
         // Close button
         dialogView.findViewById<Button>(R.id.button_close_bell_sound_dialog).setOnClickListener {
@@ -1085,16 +970,6 @@ class MainActivity : AppCompatActivity() {
             dialog.dismiss()
         }
 
-        // Stop preview button
-        dialogView.findViewById<Button>(R.id.button_stop_bell_preview).setOnClickListener {
-            previewPlayer?.release()
-        }
-
-        // Confirm button
-        dialogView.findViewById<Button>(R.id.button_confirm_bell_sound).setOnClickListener {
-            previewPlayer?.release()
-            dialog.dismiss()
-        }
 
         dialog.setOnDismissListener { previewPlayer?.release() }
         dialog.show()
@@ -1137,66 +1012,101 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSoundButtons(dialogView: View, prefs: SharedPreferences, dialog: AlertDialog, currentSoundText: TextView) {
-        // Create buttons for all background sounds dynamically
-        val soundGrid = dialogView.findViewById<LinearLayout>(R.id.sound_grid_container)
+        val ambientContainer = dialogView.findViewById<LinearLayout>(R.id.ambient_sounds_container)
+        val guidedContainer = dialogView.findViewById<LinearLayout>(R.id.guided_sounds_container)
 
         // Clear existing buttons
-        soundGrid.removeAllViews()
+        ambientContainer.removeAllViews()
+        guidedContainer.removeAllViews()
 
-        // Create buttons for all sounds
-        for (i in backgroundSoundNames.indices) {
-            val button = Button(this).apply {
-                text = backgroundSoundNames[i].replace("_", " ").capitalizeWords()
-                setBackgroundResource(R.drawable.sound_button_background)
-                setTextColor(resources.getColor(R.color.shiva_text_white))
-                textSize = 14f
-                isAllCaps = false
-                gravity = Gravity.CENTER
-                minimumHeight = 0
-                minHeight = 70
-                setPadding(16, 12, 16, 12)
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    setMargins(8, 4, 8, 4)
-                }
+        // Create buttons for ambient sounds
+        for (i in ambientSoundNames.indices) {
+            val button = createSoundButton(ambientSoundNames[i], ambientResIds[i], i, prefs, currentSoundText, ambientContainer, guidedContainer)
+            ambientContainer.addView(button)
+        }
 
-                // Highlight selected sound
-                if (backgroundResIds[i] == selectedBackgroundResId) {
-                    setBackgroundColor(resources.getColor(R.color.shiva_gold_accent))
-                    setTextColor(resources.getColor(R.color.shiva_blue))
-                }
+        // Create buttons for guided meditations
+        for (i in guidedSoundNames.indices) {
+            val globalIndex = ambientSoundNames.size + i
+            val button = createSoundButton(guidedSoundNames[i], guidedResIds[i], globalIndex, prefs, currentSoundText, ambientContainer, guidedContainer)
+            guidedContainer.addView(button)
+        }
+    }
+
+    private fun createSoundButton(soundName: String, soundResId: Int, globalIndex: Int, prefs: SharedPreferences, currentSoundText: TextView, ambientContainer: LinearLayout, guidedContainer: LinearLayout): Button {
+        return Button(this).apply {
+            text = soundName.replace("_", " ").capitalizeWords()
+            setBackgroundResource(R.drawable.sound_button_background)
+            setTextColor(resources.getColor(R.color.shiva_text_white))
+            textSize = 14f
+            isAllCaps = false
+            gravity = Gravity.CENTER
+            minimumHeight = 0
+            minHeight = 70
+            setPadding(16, 12, 16, 12)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(8, 4, 8, 4)
             }
 
-            button.setOnClickListener {
+            // Highlight selected sound
+            if (soundResId == selectedBackgroundResId) {
+                setBackgroundResource(R.drawable.sound_button_highlighted)
+                setTextColor(resources.getColor(R.color.shiva_text_dark))
+            }
+
+            setOnClickListener {
                 try {
                     previewBackgroundPlayer?.release()
-                    if (backgroundResIds[i] != 0) {
-                        previewBackgroundPlayer = MediaPlayer.create(this, backgroundResIds[i])
-                        previewBackgroundPlayer?.isLooping = true
+                    if (soundResId != 0) {
+                        previewBackgroundPlayer = MediaPlayer.create(this@MainActivity, soundResId)
+                        // Only loop specific ambient sounds
+                        val isLoopableAmbient = soundName in arrayOf("tibetan_chant", "aum_mantra", "birds", "jungle_rain")
+                        previewBackgroundPlayer?.isLooping = isLoopableAmbient
                         previewBackgroundPlayer?.setVolume(1.0f, 1.0f)
                         previewBackgroundPlayer?.start()
                     }
-                    selectedBackgroundResId = backgroundResIds[i]
-                    currentSoundText.text = backgroundSoundNames[i].replace("_", " ").capitalizeWords()
+                    selectedBackgroundResId = soundResId
+                    currentSoundText.text = soundName.replace("_", " ").capitalizeWords()
 
                     // Update button highlighting
-                    for (j in 0 until soundGrid.childCount) {
-                        val childButton = soundGrid.getChildAt(j) as Button
-                        childButton.setBackgroundResource(R.drawable.sound_button_background)
-                        childButton.setTextColor(resources.getColor(R.color.shiva_text_white))
-                    }
-                    button.setBackgroundColor(resources.getColor(R.color.shiva_gold_accent))
-                    button.setTextColor(resources.getColor(R.color.shiva_blue))
+                    updateAllSoundButtonHighlights(ambientContainer, guidedContainer)
 
                     prefs.edit().putInt("KEY_BACKGROUND_SOUND", selectedBackgroundResId).apply()
                 } catch (e: Exception) {
                     Log.e("MainActivity", "Error playing sound preview: ${e.message}", e)
                 }
             }
+        }
+    }
 
-            soundGrid.addView(button)
+    private fun updateAllSoundButtonHighlights(ambientContainer: LinearLayout, guidedContainer: LinearLayout) {
+        // Update all ambient sound buttons
+        for (i in 0 until ambientContainer.childCount) {
+            val button = ambientContainer.getChildAt(i) as Button
+            val soundIndex = i
+            if (ambientResIds[soundIndex] == selectedBackgroundResId) {
+                button.setBackgroundResource(R.drawable.sound_button_highlighted)
+                button.setTextColor(resources.getColor(R.color.shiva_text_dark))
+            } else {
+                button.setBackgroundResource(R.drawable.sound_button_background)
+                button.setTextColor(resources.getColor(R.color.shiva_text_white))
+            }
+        }
+
+        // Update all guided sound buttons
+        for (i in 0 until guidedContainer.childCount) {
+            val button = guidedContainer.getChildAt(i) as Button
+            val soundIndex = i
+            if (guidedResIds[soundIndex] == selectedBackgroundResId) {
+                button.setBackgroundResource(R.drawable.sound_button_highlighted)
+                button.setTextColor(resources.getColor(R.color.shiva_text_dark))
+            } else {
+                button.setBackgroundResource(R.drawable.sound_button_background)
+                button.setTextColor(resources.getColor(R.color.shiva_text_white))
+            }
         }
     }
 
@@ -1204,7 +1114,7 @@ class MainActivity : AppCompatActivity() {
         return split(" ").joinToString(" ") { it.capitalize() }
     }
 
-    private fun setupBellButtons(dialogView: View, prefs: SharedPreferences, bellResIds: Array<Int>, currentBellText: TextView) {
+    private fun setupBellButtons(dialogView: View, prefs: SharedPreferences, bellResIds: Array<Int>, currentBellText: TextView, dialog: AlertDialog) {
         val bellButtons = arrayOf(
             R.id.btn_bell_1, R.id.btn_bell_2, R.id.btn_bell_3,
             R.id.btn_bell_4, R.id.btn_bell_5, R.id.btn_bell_6
@@ -1215,13 +1125,25 @@ class MainActivity : AppCompatActivity() {
 
             // Highlight selected bell
             if (bellResIds[i] == selectedBellResId) {
-                button.setBackgroundColor(resources.getColor(R.color.shiva_gold_accent))
-                button.setTextColor(resources.getColor(R.color.shiva_blue))
+                button.setBackgroundResource(R.drawable.bell_button_highlighted)
+                button.setTextColor(resources.getColor(R.color.shiva_text_dark))
             }
 
             button.setOnClickListener {
                 try {
+                    // Check if this bell is already selected and playing
+                    val isCurrentlySelected = bellResIds[i] == selectedBellResId
+                    
+                    // Stop any currently playing preview
                     previewPlayer?.release()
+                    
+                    // If this is the same bell that's already selected, just stop the preview
+                    if (isCurrentlySelected) {
+                        previewPlayer = null
+                        return@setOnClickListener
+                    }
+                    
+                    // Play new bell preview
                     previewPlayer = MediaPlayer.create(this, bellResIds[i])
                     previewPlayer?.setVolume(1.0f, 1.0f)
                     previewPlayer?.start()
@@ -1232,8 +1154,8 @@ class MainActivity : AppCompatActivity() {
                     for (j in bellButtons.indices) {
                         val otherButton = dialogView.findViewById<Button>(bellButtons[j])
                         if (j == i) {
-                            otherButton.setBackgroundColor(resources.getColor(R.color.shiva_gold_accent))
-                            otherButton.setTextColor(resources.getColor(R.color.shiva_blue))
+                            otherButton.setBackgroundResource(R.drawable.bell_button_highlighted)
+                            otherButton.setTextColor(resources.getColor(R.color.shiva_text_dark))
                         } else {
                             otherButton.setBackgroundResource(R.drawable.sound_button_background)
                             otherButton.setTextColor(resources.getColor(R.color.shiva_text_white))

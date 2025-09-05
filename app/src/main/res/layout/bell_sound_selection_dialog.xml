@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/dialog_background"
-    android:padding="24dp">
+    android:padding="16dp">
 
     <!-- Header -->
     <LinearLayout
@@ -13,13 +13,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="16dp">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="🔔 Sacred Bell Tones"
+            android:text="Sacred Bell Tones"
             android:textSize="26sp"
             android:textStyle="bold"
             android:textColor="@color/shiva_gold_accent"
@@ -46,15 +46,15 @@
         android:textSize="16sp"
         android:textColor="@color/shiva_ash_gray"
         android:gravity="center"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif-medium" />
 
     <!-- Bell Grid Container -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="250dp"
-        android:layout_marginBottom="24dp">
+        android:maxHeight="200dp"
+        android:layout_marginBottom="12dp">
 
         <LinearLayout
             android:id="@+id/bell_grid_container"
@@ -73,14 +73,14 @@
                 <Button
                     android:id="@+id/btn_bell_1"
                     style="@style/BellSelectionButton"
-                    android:text="🔔\nBell 1\n(Crystal)"
+                    android:text="Bell 1\n(Crystal)"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp" />
 
                 <Button
                     android:id="@+id/btn_bell_2"
                     style="@style/BellSelectionButton"
-                    android:text="🎵\nBell 2\n(Gong)"
+                    android:text="Bell 2\n(Gong)"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp" />
@@ -88,7 +88,7 @@
                 <Button
                     android:id="@+id/btn_bell_3"
                     style="@style/BellSelectionButton"
-                    android:text="🏮\nBell 3\n(Temple)"
+                    android:text="Bell 3\n(Temple)"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
@@ -102,14 +102,14 @@
                 <Button
                     android:id="@+id/btn_bell_4"
                     style="@style/BellSelectionButton"
-                    android:text="🕊️\nBell 4\n(Singing)"
+                    android:text="Bell 4\n(Singing)"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp" />
 
                 <Button
                     android:id="@+id/btn_bell_5"
                     style="@style/BellSelectionButton"
-                    android:text="🌸\nBell 5\n(Flower)"
+                    android:text="Bell 5\n(Flower)"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp" />
@@ -117,7 +117,7 @@
                 <Button
                     android:id="@+id/btn_bell_6"
                     style="@style/BellSelectionButton"
-                    android:text="☯️\nBell 6\n(Harmony)"
+                    android:text="Bell 6\n(Harmony)"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
@@ -131,7 +131,7 @@
         android:orientation="horizontal"
         android:background="@drawable/sound_section_background"
         android:padding="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:gravity="center_vertical">
 
         <TextView
@@ -154,36 +154,5 @@
             android:fontFamily="sans-serif-medium" />
     </LinearLayout>
 
-    <!-- Action Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/button_stop_bell_preview"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="⏹️ Stop Preview"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/shiva_text_white"
-            android:background="@drawable/secondary_button_background"
-            android:layout_marginEnd="8dp" />
-
-        <Button
-            android:id="@+id/button_confirm_bell_sound"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="✅ Confirm Selection"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/shiva_text_white"
-            android:background="@drawable/primary_button_background"
-            android:layout_marginStart="8dp" />
-    </LinearLayout>
 
 </LinearLayout>

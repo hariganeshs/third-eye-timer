@@ -67,7 +67,8 @@ class MeditationTimerService : Service() {
         if (backgroundResId != 0) {
             try {
                 backgroundPlayer = MediaPlayer.create(this, backgroundResId)
-                backgroundPlayer?.isLooping = true
+                // Only loop ambient sounds, not guided meditations
+                backgroundPlayer?.isLooping = shouldLoopBackgroundSound(backgroundResId)
                 backgroundPlayer?.setVolume(1.0f, 1.0f)
                 backgroundPlayer?.start()
             } catch (e: Exception) {
@@ -156,6 +157,18 @@ class MeditationTimerService : Service() {
         } catch (e: Exception) {
             Log.e("MeditationTimerService", "Error playing default bell sound: ${e.message}", e)
         }
+    }
+
+    private fun shouldLoopBackgroundSound(resId: Int): Boolean {
+        // Define ambient sound resource IDs that should loop
+        val ambientSoundIds = arrayOf(
+            R.raw.tibetan_chant,
+            R.raw.aum_mantra,
+            R.raw.birds,
+            R.raw.jungle_rain
+        )
+
+        return ambientSoundIds.contains(resId)
     }
 
     private fun buildNotification(content: String): Notification {

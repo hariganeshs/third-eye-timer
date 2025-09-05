@@ -1,0 +1,10 @@
+[33md85384c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m � Fix Background Sound Selection - Remove Bell Sounds
+[33m6110f0e[m � Stunning Sound Selection UI Overhaul
+[33m0c6ea87[m � Fix Background Sound Selection
+[33m37ee22b[m � Stunning Background Sound UI Overhaul
+[33ma973ba4[m � Major Meditation Library Update
+[33m4764e70[m Merge remote master branch to get latest version
+[33m013c25c[m Merge pull request #1 from hariganeshs/cursor/find-and-fix-bugs-1564
+[33m399013e[m Implement responsive UI with adaptive layouts for multiple screen sizes (#2)
+[33m28054fb[m[33m ([m[1;31morigin/cursor/find-and-fix-bugs-1564[m[33m)[m Fix memory leaks, add error handling, and improve app stability
+[33m1f5e992[m Fix build issues and complete project setup - all resources, keystore, and media files working
