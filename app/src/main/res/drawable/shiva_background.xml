@@ -1,7 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <gradient
-        android:startColor="@color/shiva_blue"
-        android:endColor="@color/shiva_ash_gray"
-        android:angle="270" />
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Deep cosmic base gradient -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="270"
+                android:startColor="#0B1026"   <!-- deep indigo -->
+                android:centerColor="#120F2F"  <!-- midnight purple -->
+                android:endColor="#1A0F2B" />  <!-- royal dusk -->
+        </shape>
+    </item>
+
+    <!-- Subtle top ethereal glow -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="600dp"
+                android:centerX="50%"
+                android:centerY="0%"
+                android:startColor="#55A2D2FF"  <!-- soft azure glow -->
+                android:endColor="#00000000" />
+        </shape>
+    </item>
+
+    <!-- Golden horizon aura at the bottom -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="700dp"
+                android:centerX="50%"
+                android:centerY="100%"
+                android:startColor="#33E6C36A"  <!-- shiva gold accent, translucent -->
+                android:endColor="#00000000" />
+        </shape>
+    </item>
+
+    <!-- Vignette for cinematic depth -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="1200dp"
+                android:centerX="50%"
+                android:centerY="50%"
+                android:startColor="#00000000"
+                android:endColor="#99000000" />
+        </shape>
+    </item>
+
+</layer-list>
