@@ -19,8 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ThirdEyeTimer"
-        android:usesCleartextTraffic="false"
-        android:extractNativeLibs="false">
+        android:usesCleartextTraffic="false">
 
         <!-- Add AdMob App ID as meta-data -->
         <meta-data
