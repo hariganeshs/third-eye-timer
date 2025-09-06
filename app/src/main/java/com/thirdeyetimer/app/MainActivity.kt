@@ -86,8 +86,8 @@ class MainActivity : AppCompatActivity() {
     private var selectedBellResId: Int = R.raw.bell
     private var previewPlayer: MediaPlayer? = null
     private var isServiceRunning = false
-    private val TIMER_FINISHED_ACTION = "com.example.meditationtimerapp.TIMER_FINISHED"
-    private val TIMER_TICK_ACTION = "com.example.meditationtimerapp.TIMER_TICK"
+    private val TIMER_FINISHED_ACTION = "com.thirdeyetimer.app.TIMER_FINISHED"
+    private val TIMER_TICK_ACTION = "com.thirdeyetimer.app.TIMER_TICK"
     private val timerReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {

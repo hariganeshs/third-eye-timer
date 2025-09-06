@@ -81,8 +81,10 @@
     <!-- Start Button -->
     <Button
         android:id="@+id/start_button"
-        android:layout_width="200dp"
+        android:layout_width="0dp"
         android:layout_height="56dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:text="Start Measurement"
         android:textSize="18sp"
@@ -96,8 +98,10 @@
     <!-- Skip Button -->
     <Button
         android:id="@+id/skip_button"
-        android:layout_width="150dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
         android:layout_marginBottom="64dp"
         android:text="Skip"
         android:textSize="16sp"

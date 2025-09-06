@@ -24,8 +24,8 @@ class MeditationTimerService : Service() {
         const val EXTRA_TIME_MILLIS = "EXTRA_TIME_MILLIS"
         const val EXTRA_BELL_RES_ID = "EXTRA_BELL_RES_ID"
         const val EXTRA_BACKGROUND_RES_ID = "EXTRA_BACKGROUND_RES_ID"
-        const val TIMER_FINISHED_ACTION = "com.example.meditationtimerapp.TIMER_FINISHED"
-        const val TIMER_TICK_ACTION = "com.example.meditationtimerapp.TIMER_TICK"
+        const val TIMER_FINISHED_ACTION = "com.thirdeyetimer.app.TIMER_FINISHED"
+        const val TIMER_TICK_ACTION = "com.thirdeyetimer.app.TIMER_TICK"
         const val EXTRA_REMAINING_TIME = "EXTRA_REMAINING_TIME"
     }
 
