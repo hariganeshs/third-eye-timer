@@ -64,12 +64,8 @@ class MainActivity : AppCompatActivity() {
     // Background slideshow variables
     private val backgroundImages = arrayOf(
         R.drawable.shiva_bg,
-        R.drawable.shiva_bg_1,
-        R.drawable.shiva_bg_2,
         R.drawable.shiva_bg_3,
         R.drawable.trident_bg,
-        R.drawable.trident_bg_1,
-        R.drawable.trident_bg_2,
         R.drawable.trident_bg_3,
         R.drawable.trident_bg_4
     )
