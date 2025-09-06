@@ -62,13 +62,7 @@ class MainActivity : AppCompatActivity() {
     private var scrollViewForBackground: android.widget.ScrollView? = null
 
     // Background slideshow variables
-    private val backgroundImages = arrayOf(
-        R.drawable.shiva_bg,
-        R.drawable.shiva_bg_3,
-        R.drawable.trident_bg,
-        R.drawable.trident_bg_3,
-        R.drawable.trident_bg_4
-    )
+    private val backgroundImages = emptyArray<Int>()
     private var currentBackgroundIndex = 0
     private val backgroundChangeInterval = 10000L // 10 seconds
     private lateinit var backgroundHandler: Handler
@@ -1549,7 +1543,12 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    // Cycle to next background image
+                    // If we have image resources configured, cycle them; otherwise no-op
+                    if (backgroundImages.isEmpty()) {
+                        // Nothing to change; keep current background
+                        backgroundHandler.postDelayed(this, backgroundChangeInterval)
+                        return
+                    }
                     currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundImages.size
                     val nextImageResId = backgroundImages[currentBackgroundIndex]
 
