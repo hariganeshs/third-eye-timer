@@ -379,11 +379,21 @@ class MainActivity : AppCompatActivity() {
                             child.invalidate()
                             Log.d("MainActivity", "Cleared ScrollView background")
 
-                            // Set initial background on ScrollView
-                            val initialDrawable = resources.getDrawable(R.drawable.shiva_bg)
-                            child.background = initialDrawable
+                            // Set initial background on ScrollView (respect dark mode)
+                            val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                            val darkModeEnabled = prefs.getBoolean(KEY_DARK_MODE_ENABLED, false)
+
+                            if (darkModeEnabled) {
+                                // In dark mode, set solid black background
+                                child.setBackgroundColor(android.graphics.Color.BLACK)
+                                Log.d("MainActivity", "Set initial black background for dark mode")
+                            } else {
+                                // In light mode, set the first background image
+                                val initialDrawable = resources.getDrawable(R.drawable.shiva_bg)
+                                child.background = initialDrawable
+                                Log.d("MainActivity", "Set initial background on ScrollView: $initialDrawable")
+                            }
                             child.invalidate()
-                            Log.d("MainActivity", "Set initial background on ScrollView: $initialDrawable")
                             break
                         }
                     }
@@ -1546,6 +1556,33 @@ class MainActivity : AppCompatActivity() {
                     // Cycle to next background image
                     currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundImages.size
                     val nextImageResId = backgroundImages[currentBackgroundIndex]
+
+                    // Check if dark mode is enabled - if so, use solid black background
+                    val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                    val darkModeEnabled = prefs.getBoolean(KEY_DARK_MODE_ENABLED, false)
+
+                    if (darkModeEnabled) {
+                        // In dark mode, set solid black background and skip slideshow
+                        Log.d("MainActivity", "Dark mode enabled, setting solid black background")
+                        val blackColor = android.graphics.Color.BLACK
+
+                        if (scrollViewForBackground != null) {
+                            scrollViewForBackground?.setBackgroundColor(blackColor)
+                            scrollViewForBackground?.invalidate()
+
+                            val contentView = window.decorView.findViewById<View>(android.R.id.content)
+                            if (contentView != null) {
+                                contentView.setBackgroundColor(blackColor)
+                                contentView.invalidate()
+                            }
+                        } else if (::backgroundImageView.isInitialized) {
+                            backgroundImageView.setBackgroundColor(blackColor)
+                            backgroundImageView.invalidate()
+                        }
+
+                        Log.d("MainActivity", "Set solid black background for dark mode")
+                        return // Skip the rest of the slideshow logic
+                    }
 
                     // Check if the resource exists and set the background
                     try {
