@@ -15,4 +15,9 @@
     <color name="shiva_semi_transparent_white">#CCFFFFFF</color>
     <color name="shiva_semi_transparent_black">#CC000000</color>
     <color name="achievement_gold">#FFD700</color>
+    <color name="mystical_purple">#660099</color>
+    <color name="cosmic_blue">#001122</color>
+    <color name="mystical_teal">#00AA88</color>
+    <color name="deep_space">#000011</color>
+    <color name="starlight_white">#10FFFFFF</color>
 </resources>

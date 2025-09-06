@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Deep cosmic base gradient -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#0A1B3A"
+                android:centerColor="#1A2B5C"
+                android:endColor="#2D4A7A"
+                android:angle="135"
+                android:type="linear" />
+        </shape>
+    </item>
+    
+    <!-- Mystical overlay gradient -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#1A3B6B"
+                android:centerColor="#2A4B7B"
+                android:endColor="#3A5B8B"
+                android:angle="45"
+                android:type="linear" />
+        </shape>
+    </item>
+    
+    <!-- Central golden mystical glow -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#FFD700"
+                android:centerColor="#FFA500"
+                android:endColor="#00000000"
+                android:gradientRadius="400dp"
+                android:type="radial"
+                android:centerX="0.5"
+                android:centerY="0.3" />
+        </shape>
+    </item>
+    
+    <!-- Mystical purple accent (top right) -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#00000000"
+                android:centerColor="#20006699"
+                android:endColor="#00000000"
+                android:gradientRadius="500dp"
+                android:type="radial"
+                android:centerX="0.8"
+                android:centerY="0.1" />
+        </shape>
+    </item>
+    
+    <!-- Mystical teal accent (bottom left) -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#00000000"
+                android:centerColor="#1500AA88"
+                android:endColor="#00000000"
+                android:gradientRadius="600dp"
+                android:type="radial"
+                android:centerX="0.2"
+                android:centerY="0.8" />
+        </shape>
+    </item>
+    
+    <!-- Subtle texture overlay for depth -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#10000000" />
+        </shape>
+    </item>
+    
+    <!-- Mystical shimmer effect -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#00000000"
+                android:centerColor="#10FFFFFF"
+                android:endColor="#00000000"
+                android:gradientRadius="800dp"
+                android:type="radial"
+                android:centerX="0.3"
+                android:centerY="0.5" />
+        </shape>
+    </item>
+    
+</layer-list>

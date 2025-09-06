@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     
-    <!-- Deep space-like base gradient -->
+    <!-- Deep cosmic base gradient -->
     <item>
         <shape android:shape="rectangle">
             <gradient
@@ -39,13 +39,6 @@
         </shape>
     </item>
     
-    <!-- Subtle starfield effect -->
-    <item>
-        <shape android:shape="rectangle">
-            <solid android:color="#08000000" />
-        </shape>
-    </item>
-    
     <!-- Mystical purple accent -->
     <item>
         <shape android:shape="rectangle">
@@ -57,6 +50,27 @@
                 android:type="radial"
                 android:centerX="0.8"
                 android:centerY="0.2" />
+        </shape>
+    </item>
+    
+    <!-- Deep blue mystical accent -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#00000000"
+                android:centerColor="#25002266"
+                android:endColor="#00000000"
+                android:gradientRadius="400dp"
+                android:type="radial"
+                android:centerX="0.1"
+                android:centerY="0.7" />
+        </shape>
+    </item>
+    
+    <!-- Subtle starfield effect -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#08000000" />
         </shape>
     </item>
     
