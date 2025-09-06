@@ -39,14 +39,7 @@
         </shape>
     </item>
     
-    <!-- Subtle starfield effect -->
-    <item>
-        <shape android:shape="rectangle">
-            <solid android:color="#08000000" />
-        </shape>
-    </item>
-    
-    <!-- Mystical purple accent -->
+    <!-- Mystical purple accent (top right) -->
     <item>
         <shape android:shape="rectangle">
             <gradient
@@ -57,6 +50,41 @@
                 android:type="radial"
                 android:centerX="0.8"
                 android:centerY="0.2" />
+        </shape>
+    </item>
+    
+    <!-- Deep blue mystical accent (bottom left) -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#00000000"
+                android:centerColor="#25002266"
+                android:endColor="#00000000"
+                android:gradientRadius="400dp"
+                android:type="radial"
+                android:centerX="0.1"
+                android:centerY="0.7" />
+        </shape>
+    </item>
+    
+    <!-- Subtle starfield effect -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#08000000" />
+        </shape>
+    </item>
+    
+    <!-- Mystical shimmer effect -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#00000000"
+                android:centerColor="#08FFFFFF"
+                android:endColor="#00000000"
+                android:gradientRadius="700dp"
+                android:type="radial"
+                android:centerX="0.7"
+                android:centerY="0.3" />
         </shape>
     </item>
     

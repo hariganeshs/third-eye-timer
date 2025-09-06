@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     
-    <!-- Base gradient background -->
+    <!-- Base stunning gradient background -->
     <item>
         <shape android:shape="rectangle">
             <gradient
@@ -25,7 +25,7 @@
         </shape>
     </item>
     
-    <!-- Subtle radial gradient for center focus -->
+    <!-- Mystical golden radial gradient -->
     <item>
         <shape android:shape="rectangle">
             <gradient
@@ -39,7 +39,35 @@
         </shape>
     </item>
     
-    <!-- Subtle pattern overlay -->
+    <!-- Subtle mystical purple accent -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#00000000"
+                android:centerColor="#20006699"
+                android:endColor="#00000000"
+                android:gradientRadius="600dp"
+                android:type="radial"
+                android:centerX="0.2"
+                android:centerY="0.8" />
+        </shape>
+    </item>
+    
+    <!-- Another mystical accent -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#00000000"
+                android:centerColor="#1500AA88"
+                android:endColor="#00000000"
+                android:gradientRadius="500dp"
+                android:type="radial"
+                android:centerX="0.8"
+                android:centerY="0.1" />
+        </shape>
+    </item>
+    
+    <!-- Subtle texture overlay -->
     <item>
         <shape android:shape="rectangle">
             <solid android:color="#10000000" />
