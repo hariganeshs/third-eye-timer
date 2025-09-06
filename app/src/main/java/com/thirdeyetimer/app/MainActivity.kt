@@ -4,10 +4,13 @@ import android.util.Log
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.gms.ads.AdRequest
@@ -55,6 +58,25 @@ class MainActivity : AppCompatActivity() {
     private var interstitialAd: InterstitialAd? = null
     private lateinit var totalTimeText: TextView
     private lateinit var appTitleText: TextView
+    private lateinit var backgroundImageView: ImageView
+    private var scrollViewForBackground: android.widget.ScrollView? = null
+
+    // Background slideshow variables
+    private val backgroundImages = arrayOf(
+        R.drawable.shiva_bg,
+        R.drawable.shiva_bg_1,
+        R.drawable.shiva_bg_2,
+        R.drawable.shiva_bg_3,
+        R.drawable.trident_bg,
+        R.drawable.trident_bg_1,
+        R.drawable.trident_bg_2,
+        R.drawable.trident_bg_3,
+        R.drawable.trident_bg_4
+    )
+    private var currentBackgroundIndex = 0
+    private val backgroundChangeInterval = 10000L // 10 seconds
+    private lateinit var backgroundHandler: Handler
+    private lateinit var backgroundRunnable: Runnable
 
     private val PREFS_NAME = "meditation_prefs"
     private val KEY_TOTAL_TIME = "total_meditation_time"
@@ -258,155 +280,353 @@ class MainActivity : AppCompatActivity() {
         // Initialize achievement popup manager
         achievementPopupManager = AchievementPopupManager(this)
 
-        // Initialize views
-        timeEditText = findViewById(R.id.time_edit_text)
-        timerText = findViewById(R.id.timer)
-        startPauseButton = findViewById(R.id.button_start_pause)
-        resetButton = findViewById(R.id.button_reset)
-        adView = findViewById(R.id.adView)
-        topAdView = findViewById(R.id.topAdView)
-        totalTimeText = findViewById(R.id.total_time_text)
-        appTitleText = findViewById(R.id.app_title)
+        // Try to initialize views immediately first
+        Log.d("MainActivity", "Trying immediate view initialization")
+        Log.d("MainActivity", "Looking for view with ID: background_image_view")
+        val immediateView = findViewById<ImageView>(R.id.background_image_view)
+        Log.d("MainActivity", "findViewById returned: $immediateView")
 
-        // Initialize AdMob
-        MobileAds.initialize(this) {}
+        if (immediateView != null) {
+            Log.d("MainActivity", "Immediate view initialization successful")
+            backgroundImageView = immediateView
+            initializeViews()
+        } else {
+            // Fallback to post method
+            Log.d("MainActivity", "Immediate view initialization failed, using post method")
+            window.decorView.post {
+                Log.d("MainActivity", "Window decorView post called")
+                initializeViews()
+            }
+        }
 
-        // Load banner ads
+
+        
+
+
+
+    }
+
+    private fun initializeViews() {
         try {
-            val adRequest = AdRequest.Builder().build()
-            adView.loadAd(adRequest)
-            topAdView.loadAd(adRequest)
-        } catch (e: Exception) {
-            Log.e("AdMobError", "Failed to load ad: ${e.message}", e) // Log error
-        }
-        
-        // Load interstitial ad
-        loadInterstitialAd()
+            // Initialize views
+            timeEditText = findViewById(R.id.time_edit_text)
+            timerText = findViewById(R.id.timer)
+            startPauseButton = findViewById(R.id.button_start_pause)
+            resetButton = findViewById(R.id.button_reset)
+            adView = findViewById(R.id.adView)
+            topAdView = findViewById(R.id.topAdView)
+            totalTimeText = findViewById(R.id.total_time_text)
+            appTitleText = findViewById(R.id.app_title)
 
-        // Load preferences
-        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-        totalMeditationTimeMillis = prefs.getLong(KEY_TOTAL_TIME, 0L)
-        selectedBellResId = prefs.getInt(KEY_BELL_SOUND, R.raw.bell)
-        selectedBackgroundResId = prefs.getInt("KEY_BACKGROUND_SOUND", 0)
-        
-        // Heart rate setting will be loaded in settings dialog
-        
-        // Load achievement data
-        loadAchievementData()
-        
-        updateTotalTimeText()
+            Log.d("MainActivity", "About to find background ImageView")
+            Log.d("MainActivity", "R.id.background_image_view = ${R.id.background_image_view}")
 
-        // Load selected bell from prefs
-        //val chooseBellButton = findViewById<Button>(R.id.button_choose_bell)
-        //chooseBellButton.setOnClickListener {
-        //    val builder = AlertDialog.Builder(this)
-        //    builder.setTitle("Choose Bell Sound")
-        //    val bellOptions = arrayOf(
-        //        "Bell 1", "Bell 2", "Bell 3", "Bell 4", "Bell 5", "Bell 6"
-        //    )
-        //    // Use the actual resource IDs that match your filenames
-        //    val bellResIds = arrayOf(
-        //        R.raw.bell_1, // bell_1.wav
-        //        R.raw.bell_2, // bell_2.wav
-        //        R.raw.bell_3, // bell_3.wav
-        //        R.raw.bell_4, // bell_4.wav
-        //        R.raw.bell_5, // bell_5.wav
-        //        R.raw.bell_6  // bell_6.wav
-        //    )
-        //    builder.setSingleChoiceItems(bellOptions, 0) { dialog, which ->
-        //        try {
-        //            // Play preview
-        //            previewPlayer?.release()
-        //            previewPlayer = MediaPlayer.create(this, bellResIds[which])
-        //            if (previewPlayer != null) {
-        //                previewPlayer?.setVolume(1.0f, 1.0f)
-        //                previewPlayer?.start()
-        //                // Save selection
-        //                selectedBellResId = bellResIds[which]
-        //                prefs.edit().putInt(KEY_BELL_SOUND, selectedBellResId).apply()
-        //            } else {
-        //                Log.e("MainActivity", "Failed to create preview player for bell: $which")
-        //            }
-        //        } catch (e: Exception) {
-        //            Log.e("MainActivity", "Error playing bell preview: ${e.message}", e)
-        //        }
-        //    }
-        //    builder.setPositiveButton("OK") { dialog, _ ->
-        //        previewPlayer?.release()
-        //        dialog.dismiss()
-        //    }
-        //    builder.setOnDismissListener {
-        //        previewPlayer?.release()
-        //    }
-        //    builder.show()
-        //}
+            // Debug the view hierarchy
+            val decorView = window.decorView
+            Log.d("MainActivity", "Decor view: $decorView")
+            val contentView = decorView.findViewById<View>(android.R.id.content)
+            Log.d("MainActivity", "Content view: $contentView")
 
-        val chooseSoundOptionsButton = findViewById<Button>(R.id.button_choose_sound_options)
-        chooseSoundOptionsButton.setOnClickListener {
-            showSettingsDialog()
-        }
+            // Try multiple approaches to find the view
+            var bgView: ImageView? = null
 
-        // Add achievements button
-        val achievementsButton = findViewById<Button>(R.id.button_achievements)
-        achievementsButton.setOnClickListener {
-            showAchievementsDialog()
-        }
-        
+            // Approach 1: Standard findViewById with explicit cast
+            bgView = findViewById(R.id.background_image_view) as? ImageView
+            Log.d("MainActivity", "Approach 1 result: $bgView")
 
+            // Approach 2: If first fails, try without generic
+            if (bgView == null) {
+                val tempView = findViewById<View>(R.id.background_image_view)
+                bgView = tempView as? ImageView
+                Log.d("MainActivity", "Approach 2 result: $bgView")
+            }
 
+            // Approach 3: Try to get the root view and search from there
+            if (bgView == null) {
+                val rootView = window.decorView.findViewById<View>(android.R.id.content)
+                bgView = rootView?.findViewById(R.id.background_image_view) as? ImageView
+                Log.d("MainActivity", "Approach 3 result: $bgView")
+            }
 
-        startPauseButton.setOnClickListener {
-            if (isRunning) {
-                // Pausing - stop the timer
-                stopTimerService()
-                wasPaused = true
-                startPauseButton.text = "Start"
-                resetButton.visibility = View.VISIBLE
-            } else {
-                val timeInput = timeEditText.text.toString()
-                if (timeInput.isNotEmpty()) {
-                    // If resuming from pause, use current remaining time; otherwise use input
-                    if (!wasPaused || timeInMilliSeconds <= 0) {
-                        timeInMilliSeconds = timeInput.toLong() * 60000L
-
-                        // Reset heart rate measurement state for new session
-                        heartRateMeasured = false
-                        startHeartRate = 0
-                        startHRV = 0.0
-                        endHeartRate = 0
-                        endHRV = 0.0
-                    }
-
-                    val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                    val heartRateEnabled = prefs.getBoolean(KEY_HEART_RATE_ENABLED, false)
-                    if (heartRateEnabled) {
-                        // Check camera permission first
-                        if (checkCameraPermission()) {
-                            startHeartRateMeasurement()
-                        } else {
-                            requestCameraPermission()
+            // Approach 4: Try to traverse the view hierarchy manually
+            if (bgView == null) {
+                Log.d("MainActivity", "Trying manual view hierarchy traversal")
+                val rootView = contentView
+                Log.d("MainActivity", "Root view: $rootView")
+                if (rootView != null && rootView is android.view.ViewGroup) {
+                    for (i in 0 until rootView.childCount) {
+                        val child = rootView.getChildAt(i)
+                        Log.d("MainActivity", "Child $i: $child (id: ${child.id})")
+                        if (child.id == R.id.background_image_view) {
+                            bgView = child as? ImageView
+                            Log.d("MainActivity", "Found ImageView manually: $bgView")
+                            break
                         }
-                    } else {
-                        startMeditationSession()
+                        // Try to use ScrollView as background by setting its background drawable
+                        if (child is android.widget.ScrollView && bgView == null) {
+                            Log.d("MainActivity", "Found ScrollView, will use it for background")
+                            Log.d("MainActivity", "ScrollView current background: ${child.background}")
+                            bgView = ImageView(this).apply {
+                                // Don't add this to hierarchy, just use it for resource management
+                                setImageResource(R.drawable.shiva_bg)
+                            }
+                            // We'll handle the ScrollView background separately
+                            scrollViewForBackground = child
+
+                            // Clear any existing background on ScrollView first
+                            child.background = null
+                            child.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                            child.invalidate()
+                            Log.d("MainActivity", "Cleared ScrollView background")
+
+                            // Set initial background on ScrollView
+                            val initialDrawable = resources.getDrawable(R.drawable.shiva_bg)
+                            child.background = initialDrawable
+                            child.invalidate()
+                            Log.d("MainActivity", "Set initial background on ScrollView: $initialDrawable")
+                            break
+                        }
                     }
                 }
             }
-        }
-        resetButton.setOnClickListener {
-            stopTimerService()
-            resetTimerUI()
-        }
-        // Register receiver
-        try {
-            LocalBroadcastManager.getInstance(this).registerReceiver(
-                timerReceiver,
-                IntentFilter().apply {
-                    addAction(TIMER_FINISHED_ACTION)
-                    addAction(TIMER_TICK_ACTION)
+
+            // Approach 5: If still not found, create the ImageView programmatically
+            if (bgView == null) {
+                Log.d("MainActivity", "Creating ImageView programmatically")
+                bgView = ImageView(this).apply {
+                    id = R.id.background_image_view
+                    layoutParams = android.widget.FrameLayout.LayoutParams(
+                        android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                        android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+                    ).apply {
+                        // Ensure proper layout constraints
+                        width = android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+                        height = android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+                    }
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    setImageResource(R.drawable.shiva_bg)
+
+                    // Set minimum dimensions to ensure it's visible
+                    minimumWidth = 1
+                    minimumHeight = 1
                 }
-            )
+
+                // Try to add it to the root view
+                if (contentView != null) {
+                    (contentView as? android.widget.FrameLayout)?.addView(bgView, 0)
+                    Log.d("MainActivity", "Added ImageView programmatically to FrameLayout")
+
+                    // Ensure the ImageView is visible and bring it to front if needed
+                    bgView.visibility = android.view.View.VISIBLE
+                    bgView.bringToFront()
+                    bgView.elevation = 10f // Ensure it's on top
+                    Log.d("MainActivity", "Set ImageView visibility to VISIBLE, brought to front, and set elevation")
+
+                    // Debug the ImageView properties
+                    Log.d("MainActivity", "ImageView visibility: ${bgView.visibility}")
+                    Log.d("MainActivity", "ImageView width: ${bgView.width}, height: ${bgView.height}")
+                    Log.d("MainActivity", "ImageView drawable: ${bgView.drawable}")
+                    Log.d("MainActivity", "ContentView children count: ${(contentView as? android.view.ViewGroup)?.childCount ?: 0}")
+
+                    // Force layout and invalidate
+                    bgView.requestLayout()
+                    bgView.invalidate()
+                    contentView.requestLayout()
+                    contentView.invalidate()
+
+                    // Force measure and layout
+                    bgView.measure(
+                        android.view.View.MeasureSpec.makeMeasureSpec(contentView.width, android.view.View.MeasureSpec.EXACTLY),
+                        android.view.View.MeasureSpec.makeMeasureSpec(contentView.height, android.view.View.MeasureSpec.EXACTLY)
+                    )
+                    bgView.layout(0, 0, contentView.width, contentView.height)
+
+                    // Final debug after layout
+                    bgView.post {
+                        Log.d("MainActivity", "ImageView after layout - width: ${bgView.width}, height: ${bgView.height}")
+                        Log.d("MainActivity", "ImageView after layout - visibility: ${bgView.visibility}")
+                    }
+                } else {
+                    // Fallback: add to the ScrollView's parent if possible
+                    if (contentView is android.view.ViewGroup && contentView.childCount > 0) {
+                        val scrollView = contentView.getChildAt(0) as? android.widget.ScrollView
+                        if (scrollView != null) {
+                            val scrollParent = scrollView.parent as? android.widget.FrameLayout
+                            scrollParent?.addView(bgView, 0)
+                            Log.d("MainActivity", "Added ImageView programmatically to ScrollView parent")
+
+                            // Ensure the ImageView is visible
+                            bgView.visibility = android.view.View.VISIBLE
+                            bgView.bringToFront()
+                        }
+                    }
+                }
+            }
+
+            if (bgView != null) {
+                backgroundImageView = bgView
+            }
+
+            // Debug: Check if ImageView was found
+            if (::backgroundImageView.isInitialized && backgroundImageView != null) {
+                Log.d("MainActivity", "Background ImageView initialized successfully")
+            } else {
+                Log.e("MainActivity", "Background ImageView not initialized!")
+                return
+            }
+
+            // Initialize background slideshow
+            setupBackgroundSlideshow()
+
+            // Initialize AdMob
+            MobileAds.initialize(this) {}
+
+            // Load banner ads
+            try {
+                val adRequest = AdRequest.Builder().build()
+                adView.loadAd(adRequest)
+                topAdView.loadAd(adRequest)
+            } catch (e: Exception) {
+                Log.e("AdMobError", "Failed to load ad: ${e.message}", e) // Log error
+            }
+
+            // Load interstitial ad
+            loadInterstitialAd()
+
+            // Load preferences
+            val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+            totalMeditationTimeMillis = prefs.getLong(KEY_TOTAL_TIME, 0L)
+            selectedBellResId = prefs.getInt(KEY_BELL_SOUND, R.raw.bell)
+            selectedBackgroundResId = prefs.getInt("KEY_BACKGROUND_SOUND", 0)
+
+            // Heart rate setting will be loaded in settings dialog
+
+            // Load achievement data
+            loadAchievementData()
+
+            updateTotalTimeText()
+
+            // Load selected bell from prefs
+            //val chooseBellButton = findViewById<Button>(R.id.button_choose_bell)
+            //chooseBellButton.setOnClickListener {
+            //    val builder = AlertDialog.Builder(this)
+            //    builder.setTitle("Choose Bell Sound")
+            //    val bellOptions = arrayOf(
+            //        "Bell 1", "Bell 2", "Bell 3", "Bell 4", "Bell 5", "Bell 6"
+            //    )
+            //    // Use the actual resource IDs that match your filenames
+            //    val bellResIds = arrayOf(
+            //        R.raw.bell_1, // bell_1.wav
+            //        R.raw.bell_2, // bell_2.wav
+            //        R.raw.bell_3, // bell_3.wav
+            //        R.raw.bell_4, // bell_4.wav
+            //        R.raw.bell_5, // bell_5.wav
+            //        R.raw.bell_6  // bell_6.wav
+            //    )
+            //    builder.setSingleChoiceItems(bellOptions, 0) { dialog, which ->
+            //        try {
+            //            // Play preview
+            //            previewPlayer?.release()
+            //            previewPlayer = MediaPlayer.create(this, bellResIds[which])
+            //            if (previewPlayer != null) {
+            //                previewPlayer?.setVolume(1.0f, 1.0f)
+            //                previewPlayer?.start()
+            //                // Save selection
+            //                selectedBellResId = bellResIds[which]
+            //                prefs.edit().putInt(KEY_BELL_SOUND, selectedBellResId).apply()
+            //            } else {
+            //                Log.e("MainActivity", "Failed to create preview player for bell: $which")
+            //            }
+            //        } catch (e: Exception) {
+            //            Log.e("MainActivity", "Error playing bell preview: ${e.message}", e)
+            //        }
+            //    }
+            //    builder.setPositiveButton("OK") { dialog, _ ->
+            //        previewPlayer?.release()
+            //        dialog.dismiss()
+            //    }
+            //    builder.setOnDismissListener {
+            //        previewPlayer?.release()
+            //    }
+            //    builder.show()
+            //}
+
+            val chooseSoundOptionsButton = findViewById<Button>(R.id.button_choose_sound_options)
+            chooseSoundOptionsButton.setOnClickListener {
+                showSettingsDialog()
+            }
+
+            // Add achievements button
+            val achievementsButton = findViewById<Button>(R.id.button_achievements)
+            achievementsButton.setOnClickListener {
+                showAchievementsDialog()
+            }
+
+            startPauseButton.setOnClickListener {
+                if (isRunning) {
+                    // Pausing - stop the timer
+                    stopTimerService()
+                    wasPaused = true
+                    startPauseButton.text = "Start"
+                    resetButton.visibility = View.VISIBLE
+                } else {
+                    val timeInput = timeEditText.text.toString()
+                    if (timeInput.isNotEmpty()) {
+                        // If resuming from pause, use current remaining time; otherwise use input
+                        if (!wasPaused || timeInMilliSeconds <= 0) {
+                            timeInMilliSeconds = timeInput.toLong() * 60000L
+
+                            // Reset heart rate measurement state for new session
+                            heartRateMeasured = false
+                            startHeartRate = 0
+                            startHRV = 0.0
+                            endHeartRate = 0
+                            endHRV = 0.0
+                        }
+
+                        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                        val heartRateEnabled = prefs.getBoolean(KEY_HEART_RATE_ENABLED, false)
+                        if (heartRateEnabled) {
+                            // Check camera permission first
+                            if (checkCameraPermission()) {
+                                startHeartRateMeasurement()
+                            } else {
+                                requestCameraPermission()
+                            }
+                        } else {
+                            startMeditationSession()
+                        }
+                    }
+                }
+            }
+            resetButton.setOnClickListener {
+                stopTimerService()
+                resetTimerUI()
+            }
+            // Register receiver
+            try {
+                LocalBroadcastManager.getInstance(this).registerReceiver(
+                    timerReceiver,
+                    IntentFilter().apply {
+                        addAction(TIMER_FINISHED_ACTION)
+                        addAction(TIMER_TICK_ACTION)
+                    }
+                )
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Error registering broadcast receiver: ${e.message}", e)
+            }
+
+            Log.d("MainActivity", "Views initialized successfully")
         } catch (e: Exception) {
-            Log.e("MainActivity", "Error registering broadcast receiver: ${e.message}", e)
+            Log.e("MainActivity", "Error initializing views: ${e.message}", e)
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus && !::backgroundImageView.isInitialized) {
+            Log.d("MainActivity", "Window focus changed, trying to initialize views again")
+            initializeViews()
         }
     }
 
@@ -614,6 +834,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        try {
+            // Stop background slideshow
+            backgroundHandler.removeCallbacks(backgroundRunnable)
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error stopping background slideshow: ${e.message}", e)
+        }
+
         try {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(timerReceiver)
         } catch (e: Exception) {
@@ -1298,5 +1525,88 @@ class MainActivity : AppCompatActivity() {
                 startMeditationSession()
             }
         }
+    }
+
+    private fun setupBackgroundSlideshow() {
+        backgroundHandler = Handler(Looper.getMainLooper())
+
+        backgroundRunnable = object : Runnable {
+            override fun run() {
+                try {
+                    // Check if ImageView is initialized
+                    if (!::backgroundImageView.isInitialized) {
+                        Log.e("MainActivity", "Background ImageView not initialized, reinitializing...")
+                        backgroundImageView = findViewById(R.id.background_image_view)
+                        if (backgroundImageView == null) {
+                            Log.e("MainActivity", "Failed to find background ImageView")
+                            return
+                        }
+                    }
+
+                    // Cycle to next background image
+                    currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundImages.size
+                    val nextImageResId = backgroundImages[currentBackgroundIndex]
+
+                    // Check if the resource exists and set the background
+                    try {
+                        // Prioritize ScrollView approach since ImageView has layout issues
+                        if (scrollViewForBackground != null) {
+                            Log.d("MainActivity", "Using ScrollView for background change (preferred method)")
+                            val drawable = resources.getDrawable(nextImageResId)
+                            scrollViewForBackground?.background = drawable
+                            scrollViewForBackground?.invalidate()
+                            scrollViewForBackground?.requestLayout()
+
+                            // Also try setting on the root content view for better visibility
+                            val contentView = window.decorView.findViewById<View>(android.R.id.content)
+                            if (contentView != null) {
+                                contentView.background = drawable
+                                contentView.invalidate()
+                                contentView.requestLayout()
+                                Log.d("MainActivity", "Also set background on content view")
+                            }
+
+                            Log.d("MainActivity", "Background changed to: $nextImageResId (index: $currentBackgroundIndex) via ScrollView")
+                        } else if (::backgroundImageView.isInitialized) {
+                            // Fallback to ImageView if ScrollView not available
+                            Log.d("MainActivity", "ScrollView not available, trying ImageView fallback")
+                            backgroundImageView.setImageResource(nextImageResId)
+                            Log.d("MainActivity", "Background changed to: $nextImageResId (index: $currentBackgroundIndex) via ImageView")
+
+                            // Debug the ImageView after setting the image
+                            Log.d("MainActivity", "ImageView drawable after change: ${backgroundImageView.drawable}")
+                            Log.d("MainActivity", "ImageView visibility after change: ${backgroundImageView.visibility}")
+                            Log.d("MainActivity", "ImageView width: ${backgroundImageView.width}, height: ${backgroundImageView.height}")
+                        } else {
+                            Log.e("MainActivity", "Neither ImageView nor ScrollView available for background")
+                            return
+                        }
+                    } catch (e: Exception) {
+                        Log.e("MainActivity", "Failed to load background image: $nextImageResId, ${e.message}")
+                        // Try the next image
+                        currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundImages.size
+                        return
+                    }
+
+                    // Schedule next background change
+                    backgroundHandler.postDelayed(this, backgroundChangeInterval)
+
+                    // Force a layout update to ensure the image change is visible
+                    if (::backgroundImageView.isInitialized) {
+                        backgroundImageView.requestLayout()
+                        backgroundImageView.invalidate()
+                    }
+                    scrollViewForBackground?.requestLayout()
+                    scrollViewForBackground?.invalidate()
+                } catch (e: Exception) {
+                    Log.e("MainActivity", "Error changing background: ${e.message}", e)
+                }
+            }
+        }
+
+        Log.d("MainActivity", "Setting up background slideshow with ${backgroundImages.size} images")
+
+        // Start the background slideshow immediately for the first change
+        backgroundHandler.postDelayed(backgroundRunnable, 2000L) // Start after 2 seconds
     }
 }
