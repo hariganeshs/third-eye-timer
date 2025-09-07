@@ -18,6 +18,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdListener
 import java.util.Locale
 import android.media.AudioManager
 import android.app.AlertDialog
@@ -176,6 +177,9 @@ class MainActivity : AppCompatActivity() {
     private var heartRateMeasured = false
     private var lastSessionDuration: Long = 0L
     
+    // Ad debugging flag - set to false for production
+    private val USE_TEST_ADS = true
+    
     companion object {
         private const val PREFS_NAME = "MeditationPrefs"
         private const val KEY_TOTAL_TIME = "total_meditation_time"
@@ -222,19 +226,16 @@ class MainActivity : AppCompatActivity() {
         appTitleText = findViewById(R.id.app_title)
 
         // Initialize AdMob
-        MobileAds.initialize(this) {}
-
-        // Load banner ads
-        try {
-            val adRequest = AdRequest.Builder().build()
-            adView.loadAd(adRequest)
-            topAdView.loadAd(adRequest)
-        } catch (e: Exception) {
-            Log.e("AdMobError", "Failed to load ad: ${e.message}", e)
-            // Hide ad views on error to prevent layout issues
-            adView.visibility = View.GONE
-            topAdView.visibility = View.GONE
+        MobileAds.initialize(this) { initializationStatus ->
+            Log.d("AdMob", "AdMob initialization status: ${initializationStatus.adapterStatusMap}")
         }
+
+        // Load banner ads with proper error handling
+        loadBannerAd(adView, "Bottom Banner")
+        loadBannerAd(topAdView, "Top Banner")
+        
+        // Log ad configuration for debugging
+        logAdConfiguration()
         
         // Load interstitial ad
         loadInterstitialAd()
@@ -583,10 +584,27 @@ class MainActivity : AppCompatActivity() {
         totalTimeText.text = String.format(Locale.getDefault(), "Total: %02dh %02dm", hours, minutes)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Refresh ads when app comes back to foreground
+        adView.resume()
+        topAdView.resume()
+    }
+    
+    override fun onPause() {
+        super.onPause()
+        // Pause ads when app goes to background
+        adView.pause()
+        topAdView.pause()
+    }
+    
     override fun onDestroy() {
         super.onDestroy()
         try {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(timerReceiver)
+            // Destroy ads to free resources
+            adView.destroy()
+            topAdView.destroy()
         } catch (e: Exception) {
             Log.e("MainActivity", "Error unregistering broadcast receiver: ${e.message}", e)
         }
@@ -681,11 +699,84 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
     
-        private fun loadInterstitialAd() {
+    private fun logAdConfiguration() {
+        Log.d("AdMob", "=== Ad Configuration Debug Info ===")
+        Log.d("AdMob", "Using test ads: $USE_TEST_ADS")
+        Log.d("AdMob", "App ID: ca-app-pub-2722920301958819~5438496026")
+        Log.d("AdMob", "Top Banner Ad Unit ID: ca-app-pub-2722920301958819/3959238290")
+        Log.d("AdMob", "Bottom Banner Ad Unit ID: ca-app-pub-2722920301958819/2481160193")
+        Log.d("AdMob", "Interstitial Ad Unit ID: ca-app-pub-2722920301958819/7531366385")
+        Log.d("AdMob", "Test Banner Ad Unit ID: ca-app-pub-3940256099942544/6300978111")
+        Log.d("AdMob", "Test Interstitial Ad Unit ID: ca-app-pub-3940256099942544/1033173712")
+        Log.d("AdMob", "=====================================")
+    }
+    
+    private fun loadBannerAd(adView: AdView, adName: String) {
+        try {
+            // Use test ad unit ID for debugging - replace with your actual ad unit ID when ready
+            val testAdUnitId = "ca-app-pub-3940256099942544/6300978111" // Test banner ad unit ID
+            val actualAdUnitId = when (adName) {
+                "Top Banner" -> "ca-app-pub-2722920301958819/3959238290"
+                "Bottom Banner" -> "ca-app-pub-2722920301958819/2481160193"
+                else -> testAdUnitId
+            }
+            
+            // Use test or production ad unit ID based on flag
+            adView.adUnitId = if (USE_TEST_ADS) testAdUnitId else actualAdUnitId
+            val adRequest = AdRequest.Builder().build()
+            
+            adView.adListener = object : AdListener() {
+                override fun onAdLoaded() {
+                    Log.d("AdMob", "$adName loaded successfully")
+                    adView.visibility = View.VISIBLE
+                }
+                
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    Log.e("AdMob", "$adName failed to load: ${loadAdError.message}")
+                    Log.e("AdMob", "$adName error code: ${loadAdError.code}")
+                    Log.e("AdMob", "$adName error domain: ${loadAdError.domain}")
+                    // Keep ad view visible but empty rather than hiding it
+                    adView.visibility = View.VISIBLE
+                    
+                    // Retry loading the ad after a delay for certain error codes
+                    if (loadAdError.code == LoadAdError.ERROR_CODE_NETWORK_ERROR || 
+                        loadAdError.code == LoadAdError.ERROR_CODE_INTERNAL_ERROR) {
+                        Log.d("AdMob", "Retrying to load $adName in 5 seconds...")
+                        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                            loadBannerAd(adView, adName)
+                        }, 5000)
+                    }
+                }
+                
+                override fun onAdOpened() {
+                    Log.d("AdMob", "$adName opened")
+                }
+                
+                override fun onAdClosed() {
+                    Log.d("AdMob", "$adName closed")
+                }
+                
+                override fun onAdClicked() {
+                    Log.d("AdMob", "$adName clicked")
+                }
+            }
+            
+            adView.loadAd(adRequest)
+        } catch (e: Exception) {
+            Log.e("AdMob", "Exception loading $adName: ${e.message}", e)
+            adView.visibility = View.VISIBLE // Keep visible even on exception
+        }
+    }
+
+    private fun loadInterstitialAd() {
         val adRequest = AdRequest.Builder().build()
+        // Use test ad unit ID for debugging - replace with your actual ad unit ID when ready
+        val testInterstitialAdUnitId = "ca-app-pub-3940256099942544/1033173712" // Test interstitial ad unit ID
+        val actualInterstitialAdUnitId = "ca-app-pub-2722920301958819/7531366385" // Your actual interstitial ad unit ID
+        
         InterstitialAd.load(
             this,
-            "ca-app-pub-2722920301958819/7531366385", // Interstitial ad unit ID
+            if (USE_TEST_ADS) testInterstitialAdUnitId else actualInterstitialAdUnitId,
             adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
@@ -701,10 +792,10 @@ class MainActivity : AppCompatActivity() {
                             loadInterstitialAd()
                         }
                         
-                                            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                        Log.e("AdMob", "Interstitial ad failed to show: ${adError.message}")
-                        interstitialAd = null
-                    }
+                        override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                            Log.e("AdMob", "Interstitial ad failed to show: ${adError.message}")
+                            interstitialAd = null
+                        }
                         
                         override fun onAdShowedFullScreenContent() {
                             Log.d("AdMob", "Interstitial ad showed full screen content")
@@ -714,6 +805,8 @@ class MainActivity : AppCompatActivity() {
                 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     Log.e("AdMob", "Interstitial ad failed to load: ${loadAdError.message}")
+                    Log.e("AdMob", "Interstitial ad error code: ${loadAdError.code}")
+                    Log.e("AdMob", "Interstitial ad error domain: ${loadAdError.domain}")
                     interstitialAd = null
                 }
             }
