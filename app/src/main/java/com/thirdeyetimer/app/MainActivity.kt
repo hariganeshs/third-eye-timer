@@ -47,6 +47,10 @@ import androidx.core.content.ContextCompat
 import androidx.appcompat.widget.SwitchCompat
 import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
     private var isRunning = false
@@ -269,15 +273,17 @@ class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(desiredMode)
             }
         } catch (_: Exception) { }
-
+        // Enable edge-to-edge for Android 15 compatibility
         enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContentView(R.layout.activity_main)
 
+        // Apply window insets to root content to avoid overlaps
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.updatePadding(top = systemBars.top, bottom = systemBars.bottom)
-            WindowInsetsCompat.CONSUMED
+            v.setPadding(v.paddingLeft, systemBars.top, v.paddingRight, systemBars.bottom)
+            insets
         }
 
         // Initialize achievement popup manager
