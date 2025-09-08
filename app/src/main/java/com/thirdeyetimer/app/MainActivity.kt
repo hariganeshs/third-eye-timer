@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
     private var sessionStartTime: Long = 0L
     private val KEY_BELL_SOUND = "bell_sound"
     private var selectedBellResId: Int = R.raw.bell
+    private var selectedGuidedMeditationResId: Int = 0  // 0 = Complete Silence
     private var previewPlayer: MediaPlayer? = null
     private var isServiceRunning = false
     private val TIMER_FINISHED_ACTION = "com.thirdeyetimer.app.TIMER_FINISHED"
@@ -230,6 +231,221 @@ class MainActivity : AppCompatActivity() {
 
     private val backgroundResIds = ambientResIds + guidedResIds
 
+    // Guided Meditation Audio Guides (Non-looping)
+    private val guidedMeditationNames = arrayOf(
+        "Complete Silence",
+
+        // Basic Meditation Techniques
+        "Acceptance Meditation",
+        "Acceptance",
+        "Anapanasati",
+        "Breath Counting",
+        "Buddhist 1 - Breath Anapanasati",
+        "Choiceless Awareness",
+        "Mindfulness Breathing",
+        "Open Awareness",
+
+        // Body Scan Techniques
+        "Body Scan Meditation",
+        "Body Scan Bottom Up",
+        "Body Scan Top Down",
+        "Body Scan Left Right",
+        "Body Scan Front Back",
+
+        // Loving Kindness & Compassion
+        "Loving Kindness Meditation",
+        "Loving Kindness",
+        "Buddhist 2 - Loving Kindness Metta",
+        "Compassion Meditation",
+        "Compassion",
+        "Buddhist 6 - Compassion Tonglen",
+        "Metta Benefactor",
+        "Metta Difficult",
+        "Metta Neutral",
+        "Metta Self",
+
+        // Buddhist Practices
+        "Buddhist 3 - Body Scan Four Elements",
+        "Buddhist 4 - Open Awareness",
+        "Buddhist 5 - Walking Gatha",
+        "Buddhist 7 - Refuge Three Jewels",
+        "Eightfold Path",
+        "Four Foundations",
+        "Four Immeasurables",
+
+        // Hindu Practices
+        "Hindu 1 - Mantra Presence",
+        "Hindu 2 - Prana Body Scan",
+        "Hindu 3 - Om Resonance",
+        "Hindu 4 - Nature Dhyana",
+        "Kundalini",
+        "Mantra",
+
+        // Nature & Environment
+        "Candle Flame",
+        "Cave",
+        "Dawn",
+        "Desert",
+        "Dusk",
+        "Forest Meditation",
+        "Forest",
+        "Garden",
+        "Meadow",
+        "Moon",
+        "Mountain Meditation",
+        "Mountain",
+        "Ocean Meditation",
+        "Ocean",
+        "Rain",
+        "River",
+        "Shrine",
+        "Sky",
+        "Sun",
+        "Temple",
+
+        // Chakra Meditations
+        "Chakra Crown",
+        "Chakra Heart",
+        "Chakra Root",
+        "Chakra Sacral",
+        "Chakra Solar",
+        "Chakra Third Eye",
+        "Chakra Throat",
+
+        // Specific Practices
+        "Courage",
+        "Equanimity",
+        "Forgiveness",
+        "Gratitude Meditation",
+        "Gratitude",
+        "Inner Child",
+        "Inquiry Self",
+        "Letting Go Meditation",
+        "Letting Go",
+        "Light Meditation",
+        "Resilience",
+        "Sound Listening",
+        "Sound Meditation",
+        "Space Meditation",
+        "Space",
+        "Walking Meditation",
+        "Walking",
+        "Yantra",
+
+        // Eating & Movement
+        "Mindful Eating Meditation",
+        "Mindful Eating",
+        "Pranayama"
+    )
+
+    private val guidedMeditationResIds = arrayOf(
+        0, // Complete Silence
+
+        // Basic Meditation Techniques
+        R.raw.acceptance_meditation,
+        R.raw.acceptance,
+        R.raw.anapanasati,
+        R.raw.breath_counting,
+        R.raw.buddhist_1_breath_anapanasati,
+        R.raw.buddhist_2_loving_kindness_metta,
+        R.raw.choiceless_awareness,
+        R.raw.mindfulness_breathing,
+        R.raw.open_awareness,
+
+        // Body Scan Techniques
+        R.raw.body_scan_meditation,
+        R.raw.body_scan_bottom_up,
+        R.raw.body_scan_top_down,
+        R.raw.body_scan_left_right,
+        R.raw.body_scan_front_back,
+
+        // Loving Kindness & Compassion
+        R.raw.loving_kindness_meditation,
+        R.raw.loving_kindness,
+        R.raw.buddhist_2_loving_kindness_metta,
+        R.raw.compassion_meditation,
+        R.raw.compassion,
+        R.raw.buddhist_6_compassion_tonglen,
+        R.raw.metta_benefactor,
+        R.raw.metta_difficult,
+        R.raw.metta_neutral,
+        R.raw.metta_self,
+
+        // Buddhist Practices
+        R.raw.buddhist_3_body_scan_four_elements,
+        R.raw.buddhist_4_open_awareness,
+        R.raw.buddhist_5_walking_gatha,
+        R.raw.buddhist_6_compassion_tonglen,
+        R.raw.buddhist_7_refuge_three_jewels,
+        R.raw.eightfold_path,
+        R.raw.four_foundations,
+        R.raw.four_immeasurables,
+
+        // Hindu Practices
+        R.raw.hindu_1_mantra_presence,
+        R.raw.hindu_2_prana_body_scan,
+        R.raw.hindu_3_om_resonance,
+        R.raw.hindu_4_nature_dhyana,
+        R.raw.kundalini,
+        R.raw.mantra,
+
+        // Nature & Environment
+        R.raw.candle_flame,
+        R.raw.cave,
+        R.raw.dawn,
+        R.raw.desert,
+        R.raw.dusk,
+        R.raw.forest_meditation,
+        R.raw.forest,
+        R.raw.garden,
+        R.raw.meadow,
+        R.raw.moon,
+        R.raw.mountain_meditation,
+        R.raw.mountain,
+        R.raw.ocean_meditation,
+        R.raw.ocean,
+        R.raw.rain,
+        R.raw.river,
+        R.raw.shrine,
+        R.raw.sky,
+        R.raw.sun,
+        R.raw.temple,
+
+        // Chakra Meditations
+        R.raw.chakra_crown,
+        R.raw.chakra_heart,
+        R.raw.chakra_root,
+        R.raw.chakra_sacral,
+        R.raw.chakra_solar,
+        R.raw.chakra_third_eye,
+        R.raw.chakra_throat,
+
+        // Specific Practices
+        R.raw.courage,
+        R.raw.equanimity,
+        R.raw.forgiveness,
+        R.raw.gratitude_meditation,
+        R.raw.gratitude,
+        R.raw.inner_child,
+        R.raw.inquiry_self,
+        R.raw.letting_go_meditation,
+        R.raw.letting_go,
+        R.raw.light_meditation,
+        R.raw.resilience,
+        R.raw.sound_listening,
+        R.raw.sound_meditation,
+        R.raw.space_meditation,
+        R.raw.space,
+        R.raw.walking_meditation,
+        R.raw.walking,
+        R.raw.yantra,
+
+        // Eating & Movement
+        R.raw.mindful_eating_meditation,
+        R.raw.mindful_eating,
+        R.raw.pranayama
+    )
+
     // Achievement and streak tracking
     private var currentStreak: Int = 0
     private var longestStreak: Int = 0
@@ -329,6 +545,7 @@ class MainActivity : AppCompatActivity() {
 
             Log.d("MainActivity", "About to find background ImageView")
             Log.d("MainActivity", "R.id.background_image_view = ${R.id.background_image_view}")
+            
 
             // Debug the view hierarchy
             val decorView = window.decorView
@@ -655,6 +872,7 @@ class MainActivity : AppCompatActivity() {
             putExtra(MeditationTimerService.EXTRA_TIME_MILLIS, time)
             putExtra(MeditationTimerService.EXTRA_BELL_RES_ID, bellResId)
             putExtra(MeditationTimerService.EXTRA_BACKGROUND_RES_ID, selectedBackgroundResId)
+            putExtra(MeditationTimerService.EXTRA_GUIDED_RES_ID, selectedGuidedMeditationResId)
         }
         startService(intent)
         isRunning = true
@@ -1115,6 +1333,7 @@ class MainActivity : AppCompatActivity() {
         val closeButton = dialog.findViewById<Button>(R.id.button_close_settings)
         val bellSoundOption = dialog.findViewById<LinearLayout>(R.id.bell_sound_option)
         val backgroundSoundOption = dialog.findViewById<LinearLayout>(R.id.background_sound_option)
+        val guidedMeditationOption = dialog.findViewById<LinearLayout>(R.id.guided_meditation_option)
         val resetTotalTimeOption = dialog.findViewById<LinearLayout>(R.id.reset_total_time_option)
         val heartRateToggle = dialog.findViewById<SwitchCompat>(R.id.heart_rate_toggle)
         val darkModeToggle = dialog.findViewById<SwitchCompat>(R.id.dark_mode_toggle)
@@ -1151,7 +1370,12 @@ class MainActivity : AppCompatActivity() {
             dialog.dismiss()
             showBackgroundSoundPicker()
         }
-        
+
+        guidedMeditationOption.setOnClickListener {
+            dialog.dismiss()
+            showGuidedMeditationPicker()
+        }
+
         resetTotalTimeOption.setOnClickListener {
             dialog.dismiss()
             showResetTotalTimeConfirmation()
@@ -1451,7 +1675,34 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 Log.e("MainActivity", "Error playing sound preview: ${e.message}", e)
             }
+        
         }
+    }
+
+    private fun showGuidedMeditationPicker() {
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val currentGuidedIndex = guidedMeditationResIds.indexOf(selectedGuidedMeditationResId).coerceAtLeast(0)
+        val guidedDialog = AlertDialog.Builder(this)
+        guidedDialog.setTitle("🧘 Choose Guided Meditation")
+        guidedDialog.setSingleChoiceItems(guidedMeditationNames, currentGuidedIndex) { dialog, guidedWhich ->
+            try {
+                previewPlayer?.release()
+                if (guidedMeditationResIds[guidedWhich] != 0) {
+                    previewPlayer = MediaPlayer.create(this, guidedMeditationResIds[guidedWhich])
+                    previewPlayer?.isLooping = false  // Preview should not loop
+                    previewPlayer?.setVolume(1.0f, 1.0f)
+                    previewPlayer?.start()
+                }
+                selectedGuidedMeditationResId = guidedMeditationResIds[guidedWhich]
+                prefs.edit().putInt("KEY_GUIDED_MEDITATION_SOUND", selectedGuidedMeditationResId).apply()
+            } catch (e: Exception) {}
+        }
+        guidedDialog.setPositiveButton("OK") { dialog, _ ->
+            previewPlayer?.release()
+            dialog.dismiss()
+        }
+        guidedDialog.setOnDismissListener { previewPlayer?.release() }
+        guidedDialog.show()
     }
 
     private fun getAchievementDisplayName(achievementKey: String): String {
