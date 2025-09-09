@@ -83,17 +83,40 @@ if (isRunning) {
     app:layout_constraintBottom_toTopOf="@id/adView" />
 ```
 
-### 16KB Memory Page Support (ANDROID 15+)
+### 16KB Page Size Support (ANDROID 15+) - CRITICAL
 
-**Location**: `app/build.gradle.kts` lines 50-55
-**Configuration**:
+**⚠️ MANDATORY FOR GOOGLE PLAY (Nov 1, 2025)**
+
+**Status**: ✅ **FIXED** - APK is now 16KB aligned and Google Play compliant
+
+**Location**: `app/build.gradle.kts` - NDK and packaging configuration
+**Key Configuration**:
 ```kotlin
+defaultConfig {
+    ndk {
+        abiFilters += listOf("arm64-v8a", "x86_64")
+    }
+}
+
 packaging {
     jniLibs {
         useLegacyPackaging = false
+        pickFirsts += "lib/arm64-v8a/*.so"
+        pickFirsts += "lib/x86_64/*.so"
     }
 }
 ```
+
+**Dependencies Updated**:
+- CameraX libraries updated to 1.3.4 for 16KB compatibility
+- AGP version 8.12.2 (handles alignment automatically)
+
+**Verification**: Use zipalign tool to verify APK compatibility:
+```powershell
+& "C:\Users\[USER]\AppData\Local\Android\Sdk\build-tools\36.0.0\zipalign.exe" -c -P 16 -v 4 "app-debug.apk"
+```
+
+**🔧 Troubleshooting**: See `16KB_PAGE_SIZE_FIX_GUIDE.md` and `16KB_QUICK_TROUBLESHOOTING.md` for detailed fix instructions.
 
 **Purpose**: Required for Android 15+ compatibility and Google Play Store compliance.
 
@@ -101,14 +124,19 @@ packaging {
 
 ### Version Management
 
-**Current Version**: 1.0.5 (version code 6)
-**Location**: `app/build.gradle.kts` lines 16-17
+**Current Version**: 1.0.6 (version code 7) - **UPDATED for 16KB compatibility**
+**Location**: `app/build.gradle.kts` lines 15-16
 
 **ALWAYS INCREMENT**:
 ```kotlin
-versionCode = 6  // Increment this
-versionName = "1.0.5"  // Increment this
+versionCode = 7  // Increment this
+versionName = "1.0.6"  // Increment this
 ```
+
+**Recent Changes**:
+- v1.0.6: Fixed 16KB page size compatibility for Android 15+
+- Updated CameraX dependencies to 1.3.4
+- Added NDK configuration for proper alignment
 
 ### Build Commands
 
@@ -229,6 +257,8 @@ git commit -m "Add Git LFS tracking"
 - `README.md` - Project overview
 - `AD_UNITS_GUIDE.md` - AdMob configuration
 - `PUBLISHING_GUIDE.md` - Play Store deployment
+- `16KB_PAGE_SIZE_FIX_GUIDE.md` - Comprehensive 16KB compatibility fix guide
+- `16KB_QUICK_TROUBLESHOOTING.md` - Quick reference for 16KB issues
 
 ## 📞 Emergency Contacts
 

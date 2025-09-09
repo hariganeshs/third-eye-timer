@@ -16,6 +16,12 @@ android {
         versionName = "1.0.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Add NDK configuration for 16 KB page size support
+        ndk {
+            // Ensure we're building for the right architectures
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
     }
 
     signingConfigs {
@@ -57,6 +63,13 @@ android {
     packaging {
         jniLibs {
             useLegacyPackaging = false
+            // Ensure all native libraries are aligned to 16 KB boundaries
+            pickFirsts += "lib/arm64-v8a/*.so"
+            pickFirsts += "lib/x86_64/*.so"
+        }
+        // Additional packaging options to handle alignment
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 }
@@ -85,11 +98,11 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     
-    // CameraX
-    implementation("androidx.camera:camera-core:1.3.1")
-    implementation("androidx.camera:camera-camera2:1.3.1")
-    implementation("androidx.camera:camera-lifecycle:1.3.1")
-    implementation("androidx.camera:camera-view:1.3.1")
+    // CameraX - Updated to latest versions for 16 KB compatibility
+    implementation("androidx.camera:camera-core:1.3.4")
+    implementation("androidx.camera:camera-camera2:1.3.4")
+    implementation("androidx.camera:camera-lifecycle:1.3.4")
+    implementation("androidx.camera:camera-view:1.3.4")
     implementation("com.google.guava:guava:31.1-android")
     
     // Google Play Services Ads
