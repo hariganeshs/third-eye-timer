@@ -47,10 +47,6 @@ import androidx.core.content.ContextCompat
 import androidx.appcompat.widget.SwitchCompat
 import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.enableEdgeToEdge
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
     private var isRunning = false
@@ -167,7 +163,7 @@ class MainActivity : AppCompatActivity() {
     )
 
     private val guidedSoundNames = arrayOf(
-        "Acceptance Practice", "acceptance_meditation", "anapanasati",
+        "acceptance", "acceptance_meditation", "anapanasati",
         "body_scan_bottom_up", "body_scan_front_back", "body_scan_left_right",
         "body_scan_meditation", "body_scan_top_down", "breath_counting",
         "buddhist_1_breath_anapanasati", "buddhist_2_loving_kindness_metta",

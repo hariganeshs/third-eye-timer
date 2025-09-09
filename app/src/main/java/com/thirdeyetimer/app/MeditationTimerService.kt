@@ -24,6 +24,7 @@ class MeditationTimerService : Service() {
         const val EXTRA_TIME_MILLIS = "EXTRA_TIME_MILLIS"
         const val EXTRA_BELL_RES_ID = "EXTRA_BELL_RES_ID"
         const val EXTRA_BACKGROUND_RES_ID = "EXTRA_BACKGROUND_RES_ID"
+        const val EXTRA_GUIDED_RES_ID = "EXTRA_GUIDED_RES_ID"
         const val TIMER_FINISHED_ACTION = "com.thirdeyetimer.app.TIMER_FINISHED"
         const val TIMER_TICK_ACTION = "com.thirdeyetimer.app.TIMER_TICK"
         const val EXTRA_REMAINING_TIME = "EXTRA_REMAINING_TIME"
@@ -40,14 +41,15 @@ class MeditationTimerService : Service() {
             val timeMillis = intent.getLongExtra(EXTRA_TIME_MILLIS, 0L)
             val bellResId = intent.getIntExtra(EXTRA_BELL_RES_ID, 0)
             val backgroundResId = intent.getIntExtra(EXTRA_BACKGROUND_RES_ID, 0)
-            startForegroundServiceWithTimer(timeMillis, bellResId, backgroundResId)
+            val guidedResId = intent.getIntExtra(EXTRA_GUIDED_RES_ID, 0)
+            startForegroundServiceWithTimer(timeMillis, bellResId, backgroundResId, guidedResId)
         } else if (intent?.action == ACTION_STOP) {
             stopSelf()
         }
         return START_NOT_STICKY
     }
 
-    private fun startForegroundServiceWithTimer(timeMillis: Long, bellResId: Int, backgroundResId: Int) {
+    private fun startForegroundServiceWithTimer(timeMillis: Long, bellResId: Int, backgroundResId: Int, guidedResId: Int = 0) {
         createNotificationChannel()
         val notification = buildNotification("Meditation timer running...")
         try {

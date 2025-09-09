@@ -100,6 +100,46 @@
 
     </LinearLayout>
 
+    <!-- Guided Meditation Option -->
+    <LinearLayout
+        android:id="@+id/guided_meditation_option"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/settings_option_background"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@id/background_sound_option"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_music"
+            android:tint="@color/shiva_gold_accent"
+            android:layout_marginEnd="16dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🧘 Guided Meditation"
+            android:textColor="@color/shiva_text_white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="@color/shiva_text_white" />
+
+    </LinearLayout>
+
     <!-- Heart Rate Measurement Toggle -->
     <LinearLayout
         android:id="@+id/heart_rate_toggle_container"
@@ -110,7 +150,7 @@
         android:padding="16dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/settings_option_background"
-        app:layout_constraintTop_toBottomOf="@id/background_sound_option"
+        app:layout_constraintTop_toBottomOf="@id/guided_meditation_option"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
