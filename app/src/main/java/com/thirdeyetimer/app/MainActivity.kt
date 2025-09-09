@@ -36,7 +36,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import java.util.Calendar
 import android.app.Dialog
 import android.view.ViewGroup
 import android.view.Gravity
@@ -47,7 +46,7 @@ import androidx.core.content.ContextCompat
 import androidx.appcompat.widget.SwitchCompat
 import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
-
+import java.util.Calendar
 class MainActivity : AppCompatActivity() {
     private var isRunning = false
     private var timeInMilliSeconds = 0L
@@ -456,6 +455,7 @@ class MainActivity : AppCompatActivity() {
     private var endHRV = 0.0
     private var heartRateMeasured = false
     private var lastSessionDuration: Long = 0L
+    private var backgroundSoundPlayer: MediaPlayer? = null
     
     companion object {
         private const val PREFS_NAME = "MeditationPrefs"
@@ -470,11 +470,21 @@ class MainActivity : AppCompatActivity() {
         private const val KEY_DARK_MODE_ENABLED = "dark_mode_enabled"
     
         private const val REQUEST_CODE_PERMISSIONS = 101
+        
+        // Test Ad Unit IDs for debugging
+        private const val TEST_BANNER_AD_ID = "ca-app-pub-3940256099942544/6300978111"
+        private const val TEST_INTERSTITIAL_AD_ID = "ca-app-pub-3940256099942544/1033173712"
+        
+        // Production Ad Unit IDs
+        private const val PROD_TOP_BANNER_AD_ID = "ca-app-pub-2722920301958819/3959238290"
+        private const val PROD_BOTTOM_BANNER_AD_ID = "ca-app-pub-2722920301958819/2481160193"
+        private const val PROD_INTERSTITIAL_AD_ID = "ca-app-pub-2722920301958819/7531366385"
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("MainActivity", "onCreate started")
 
         // Apply dark mode preference before inflating views
         try {
@@ -485,11 +495,13 @@ class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(desiredMode)
             }
         } catch (_: Exception) { }
+        
         // Enable edge-to-edge for Android 15 compatibility
         enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContentView(R.layout.activity_main)
+        Log.d("MainActivity", "Layout set")
 
         // Apply window insets to root content to avoid overlaps
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { v, insets ->
@@ -498,46 +510,138 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // Initialize achievement popup manager
+        // Initialize achievement popup manager first
         achievementPopupManager = AchievementPopupManager(this)
+        Log.d("MainActivity", "Achievement popup manager initialized")
 
-        // Try to initialize views immediately first
-        Log.d("MainActivity", "Trying immediate view initialization")
-        Log.d("MainActivity", "Looking for view with ID: background_image_view")
-        val immediateView = findViewById<ImageView>(R.id.background_image_view)
-        Log.d("MainActivity", "findViewById returned: $immediateView")
-
-        if (immediateView != null) {
-            Log.d("MainActivity", "Immediate view initialization successful")
-            backgroundImageView = immediateView
-            initializeViews()
-        } else {
-            // Fallback to post method
-            Log.d("MainActivity", "Immediate view initialization failed, using post method")
-            window.decorView.post {
-                Log.d("MainActivity", "Window decorView post called")
-                initializeViews()
-            }
-        }
-
-
+        // Initialize essential views and buttons first - this is critical for functionality
+        initializeCoreViews()
         
-
-
-
+        // Initialize ads and background asynchronously
+        Handler(Looper.getMainLooper()).postDelayed({
+            setupAds()
+            initializeBackgroundView()
+        }, 500)
+        
+        Log.d("MainActivity", "onCreate completed")
     }
 
-    private fun initializeViews() {
+    private fun initializeCoreViews() {
         try {
-            // Initialize views
+            Log.d("MainActivity", "Starting core view initialization")
+            
+            // Initialize essential UI views first - these are critical for app functionality
             timeEditText = findViewById(R.id.time_edit_text)
             timerText = findViewById(R.id.timer)
             startPauseButton = findViewById(R.id.button_start_pause)
             resetButton = findViewById(R.id.button_reset)
-            adView = findViewById(R.id.adView)
-            topAdView = findViewById(R.id.topAdView)
             totalTimeText = findViewById(R.id.total_time_text)
             appTitleText = findViewById(R.id.app_title)
+            
+            // Verify all essential views are found
+            if (timeEditText == null) {
+                Log.e("MainActivity", "timeEditText not found!")
+                return
+            }
+            if (timerText == null) {
+                Log.e("MainActivity", "timerText not found!")
+                return
+            }
+            if (startPauseButton == null) {
+                Log.e("MainActivity", "startPauseButton not found!")
+                return
+            }
+            if (resetButton == null) {
+                Log.e("MainActivity", "resetButton not found!")
+                return
+            }
+            if (totalTimeText == null) {
+                Log.e("MainActivity", "totalTimeText not found!")
+                return
+            }
+            
+            Log.d("MainActivity", "All core views found successfully")
+            
+            // Set up button listeners immediately - this is the main fix
+            setupButtonListeners()
+            
+            // Load preferences and data
+            loadPreferencesAndData()
+            
+            Log.d("MainActivity", "Core views initialized successfully")
+            
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error in core view initialization: ${e.message}", e)
+        }
+    }
+    
+    private fun setupAds() {
+        try {
+            Log.d("AdMob", "Setting up banner ads")
+            
+            // Find ad views
+            adView = findViewById(R.id.adView)
+            topAdView = findViewById(R.id.topAdView)
+            
+            if (adView == null) {
+                Log.e("AdMob", "Bottom banner ad view not found!")
+                return
+            }
+            
+            if (topAdView == null) {
+                Log.e("AdMob", "Top banner ad view not found!")
+                return
+            }
+            
+            Log.d("AdMob", "Ad views found successfully")
+            
+            // Ad unit IDs are now set in XML layouts - no need to set them programmatically
+            Log.d("AdMob", "Ad unit IDs are defined in XML layouts")
+            Log.d("AdMob", "Debug build: ${isDebugBuild()}")
+            
+            // Check network connectivity
+            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+            val activeNetwork = connectivityManager.activeNetworkInfo
+            val isConnected = activeNetwork?.isConnectedOrConnecting == true
+            
+            if (!isConnected) {
+                Log.w("AdMob", "No internet connection - ads will not load")
+                return
+            }
+            
+            // Initialize MobileAds and load banner ads
+            Log.d("AdMob", "Initializing MobileAds...")
+            MobileAds.initialize(this) { initializationStatus ->
+                Log.d("AdMob", "MobileAds initialization completed")
+                
+                // Load banner ads after initialization
+                loadBannerAds()
+                
+                // Load interstitial ad
+                loadInterstitialAd()
+            }
+            
+        } catch (e: Exception) {
+            Log.e("AdMob", "Error setting up ads: ${e.message}", e)
+        }
+    }
+    
+    private fun initializeBackgroundAndAds() {
+        try {
+            Log.d("MainActivity", "Starting background and ads initialization")
+            
+            // Initialize ad views
+            adView = findViewById(R.id.adView)
+            topAdView = findViewById(R.id.topAdView)
+            
+            if (adView != null && topAdView != null) {
+                // Set ad unit IDs programmatically
+                adView.adUnitId = getBottomBannerAdUnitId()
+                topAdView.adUnitId = getTopBannerAdUnitId()
+                
+                Log.d("AdMob", "Set bottom ad unit ID: ${adView.adUnitId}")
+                Log.d("AdMob", "Set top ad unit ID: ${topAdView.adUnitId}")
+            }
 
             Log.d("MainActivity", "About to find background ImageView")
             Log.d("MainActivity", "R.id.background_image_view = ${R.id.background_image_view}")
@@ -710,132 +814,132 @@ class MainActivity : AppCompatActivity() {
             // Initialize background slideshow
             setupBackgroundSlideshow()
 
-            // Initialize AdMob
-            MobileAds.initialize(this) {}
-
-            // Load banner ads
-            try {
-                val adRequest = AdRequest.Builder().build()
-                adView.loadAd(adRequest)
-                topAdView.loadAd(adRequest)
-            } catch (e: Exception) {
-                Log.e("AdMobError", "Failed to load ad: ${e.message}", e) // Log error
+            // Check network connectivity
+            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+            val activeNetwork = connectivityManager.activeNetworkInfo
+            val isConnected = activeNetwork?.isConnectedOrConnecting == true
+            Log.d("AdMob", "Network connected: $isConnected")
+            
+            if (!isConnected) {
+                Log.w("AdMob", "No internet connection - ads may not load")
+            }
+            
+            // Initialize AdMob with proper callback
+            Log.d("AdMob", "Starting MobileAds initialization...")
+            MobileAds.initialize(this) { initializationStatus ->
+                Log.d("AdMob", "MobileAds initialization completed")
+                Log.d("AdMob", "Initialization status: ${initializationStatus}")
+                
+                // Log adapter statuses
+                for ((adapterClass, adapterStatus) in initializationStatus.adapterStatusMap) {
+                    Log.d("AdMob", "Adapter $adapterClass: ${adapterStatus.description} (${adapterStatus.initializationState})")
+                }
+                
+                // Load banner ads after initialization
+                loadBannerAds()
             }
 
             // Load interstitial ad
             loadInterstitialAd()
 
+            
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error in background/ads initialization: ${e.message}", e)
+        }
+    }
+    
+    private fun loadPreferencesAndData() {
+        try {
             // Load preferences
             val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
             totalMeditationTimeMillis = prefs.getLong(KEY_TOTAL_TIME, 0L)
             selectedBellResId = prefs.getInt(KEY_BELL_SOUND, R.raw.bell)
             selectedBackgroundResId = prefs.getInt("KEY_BACKGROUND_SOUND", 0)
 
-            // Heart rate setting will be loaded in settings dialog
-
             // Load achievement data
             loadAchievementData()
-
             updateTotalTimeText()
+            
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error loading preferences: ${e.message}", e)
+        }
+    }
+    
+    private fun setupButtonListeners() {
+        try {
 
-            // Load selected bell from prefs
-            //val chooseBellButton = findViewById<Button>(R.id.button_choose_bell)
-            //chooseBellButton.setOnClickListener {
-            //    val builder = AlertDialog.Builder(this)
-            //    builder.setTitle("Choose Bell Sound")
-            //    val bellOptions = arrayOf(
-            //        "Bell 1", "Bell 2", "Bell 3", "Bell 4", "Bell 5", "Bell 6"
-            //    )
-            //    // Use the actual resource IDs that match your filenames
-            //    val bellResIds = arrayOf(
-            //        R.raw.bell_1, // bell_1.wav
-            //        R.raw.bell_2, // bell_2.wav
-            //        R.raw.bell_3, // bell_3.wav
-            //        R.raw.bell_4, // bell_4.wav
-            //        R.raw.bell_5, // bell_5.wav
-            //        R.raw.bell_6  // bell_6.wav
-            //    )
-            //    builder.setSingleChoiceItems(bellOptions, 0) { dialog, which ->
-            //        try {
-            //            // Play preview
-            //            previewPlayer?.release()
-            //            previewPlayer = MediaPlayer.create(this, bellResIds[which])
-            //            if (previewPlayer != null) {
-            //                previewPlayer?.setVolume(1.0f, 1.0f)
-            //                previewPlayer?.start()
-            //                // Save selection
-            //                selectedBellResId = bellResIds[which]
-            //                prefs.edit().putInt(KEY_BELL_SOUND, selectedBellResId).apply()
-            //            } else {
-            //                Log.e("MainActivity", "Failed to create preview player for bell: $which")
-            //            }
-            //        } catch (e: Exception) {
-            //            Log.e("MainActivity", "Error playing bell preview: ${e.message}", e)
-            //        }
-            //    }
-            //    builder.setPositiveButton("OK") { dialog, _ ->
-            //        previewPlayer?.release()
-            //        dialog.dismiss()
-            //    }
-            //    builder.setOnDismissListener {
-            //        previewPlayer?.release()
-            //    }
-            //    builder.show()
-            //}
-
+            // Settings button
             val chooseSoundOptionsButton = findViewById<Button>(R.id.button_choose_sound_options)
-            chooseSoundOptionsButton.setOnClickListener {
+            chooseSoundOptionsButton?.setOnClickListener {
+                Log.d("MainActivity", "Settings button clicked")
                 showSettingsDialog()
             }
 
-            // Add achievements button
+            // Achievements button
             val achievementsButton = findViewById<Button>(R.id.button_achievements)
-            achievementsButton.setOnClickListener {
+            achievementsButton?.setOnClickListener {
+                Log.d("MainActivity", "Achievements button clicked")
                 showAchievementsDialog()
             }
 
+            // Start/Pause button - THE MAIN FIX
             startPauseButton.setOnClickListener {
-                if (isRunning) {
-                    // Pausing - stop the timer
-                    stopTimerService()
-                    wasPaused = true
-                    startPauseButton.text = "Start"
-                    resetButton.visibility = View.VISIBLE
-                } else {
-                    val timeInput = timeEditText.text.toString()
-                    if (timeInput.isNotEmpty()) {
-                        // If resuming from pause, use current remaining time; otherwise use input
-                        if (!wasPaused || timeInMilliSeconds <= 0) {
-                            timeInMilliSeconds = timeInput.toLong() * 60000L
+                Log.d("MainActivity", "Start/Pause button clicked")
+                try {
+                    if (isRunning) {
+                        // Pausing - stop the timer
+                        stopTimerService()
+                        wasPaused = true
+                        startPauseButton.text = "Start"
+                        resetButton.visibility = View.VISIBLE
+                    } else {
+                        val timeInput = timeEditText.text.toString()
+                        if (timeInput.isNotEmpty()) {
+                            // If resuming from pause, use current remaining time; otherwise use input
+                            if (!wasPaused || timeInMilliSeconds <= 0) {
+                                timeInMilliSeconds = timeInput.toLong() * 60000L
 
-                            // Reset heart rate measurement state for new session
-                            heartRateMeasured = false
-                            startHeartRate = 0
-                            startHRV = 0.0
-                            endHeartRate = 0
-                            endHRV = 0.0
-                        }
+                                // Reset heart rate measurement state for new session
+                                heartRateMeasured = false
+                                startHeartRate = 0
+                                startHRV = 0.0
+                                endHeartRate = 0
+                                endHRV = 0.0
+                            }
 
-                        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                        val heartRateEnabled = prefs.getBoolean(KEY_HEART_RATE_ENABLED, false)
-                        if (heartRateEnabled) {
-                            // Check camera permission first
-                            if (checkCameraPermission()) {
-                                startHeartRateMeasurement()
+                            val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                            val heartRateEnabled = prefs.getBoolean(KEY_HEART_RATE_ENABLED, false)
+                            if (heartRateEnabled) {
+                                // Check camera permission first
+                                if (checkCameraPermission()) {
+                                    startHeartRateMeasurement()
+                                } else {
+                                    requestCameraPermission()
+                                }
                             } else {
-                                requestCameraPermission()
+                                startMeditationSession()
                             }
                         } else {
-                            startMeditationSession()
+                            Log.w("MainActivity", "No time input provided")
                         }
                     }
+                } catch (e: Exception) {
+                    Log.e("MainActivity", "Error in start/pause button click: ${e.message}", e)
                 }
             }
+            
+            // Reset button
             resetButton.setOnClickListener {
-                stopTimerService()
-                resetTimerUI()
+                Log.d("MainActivity", "Reset button clicked")
+                try {
+                    stopTimerService()
+                    resetTimerUI()
+                } catch (e: Exception) {
+                    Log.e("MainActivity", "Error in reset button click: ${e.message}", e)
+                }
             }
-            // Register receiver
+            
+            // Register broadcast receiver
             try {
                 LocalBroadcastManager.getInstance(this).registerReceiver(
                     timerReceiver,
@@ -848,17 +952,139 @@ class MainActivity : AppCompatActivity() {
                 Log.e("MainActivity", "Error registering broadcast receiver: ${e.message}", e)
             }
 
-            Log.d("MainActivity", "Views initialized successfully")
+            Log.d("MainActivity", "Button listeners set up successfully")
         } catch (e: Exception) {
-            Log.e("MainActivity", "Error initializing views: ${e.message}", e)
+            Log.e("MainActivity", "Error setting up button listeners: ${e.message}", e)
+        }
+    }
+    
+    private fun initializeBackgroundView() {
+        try {
+            Log.d("MainActivity", "Initializing background view (simplified)")
+            
+            // Try simple approach first - look for the actual background ImageView
+            val bgView = findViewById<ImageView>(R.id.background_image_view)
+            if (bgView != null) {
+                backgroundImageView = bgView
+                setupBackgroundSlideshow()
+                Log.d("MainActivity", "Background ImageView found and initialized")
+                return
+            }
+            
+            // Fallback: find ScrollView in the layout hierarchy (safer approach)
+            val rootView = findViewById<View>(android.R.id.content)
+            if (rootView is android.view.ViewGroup) {
+                val scrollView = findScrollViewInHierarchy(rootView)
+                if (scrollView != null) {
+                    scrollViewForBackground = scrollView
+                    val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                    val darkModeEnabled = prefs.getBoolean(KEY_DARK_MODE_ENABLED, false)
+                    
+                    if (darkModeEnabled) {
+                        scrollView.setBackgroundColor(android.graphics.Color.BLACK)
+                    } else {
+                        try {
+                            scrollView.setBackgroundResource(R.drawable.shiva_bg)
+                        } catch (e: Exception) {
+                            Log.w("MainActivity", "Failed to set background resource: ${e.message}")
+                        }
+                    }
+                    Log.d("MainActivity", "Using ScrollView for background")
+                    return
+                }
+            }
+            
+            // Final fallback: set background on root content view
+            val contentView = findViewById<View>(android.R.id.content)
+            if (contentView != null) {
+                val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                val darkModeEnabled = prefs.getBoolean(KEY_DARK_MODE_ENABLED, false)
+                
+                if (darkModeEnabled) {
+                    contentView.setBackgroundColor(android.graphics.Color.BLACK)
+                } else {
+                    try {
+                        contentView.setBackgroundResource(R.drawable.shiva_bg)
+                    } catch (e: Exception) {
+                        Log.w("MainActivity", "Failed to set background on content view: ${e.message}")
+                    }
+                }
+                Log.d("MainActivity", "Using content view for background")
+            }
+            
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error initializing background: ${e.message}", e)
+        }
+    }
+    
+    private fun findScrollViewInHierarchy(viewGroup: android.view.ViewGroup): android.widget.ScrollView? {
+        try {
+            for (i in 0 until viewGroup.childCount) {
+                val child = viewGroup.getChildAt(i)
+                if (child is android.widget.ScrollView) {
+                    return child
+                }
+                if (child is android.view.ViewGroup) {
+                    val found = findScrollViewInHierarchy(child)
+                    if (found != null) {
+                        return found
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.w("MainActivity", "Error searching for ScrollView: ${e.message}")
+        }
+        return null
+    }
+    
+    private fun initializeAdMob() {
+        try {
+            Log.d("AdMob", "Initializing AdMob...")
+            
+            // Check network connectivity first
+            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+            val activeNetwork = connectivityManager.activeNetworkInfo
+            val isConnected = activeNetwork?.isConnectedOrConnecting == true
+            
+            if (!isConnected) {
+                Log.w("AdMob", "No internet connection - skipping ads")
+                return
+            }
+            
+            MobileAds.initialize(this) { initializationStatus ->
+                Log.d("AdMob", "AdMob initialized")
+                loadBannerAds()
+                loadInterstitialAd()
+            }
+            
+        } catch (e: Exception) {
+            Log.e("AdMob", "Error initializing AdMob: ${e.message}", e)
+        }
+    }
+    
+    private fun getAdErrorCodeDescription(errorCode: Int): String {
+        return when (errorCode) {
+            0 -> "ERROR_CODE_INTERNAL_ERROR"
+            1 -> "ERROR_CODE_INVALID_REQUEST"
+            2 -> "ERROR_CODE_NETWORK_ERROR"
+            3 -> "ERROR_CODE_NO_FILL"
+            4 -> "ERROR_CODE_INVALID_AD_STRING"
+            5 -> "ERROR_CODE_REQUEST_ID_MISMATCH"
+            6 -> "ERROR_CODE_MEDIATION_NO_FILL"
+            7 -> "ERROR_CODE_MEDIATION_ADAPTER_ERROR"
+            8 -> "ERROR_CODE_INVALID_AD_SIZE"
+            9 -> "ERROR_CODE_APP_ID_MISSING"
+            10 -> "ERROR_CODE_AD_REUSED"
+            else -> "UNKNOWN_ERROR_CODE"
         }
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus && !::backgroundImageView.isInitialized) {
-            Log.d("MainActivity", "Window focus changed, trying to initialize views again")
-            initializeViews()
+        // Skip background initialization on window focus to avoid interfering with buttons
+        // Background will be initialized asynchronously in onCreate if needed
+        if (hasFocus) {
+            Log.d("MainActivity", "Window focus changed - buttons should be working now")
         }
     }
 
@@ -1170,11 +1396,118 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
     
-        private fun loadInterstitialAd() {
+    private fun isDebugBuild(): Boolean {
+        // Set to false to use production ads
+        return false
+    }
+    
+    private fun getTopBannerAdUnitId(): String {
+        return if (isDebugBuild()) TEST_BANNER_AD_ID else PROD_TOP_BANNER_AD_ID
+    }
+    
+    private fun getBottomBannerAdUnitId(): String {
+        return if (isDebugBuild()) TEST_BANNER_AD_ID else PROD_BOTTOM_BANNER_AD_ID
+    }
+    
+    private fun getInterstitialAdUnitId(): String {
+        return if (isDebugBuild()) TEST_INTERSTITIAL_AD_ID else PROD_INTERSTITIAL_AD_ID
+    }
+    
+    private fun loadBannerAds() {
+        try {
+            Log.d("AdMob", "Loading banner ads...")
+            
+            // Check if ad views are available
+            if (!::adView.isInitialized || !::topAdView.isInitialized) {
+                Log.e("AdMob", "Ad views not initialized - cannot load ads")
+                return
+            }
+            
+            if (adView == null || topAdView == null) {
+                Log.e("AdMob", "Ad views are null - cannot load ads")
+                return
+            }
+            
+            val adRequest = AdRequest.Builder().build()
+            
+            Log.d("AdMob", "Setting up ad listeners...")
+            
+            // Set ad callbacks for better debugging
+            adView.adListener = object : com.google.android.gms.ads.AdListener() {
+                override fun onAdLoaded() {
+                    Log.d("AdMob", "✅ Bottom banner ad loaded successfully")
+                    adView.visibility = View.VISIBLE
+                }
+                
+                override fun onAdFailedToLoad(adError: com.google.android.gms.ads.LoadAdError) {
+                    Log.e("AdMob", "❌ Bottom banner ad failed to load: ${adError.message}")
+                    Log.e("AdMob", "Error code: ${adError.code} (${getAdErrorCodeDescription(adError.code)})")
+                    Log.e("AdMob", "Error domain: ${adError.domain}")
+                    Log.e("AdMob", "Error cause: ${adError.cause}")
+                    
+                    // Hide ad view on failure in production
+                    adView.visibility = View.GONE
+                }
+                
+                override fun onAdOpened() {
+                    Log.d("AdMob", "Bottom banner ad opened")
+                }
+                
+                override fun onAdClosed() {
+                    Log.d("AdMob", "Bottom banner ad closed")
+                }
+                
+                override fun onAdImpression() {
+                    Log.d("AdMob", "Bottom banner ad impression recorded")
+                }
+            }
+            
+            topAdView.adListener = object : com.google.android.gms.ads.AdListener() {
+                override fun onAdLoaded() {
+                    Log.d("AdMob", "✅ Top banner ad loaded successfully")
+                    topAdView.visibility = View.VISIBLE
+                }
+                
+                override fun onAdFailedToLoad(adError: com.google.android.gms.ads.LoadAdError) {
+                    Log.e("AdMob", "❌ Top banner ad failed to load: ${adError.message}")
+                    Log.e("AdMob", "Error code: ${adError.code} (${getAdErrorCodeDescription(adError.code)})")
+                    Log.e("AdMob", "Error domain: ${adError.domain}")
+                    Log.e("AdMob", "Error cause: ${adError.cause}")
+                    
+                    // Hide ad view on failure in production
+                    topAdView.visibility = View.GONE
+                }
+                
+                override fun onAdOpened() {
+                    Log.d("AdMob", "Top banner ad opened")
+                }
+                
+                override fun onAdClosed() {
+                    Log.d("AdMob", "Top banner ad closed")
+                }
+                
+                override fun onAdImpression() {
+                    Log.d("AdMob", "Top banner ad impression recorded")
+                }
+            }
+            
+            // Load the ads
+            Log.d("AdMob", "Starting to load banner ads...")
+            adView.loadAd(adRequest)
+            topAdView.loadAd(adRequest)
+        } catch (e: Exception) {
+            Log.e("AdMob", "Exception while loading banner ads: ${e.message}", e)
+        }
+    }
+    
+    private fun loadInterstitialAd() {
+        val adUnitId = getInterstitialAdUnitId()
+        Log.d("AdMob", "Loading interstitial ad with unit ID: $adUnitId")
+        
         val adRequest = AdRequest.Builder().build()
         InterstitialAd.load(
             this,
-            "ca-app-pub-2722920301958819/7531366385", // Interstitial ad unit ID
+            adUnitId,
             adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {

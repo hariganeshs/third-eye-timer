@@ -40,7 +40,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_bell"
-            android:tint="@color/shiva_gold_accent"
+            app:tint="@color/shiva_gold_accent"
             android:layout_marginEnd="16dp" />
 
         <TextView
@@ -56,7 +56,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_arrow_right"
-            android:tint="@color/shiva_text_white" />
+            app:tint="@color/shiva_text_white" />
 
     </LinearLayout>
 
@@ -80,7 +80,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_music"
-            android:tint="@color/shiva_gold_accent"
+            app:tint="@color/shiva_gold_accent"
             android:layout_marginEnd="16dp" />
 
         <TextView
@@ -96,7 +96,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_arrow_right"
-            android:tint="@color/shiva_text_white" />
+            app:tint="@color/shiva_text_white" />
 
     </LinearLayout>
 
@@ -120,7 +120,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_music"
-            android:tint="@color/shiva_gold_accent"
+            app:tint="@color/shiva_gold_accent"
             android:layout_marginEnd="16dp" />
 
         <TextView
@@ -136,7 +136,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_arrow_right"
-            android:tint="@color/shiva_text_white" />
+            app:tint="@color/shiva_text_white" />
 
     </LinearLayout>
 
@@ -158,7 +158,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_heart"
-            android:tint="@color/shiva_gold_accent"
+            app:tint="@color/shiva_gold_accent"
             android:layout_marginEnd="16dp" />
 
         <TextView
@@ -198,7 +198,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_achievement_trophy"
-            android:tint="@color/shiva_gold_accent"
+            app:tint="@color/shiva_gold_accent"
             android:layout_marginEnd="16dp" />
 
         <TextView
@@ -240,7 +240,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_reset"
-            android:tint="@color/shiva_gold_accent"
+            app:tint="@color/shiva_gold_accent"
             android:layout_marginEnd="16dp" />
 
         <TextView
@@ -256,7 +256,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_arrow_right"
-            android:tint="@color/shiva_text_white" />
+            app:tint="@color/shiva_text_white" />
 
     </LinearLayout>
 
