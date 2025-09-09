@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_background"
+    android:fillViewport="true"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Header Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/meditation_header_background"
+            android:padding="24dp"
+            android:layout_marginBottom="20dp"
+            android:elevation="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🧘‍♀️"
+                android:textSize="36sp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Guided Meditation Collection"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_gold_accent"
+                android:fontFamily="serif"
+                android:gravity="center"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose your path to inner peace"
+                android:textSize="14sp"
+                android:textColor="@color/shiva_ash_gray"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center" />
+
+            <!-- Close Button -->
+            <Button
+                android:id="@+id/button_close_guided_dialog"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:text="✕"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_text_white"
+                android:background="@drawable/close_button_background"
+                android:gravity="center"
+                android:layout_gravity="end"
+                android:layout_marginTop="-40dp"
+                android:elevation="6dp" />
+
+        </LinearLayout>
+
+        <!-- Search Bar (Optional Future Feature) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/search_background"
+            android:padding="12dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_vertical"
+            android:elevation="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔍"
+                android:textSize="18sp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Search meditations..."
+                android:textSize="14sp"
+                android:textColor="@color/shiva_ash_gray"
+                android:fontFamily="sans-serif-light" />
+
+        </LinearLayout>
+
+        <!-- Featured/Recommended Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="✨ Recommended for You"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_gold_accent"
+                android:fontFamily="serif"
+                android:layout_marginBottom="12dp" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/featured_meditations_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+            </HorizontalScrollView>
+
+        </LinearLayout>
+
+        <!-- Basic Meditation Techniques -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:id="@+id/basic_meditation_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/category_header_background"
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🌱"
+                    android:textSize="24sp"
+                    android:layout_marginEnd="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Basic Meditation Techniques"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/shiva_text_white"
+                    android:fontFamily="serif" />
+
+                <TextView
+                    android:id="@+id/basic_meditation_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="▼"
+                    android:textSize="16sp"
+                    android:textColor="@color/shiva_gold_accent"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/basic_meditation_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/category_content_background"
+                android:padding="12dp" />
+
+        </LinearLayout>
+
+        <!-- Body Scan Techniques -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:id="@+id/body_scan_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/category_header_background"
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🧘‍♂️"
+                    android:textSize="24sp"
+                    android:layout_marginEnd="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Body Scan Meditations"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/shiva_text_white"
+                    android:fontFamily="serif" />
+
+                <TextView
+                    android:id="@+id/body_scan_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="▼"
+                    android:textSize="16sp"
+                    android:textColor="@color/shiva_gold_accent"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/body_scan_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/category_content_background"
+                android:padding="12dp" />
+
+        </LinearLayout>
+
+        <!-- Loving Kindness &amp; Compassion -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:id="@+id/loving_kindness_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/category_header_background"
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💝"
+                    android:textSize="24sp"
+                    android:layout_marginEnd="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Loving Kindness &amp; Compassion"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/shiva_text_white"
+                    android:fontFamily="serif" />
+
+                <TextView
+                    android:id="@+id/loving_kindness_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="▼"
+                    android:textSize="16sp"
+                    android:textColor="@color/shiva_gold_accent"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/loving_kindness_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/category_content_background"
+                android:padding="12dp" />
+
+        </LinearLayout>
+
+        <!-- Buddhist Practices -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:id="@+id/buddhist_practices_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/category_header_background"
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="☸️"
+                    android:textSize="24sp"
+                    android:layout_marginEnd="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Buddhist Practices"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/shiva_text_white"
+                    android:fontFamily="serif" />
+
+                <TextView
+                    android:id="@+id/buddhist_practices_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="▼"
+                    android:textSize="16sp"
+                    android:textColor="@color/shiva_gold_accent"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/buddhist_practices_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/category_content_background"
+                android:padding="12dp" />
+
+        </LinearLayout>
+
+        <!-- Hindu Practices -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:id="@+id/hindu_practices_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/category_header_background"
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🕉️"
+                    android:textSize="24sp"
+                    android:layout_marginEnd="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Hindu &amp; Yogic Practices"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/shiva_text_white"
+                    android:fontFamily="serif" />
+
+                <TextView
+                    android:id="@+id/hindu_practices_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="▼"
+                    android:textSize="16sp"
+                    android:textColor="@color/shiva_gold_accent"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/hindu_practices_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/category_content_background"
+                android:padding="12dp" />
+
+        </LinearLayout>
+
+        <!-- Nature &amp; Environment -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:id="@+id/nature_meditation_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/category_header_background"
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🌿"
+                    android:textSize="24sp"
+                    android:layout_marginEnd="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nature &amp; Environment"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/shiva_text_white"
+                    android:fontFamily="serif" />
+
+                <TextView
+                    android:id="@+id/nature_meditation_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="▼"
+                    android:textSize="16sp"
+                    android:textColor="@color/shiva_gold_accent"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nature_meditation_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/category_content_background"
+                android:padding="12dp" />
+
+        </LinearLayout>
+
+        <!-- Chakra Meditations -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:id="@+id/chakra_meditation_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/category_header_background"
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🌈"
+                    android:textSize="24sp"
+                    android:layout_marginEnd="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Chakra Meditations"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/shiva_text_white"
+                    android:fontFamily="serif" />
+
+                <TextView
+                    android:id="@+id/chakra_meditation_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="▼"
+                    android:textSize="16sp"
+                    android:textColor="@color/shiva_gold_accent"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/chakra_meditation_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/category_content_background"
+                android:padding="12dp" />
+
+        </LinearLayout>
+
+        <!-- Specialized Practices -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:id="@+id/specialized_practices_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/category_header_background"
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚡"
+                    android:textSize="24sp"
+                    android:layout_marginEnd="12dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Specialized Practices"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/shiva_text_white"
+                    android:fontFamily="serif" />
+
+                <TextView
+                    android:id="@+id/specialized_practices_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="▼"
+                    android:textSize="16sp"
+                    android:textColor="@color/shiva_gold_accent"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/specialized_practices_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/category_content_background"
+                android:padding="12dp" />
+
+        </LinearLayout>
+
+        <!-- Current Selection Display -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/current_selection_background"
+            android:padding="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="20dp"
+            android:elevation="3dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🎯 Currently Selected"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_gold_accent"
+                android:fontFamily="serif"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/text_current_guided_meditation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Complete Silence"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_text_white"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/button_stop_meditation_preview"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:text="⏹️ Stop Preview"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_text_white"
+                android:background="@drawable/secondary_button_background"
+                android:layout_marginEnd="8dp"
+                android:elevation="4dp" />
+
+            <Button
+                android:id="@+id/button_confirm_guided_meditation"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:text="✅ Confirm Selection"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/shiva_text_white"
+                android:background="@drawable/primary_button_background"
+                android:layout_marginStart="8dp"
+                android:elevation="4dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

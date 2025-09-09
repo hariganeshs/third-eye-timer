@@ -2009,29 +2009,270 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showGuidedMeditationPicker() {
+        val dialogView = layoutInflater.inflate(R.layout.guided_meditation_selection_dialog, null)
+        val dialog = Dialog(this, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
+        dialog.setContentView(dialogView)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        // Get SharedPreferences for saving selections
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-        val currentGuidedIndex = guidedMeditationResIds.indexOf(selectedGuidedMeditationResId).coerceAtLeast(0)
-        val guidedDialog = AlertDialog.Builder(this)
-        guidedDialog.setTitle("🧘 Choose Guided Meditation")
-        guidedDialog.setSingleChoiceItems(guidedMeditationNames, currentGuidedIndex) { dialog, guidedWhich ->
-            try {
-                previewPlayer?.release()
-                if (guidedMeditationResIds[guidedWhich] != 0) {
-                    previewPlayer = MediaPlayer.create(this, guidedMeditationResIds[guidedWhich])
-                    previewPlayer?.isLooping = false  // Preview should not loop
-                    previewPlayer?.setVolume(1.0f, 1.0f)
-                    previewPlayer?.start()
-                }
-                selectedGuidedMeditationResId = guidedMeditationResIds[guidedWhich]
-                prefs.edit().putInt("KEY_GUIDED_MEDITATION_SOUND", selectedGuidedMeditationResId).apply()
-            } catch (e: Exception) {}
+        
+        // Current selected meditation
+        val currentMeditation = if (selectedGuidedMeditationResId == 0) {
+            GuidedMeditationData.getMeditationByResourceId(0) // Complete Silence
+        } else {
+            GuidedMeditationData.getMeditationByResourceId(selectedGuidedMeditationResId)
         }
-        guidedDialog.setPositiveButton("OK") { dialog, _ ->
+        
+        // Set current selection text
+        val currentSelectionText = dialogView.findViewById<TextView>(R.id.text_current_guided_meditation)
+        currentSelectionText.text = currentMeditation?.title ?: "Complete Silence"
+        
+        // Setup featured meditations horizontal scrolling list
+        setupFeaturedMeditations(dialogView, currentSelectionText)
+        
+        // Setup all category containers
+        setupCategorySection(
+            dialogView,
+            MeditationCategory.BASIC,
+            R.id.basic_meditation_header,
+            R.id.basic_meditation_container,
+            R.id.basic_meditation_arrow,
+            currentSelectionText
+        )
+        
+        setupCategorySection(
+            dialogView,
+            MeditationCategory.BODY_SCAN,
+            R.id.body_scan_header,
+            R.id.body_scan_container,
+            R.id.body_scan_arrow,
+            currentSelectionText
+        )
+        
+        setupCategorySection(
+            dialogView,
+            MeditationCategory.LOVING_KINDNESS,
+            R.id.loving_kindness_header,
+            R.id.loving_kindness_container,
+            R.id.loving_kindness_arrow,
+            currentSelectionText
+        )
+        
+        setupCategorySection(
+            dialogView,
+            MeditationCategory.BUDDHIST,
+            R.id.buddhist_practices_header,
+            R.id.buddhist_practices_container,
+            R.id.buddhist_practices_arrow,
+            currentSelectionText
+        )
+        
+        setupCategorySection(
+            dialogView,
+            MeditationCategory.HINDU,
+            R.id.hindu_practices_header,
+            R.id.hindu_practices_container,
+            R.id.hindu_practices_arrow,
+            currentSelectionText
+        )
+        
+        setupCategorySection(
+            dialogView,
+            MeditationCategory.NATURE,
+            R.id.nature_meditation_header,
+            R.id.nature_meditation_container,
+            R.id.nature_meditation_arrow,
+            currentSelectionText
+        )
+        
+        setupCategorySection(
+            dialogView,
+            MeditationCategory.CHAKRA,
+            R.id.chakra_meditation_header,
+            R.id.chakra_meditation_container,
+            R.id.chakra_meditation_arrow,
+            currentSelectionText
+        )
+        
+        setupCategorySection(
+            dialogView,
+            MeditationCategory.SPECIALIZED,
+            R.id.specialized_practices_header,
+            R.id.specialized_practices_container,
+            R.id.specialized_practices_arrow,
+            currentSelectionText
+        )
+        
+        // Close button
+        dialogView.findViewById<Button>(R.id.button_close_guided_dialog).setOnClickListener {
             previewPlayer?.release()
             dialog.dismiss()
         }
-        guidedDialog.setOnDismissListener { previewPlayer?.release() }
-        guidedDialog.show()
+        
+        // Stop preview button
+        dialogView.findViewById<Button>(R.id.button_stop_meditation_preview).setOnClickListener {
+            previewPlayer?.release()
+            previewPlayer = null
+        }
+        
+        // Confirm button
+        dialogView.findViewById<Button>(R.id.button_confirm_guided_meditation).setOnClickListener {
+            previewPlayer?.release()
+            prefs.edit().putInt("KEY_GUIDED_MEDITATION_SOUND", selectedGuidedMeditationResId).apply()
+            dialog.dismiss()
+        }
+        
+        dialog.setOnDismissListener { previewPlayer?.release() }
+        dialog.show()
+    }
+    
+    /**
+     * Sets up the featured meditations horizontal scrolling section
+     */
+    private fun setupFeaturedMeditations(dialogView: View, currentSelectionText: TextView) {
+        val featuredContainer = dialogView.findViewById<LinearLayout>(R.id.featured_meditations_container)
+        featuredContainer.removeAllViews()
+        
+        // Get featured meditations
+        val featuredMeditations = GuidedMeditationData.getFeaturedMeditations()
+        
+        // Add cards for each featured meditation
+        for (meditation in featuredMeditations) {
+            val cardView = layoutInflater.inflate(R.layout.featured_meditation_card, featuredContainer, false)
+            
+            // Set card data
+            cardView.findViewById<TextView>(R.id.featured_meditation_icon).text = meditation.icon
+            cardView.findViewById<TextView>(R.id.featured_meditation_title).text = meditation.title
+            cardView.findViewById<TextView>(R.id.featured_meditation_subtitle).text = meditation.description
+            
+            // Highlight if selected
+            if (meditation.resourceId == selectedGuidedMeditationResId) {
+                cardView.setBackgroundResource(R.drawable.meditation_item_background)
+            }
+            
+            // Set click listener
+            cardView.setOnClickListener {
+                selectMeditation(meditation, currentSelectionText)
+            }
+            
+            // Set play button listener
+            cardView.findViewById<TextView>(R.id.featured_play_button).setOnClickListener {
+                previewMeditation(meditation)
+            }
+            
+            // Add to container
+            featuredContainer.addView(cardView)
+        }
+    }
+    
+    /**
+     * Sets up a category section with expandable content
+     */
+    private fun setupCategorySection(
+        dialogView: View,
+        category: MeditationCategory,
+        headerResId: Int,
+        containerResId: Int,
+        arrowResId: Int,
+        currentSelectionText: TextView
+    ) {
+        val headerView = dialogView.findViewById<LinearLayout>(headerResId)
+        val containerView = dialogView.findViewById<LinearLayout>(containerResId)
+        val arrowView = dialogView.findViewById<TextView>(arrowResId)
+        
+        // Initially collapse the container
+        containerView.visibility = View.GONE
+        arrowView.text = "▶"
+        
+        // Set click listener for expanding/collapsing
+        headerView.setOnClickListener {
+            if (containerView.visibility == View.VISIBLE) {
+                containerView.visibility = View.GONE
+                arrowView.text = "▶"
+            } else {
+                // If we're opening this section for the first time, populate it
+                if (containerView.childCount == 0) {
+                    populateCategoryContainer(containerView, category, currentSelectionText)
+                }
+                containerView.visibility = View.VISIBLE
+                arrowView.text = "▼"
+            }
+        }
+    }
+    
+    /**
+     * Populates a category container with meditation item cards
+     */
+    private fun populateCategoryContainer(
+        containerView: LinearLayout,
+        category: MeditationCategory,
+        currentSelectionText: TextView
+    ) {
+        // Get meditations for this category
+        val meditations = GuidedMeditationData.getMeditationsByCategory(category)
+        
+        // Add cards for each meditation
+        for (meditation in meditations) {
+            val cardView = layoutInflater.inflate(R.layout.meditation_item_card, containerView, false)
+            
+            // Set card data
+            cardView.findViewById<TextView>(R.id.meditation_icon).text = meditation.icon
+            cardView.findViewById<TextView>(R.id.meditation_title).text = meditation.title
+            cardView.findViewById<TextView>(R.id.meditation_description).text = meditation.description
+            cardView.findViewById<TextView>(R.id.meditation_duration).text = "⏱️ ${meditation.duration}"
+            
+            // Show selected indicator if this is the currently selected meditation
+            if (meditation.resourceId == selectedGuidedMeditationResId) {
+                cardView.findViewById<TextView>(R.id.selected_indicator).visibility = View.VISIBLE
+                cardView.setBackgroundResource(R.drawable.meditation_item_background)
+            }
+            
+            // Set click listener for selecting the meditation
+            cardView.setOnClickListener {
+                selectMeditation(meditation, currentSelectionText)
+                
+                // Update selected indicators in this container
+                for (i in 0 until containerView.childCount) {
+                    val otherCard = containerView.getChildAt(i)
+                    val indicator = otherCard.findViewById<TextView>(R.id.selected_indicator)
+                    indicator.visibility = if (otherCard == cardView) View.VISIBLE else View.GONE
+                }
+            }
+            
+            // Set play button listener
+            cardView.findViewById<TextView>(R.id.play_button).setOnClickListener {
+                previewMeditation(meditation)
+            }
+            
+            // Add to container
+            containerView.addView(cardView)
+        }
+    }
+    
+    /**
+     * Selects a meditation
+     */
+    private fun selectMeditation(meditation: MeditationItem, currentSelectionText: TextView) {
+        selectedGuidedMeditationResId = meditation.resourceId
+        currentSelectionText.text = meditation.title
+    }
+    
+    /**
+     * Previews a meditation audio
+     */
+    private fun previewMeditation(meditation: MeditationItem) {
+        try {
+            previewPlayer?.release()
+            if (meditation.resourceId != 0) {
+                previewPlayer = MediaPlayer.create(this, meditation.resourceId)
+                previewPlayer?.isLooping = false  // Preview should not loop
+                previewPlayer?.setVolume(1.0f, 1.0f)
+                previewPlayer?.start()
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error playing meditation preview: ${e.message}", e)
+        }
     }
 
     private fun getAchievementDisplayName(achievementKey: String): String {
