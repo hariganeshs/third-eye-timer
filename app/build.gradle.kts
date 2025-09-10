@@ -12,8 +12,8 @@ android {
         applicationId = "com.thirdeyetimer.app"
         minSdk = 21
         targetSdk = 36
-        versionCode = 7
-        versionName = "1.0.6"
+        versionCode = 8
+        versionName = "1.0.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Note: No local native build is configured in this project, so externalNativeBuild args are unnecessary.
@@ -67,13 +67,14 @@ android {
         }
     }
     
-    // Add splits configuration to ensure proper architecture handling
+    // Disable ABI splits when building App Bundles to avoid multiple APK outputs
+    // Play will handle ABI/device-specific distribution from the AAB
     splits {
         abi {
-            isEnable = true
+            isEnable = false
             reset()
             include("arm64-v8a", "x86_64")
-            isUniversalApk = true
+            isUniversalApk = false
         }
     }
     
