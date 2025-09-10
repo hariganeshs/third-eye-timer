@@ -22,6 +22,13 @@ android {
             // Ensure we're building for the right architectures
             abiFilters += listOf("arm64-v8a", "x86_64")
         }
+        
+        // Force 16 KB alignment for native libraries
+        externalNativeBuild {
+            cmake {
+                arguments += "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+            }
+        }
     }
 
     signingConfigs {
@@ -64,6 +71,8 @@ android {
         jniLibs {
             useLegacyPackaging = false
             // Ensure all native libraries are aligned to 16 KB boundaries
+            pickFirsts += "**/libimage_processing_util_jni.so"
+            pickFirsts += "**/libandroidx.graphics.path.so"
             pickFirsts += "lib/arm64-v8a/*.so"
             pickFirsts += "lib/x86_64/*.so"
         }
