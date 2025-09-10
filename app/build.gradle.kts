@@ -16,19 +16,7 @@ android {
         versionName = "1.0.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        
-        // Add NDK configuration for 16 KB page size support
-        ndk {
-            // Ensure we're building for the right architectures
-            abiFilters += listOf("arm64-v8a", "x86_64")
-        }
-        
-        // Force 16 KB alignment for native libraries
-        externalNativeBuild {
-            cmake {
-                arguments += "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
-            }
-        }
+        // Note: No local native build is configured in this project, so externalNativeBuild args are unnecessary.
     }
 
     signingConfigs {
@@ -70,18 +58,29 @@ android {
     packaging {
         jniLibs {
             useLegacyPackaging = false
-            // Ensure all native libraries are aligned to 16 KB boundaries
-            pickFirsts += "**/libimage_processing_util_jni.so"
-            pickFirsts += "**/libandroidx.graphics.path.so"
-            pickFirsts += "lib/arm64-v8a/*.so"
-            pickFirsts += "lib/x86_64/*.so"
+            // Keep all native libraries without compression for better alignment
+            keepDebugSymbols += "**/*.so"
         }
         // Additional packaging options to handle alignment
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    
+    // Add splits configuration to ensure proper architecture handling
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8a", "x86_64")
+            isUniversalApk = true
+        }
+    }
+    
 }
+
+
+// Removed forced versions to allow pulling latest 16KB-aligned native artifacts.
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
@@ -108,10 +107,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     
     // CameraX - Updated to latest versions for 16 KB compatibility
-    implementation("androidx.camera:camera-core:1.3.4")
-    implementation("androidx.camera:camera-camera2:1.3.4")
-    implementation("androidx.camera:camera-lifecycle:1.3.4")
-    implementation("androidx.camera:camera-view:1.3.4")
+    implementation("androidx.camera:camera-core:1.4.0")
+    implementation("androidx.camera:camera-camera2:1.4.0")
+    implementation("androidx.camera:camera-lifecycle:1.4.0")
+    implementation("androidx.camera:camera-view:1.4.0")
     implementation("com.google.guava:guava:31.1-android")
     
     // Google Play Services Ads

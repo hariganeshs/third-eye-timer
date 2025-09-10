@@ -2214,7 +2214,6 @@ class MainActivity : AppCompatActivity() {
             cardView.findViewById<TextView>(R.id.meditation_icon).text = meditation.icon
             cardView.findViewById<TextView>(R.id.meditation_title).text = meditation.title
             cardView.findViewById<TextView>(R.id.meditation_description).text = meditation.description
-            cardView.findViewById<TextView>(R.id.meditation_duration).text = "⏱️ ${meditation.duration}"
             
             // Show selected indicator if this is the currently selected meditation
             if (meditation.resourceId == selectedGuidedMeditationResId) {

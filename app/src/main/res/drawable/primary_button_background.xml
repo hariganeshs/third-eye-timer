@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="@color/shiva_blue" />
     <corners android:radius="28dp" />
     <stroke
-        android:width="2dp"
+        android:width="3dp"
         android:color="@color/shiva_gold_accent" />
     <gradient
-        android:startColor="@color/shiva_blue"
-        android:endColor="@color/shiva_deep_blue"
+        android:startColor="#FF16A34A"
+        android:endColor="#FF15803D"
         android:angle="45" />
-</shape> 
+</shape>

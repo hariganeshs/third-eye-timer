@@ -64,39 +64,19 @@
                 android:maxLines="1"
                 android:ellipsize="end" />
 
-            <!-- Duration/Tags Row -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <!-- Difficulty Tag (Optional) -->
+            <TextView
+                android:id="@+id/meditation_difficulty"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/meditation_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⏱️ 10 min"
-                    android:textSize="10sp"
-                    android:textColor="@color/shiva_gold_accent"
-                    android:fontFamily="sans-serif-medium"
-                    android:background="@drawable/duration_tag_background"
-                    android:padding="4dp" />
-
-                <TextView
-                    android:id="@+id/meditation_difficulty"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Beginner"
-                    android:textSize="10sp"
-                    android:textColor="@color/shiva_text_white"
-                    android:fontFamily="sans-serif-medium"
-                    android:background="@drawable/difficulty_tag_background"
-                    android:padding="4dp"
-                    android:layout_marginStart="6dp"
-                    android:visibility="gone" />
-
-            </LinearLayout>
+                android:text="Beginner"
+                android:textSize="10sp"
+                android:textColor="@color/shiva_text_white"
+                android:fontFamily="sans-serif-medium"
+                android:background="@drawable/difficulty_tag_background"
+                android:padding="4dp"
+                android:layout_marginTop="6dp"
+                android:visibility="gone" />
 
         </LinearLayout>
 
