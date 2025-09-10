@@ -16,8 +16,11 @@ A beautifully designed meditation timer app featuring a serene Shiva-inspired in
 ### What Was Fixed
 1. **Timer Pause/Resume**: Critical bug where timer restarted from beginning
 2. **UI Layout**: Buttons overlapping with ad banners
-3. **16KB Memory Support**: Required for Android 15+ compatibility
+3. **16KB Memory Support**: Required for Android 15+ compatibility — see `docs/16kb-page-support.md` for the root cause, fix, and verification steps.
 4. **GitHub Repository**: Successfully pushed clean version
+
+### Documentation
+- 16 KB page sizes: `docs/16kb-page-support.md`
 
 ### Key Implementation Details
 - **Timer Logic**: Uses `remainingTimeMillis` and `wasPaused` variables
