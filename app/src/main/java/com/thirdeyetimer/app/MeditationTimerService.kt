@@ -64,18 +64,31 @@ class MeditationTimerService : Service() {
             startForeground(1, notification)
         }
 
-        // Start background sound if selected
+        // Start background sound or guided meditation if selected
         backgroundPlayer?.release()
-        if (backgroundResId != 0) {
+        
+        // Priority: guided meditation first, then background sound
+        val soundToPlay = if (guidedResId != 0) guidedResId else backgroundResId
+        
+        if (soundToPlay != 0) {
             try {
-                backgroundPlayer = MediaPlayer.create(this, backgroundResId)
-                // Only loop ambient sounds, not guided meditations
-                backgroundPlayer?.isLooping = shouldLoopBackgroundSound(backgroundResId)
-                backgroundPlayer?.setVolume(1.0f, 1.0f)
-                backgroundPlayer?.start()
+                Log.d("MeditationTimerService", "Starting playback for resource: $soundToPlay (guided: ${guidedResId != 0})")
+                backgroundPlayer = MediaPlayer.create(this, soundToPlay)
+                
+                if (backgroundPlayer != null) {
+                    // Only loop ambient sounds, not guided meditations
+                    backgroundPlayer?.isLooping = shouldLoopBackgroundSound(soundToPlay)
+                    backgroundPlayer?.setVolume(1.0f, 1.0f)
+                    backgroundPlayer?.start()
+                    Log.d("MeditationTimerService", "Successfully started playback")
+                } else {
+                    Log.e("MeditationTimerService", "Failed to create MediaPlayer for resource: $soundToPlay")
+                }
             } catch (e: Exception) {
-                Log.e("MeditationTimerService", "Error playing background sound: ${e.message}", e)
+                Log.e("MeditationTimerService", "Error playing background/guided sound: ${e.message}", e)
             }
+        } else {
+            Log.d("MeditationTimerService", "No background or guided meditation sound selected (silent meditation)")
         }
 
         countdownTimer?.cancel()

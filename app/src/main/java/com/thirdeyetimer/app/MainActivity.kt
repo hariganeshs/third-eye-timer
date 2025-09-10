@@ -875,6 +875,7 @@ class MainActivity : AppCompatActivity() {
             totalMeditationTimeMillis = prefs.getLong(KEY_TOTAL_TIME, 0L)
             selectedBellResId = prefs.getInt(KEY_BELL_SOUND, R.raw.bell)
             selectedBackgroundResId = prefs.getInt("KEY_BACKGROUND_SOUND", 0)
+            selectedGuidedMeditationResId = prefs.getInt("KEY_GUIDED_MEDITATION_SOUND", 0)
 
             // Load achievement data
             loadAchievementData()
@@ -1108,6 +1109,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTimerService(time: Long, bellResId: Int) {
+        Log.d("MainActivity", "Starting timer service with:")
+        Log.d("MainActivity", "  Bell: $bellResId")
+        Log.d("MainActivity", "  Background: $selectedBackgroundResId")
+        Log.d("MainActivity", "  Guided: $selectedGuidedMeditationResId")
+        
         val intent = Intent(this, MeditationTimerService::class.java).apply {
             action = MeditationTimerService.ACTION_START
             putExtra(MeditationTimerService.EXTRA_TIME_MILLIS, time)
