@@ -18,6 +18,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.core.content.res.ResourcesCompat
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
@@ -531,34 +532,46 @@ class MainActivity : AppCompatActivity() {
             Log.d("MainActivity", "Starting core view initialization")
             
             // Initialize essential UI views first - these are critical for app functionality
-            timeEditText = findViewById(R.id.time_edit_text)
-            timerText = findViewById(R.id.timer)
-            startPauseButton = findViewById(R.id.button_start_pause)
-            resetButton = findViewById(R.id.button_reset)
-            totalTimeText = findViewById(R.id.total_time_text)
-            appTitleText = findViewById(R.id.app_title)
+            val timeEditTextTemp = findViewById<EditText>(R.id.time_edit_text)
+            val timerTextTemp = findViewById<TextView>(R.id.timer)
+            val startPauseButtonTemp = findViewById<Button>(R.id.button_start_pause)
+            val resetButtonTemp = findViewById<Button>(R.id.button_reset)
+            val totalTimeTextTemp = findViewById<TextView>(R.id.total_time_text)
+            val appTitleTextTemp = findViewById<TextView>(R.id.app_title)
             
             // Verify all essential views are found
-            if (timeEditText == null) {
+            if (timeEditTextTemp == null) {
                 Log.e("MainActivity", "timeEditText not found!")
                 return
             }
-            if (timerText == null) {
+            if (timerTextTemp == null) {
                 Log.e("MainActivity", "timerText not found!")
                 return
             }
-            if (startPauseButton == null) {
+            if (startPauseButtonTemp == null) {
                 Log.e("MainActivity", "startPauseButton not found!")
                 return
             }
-            if (resetButton == null) {
+            if (resetButtonTemp == null) {
                 Log.e("MainActivity", "resetButton not found!")
                 return
             }
-            if (totalTimeText == null) {
+            if (totalTimeTextTemp == null) {
                 Log.e("MainActivity", "totalTimeText not found!")
                 return
             }
+            if (appTitleTextTemp == null) {
+                Log.e("MainActivity", "appTitleText not found!")
+                return
+            }
+            
+            // Assign to lateinit properties only after verification
+            timeEditText = timeEditTextTemp
+            timerText = timerTextTemp
+            startPauseButton = startPauseButtonTemp
+            resetButton = resetButtonTemp
+            totalTimeText = totalTimeTextTemp
+            appTitleText = appTitleTextTemp
             
             Log.d("MainActivity", "All core views found successfully")
             
@@ -580,18 +593,22 @@ class MainActivity : AppCompatActivity() {
             Log.d("AdMob", "Setting up banner ads")
             
             // Find ad views
-            adView = findViewById(R.id.adView)
-            topAdView = findViewById(R.id.topAdView)
+            val adViewTemp = findViewById<AdView>(R.id.adView)
+            val topAdViewTemp = findViewById<AdView>(R.id.topAdView)
             
-            if (adView == null) {
+            if (adViewTemp == null) {
                 Log.e("AdMob", "Bottom banner ad view not found!")
                 return
             }
             
-            if (topAdView == null) {
+            if (topAdViewTemp == null) {
                 Log.e("AdMob", "Top banner ad view not found!")
                 return
             }
+            
+            // Assign to lateinit properties after verification
+            adView = adViewTemp
+            topAdView = topAdViewTemp
             
             Log.d("AdMob", "Ad views found successfully")
             
@@ -662,9 +679,12 @@ class MainActivity : AppCompatActivity() {
 
             // Approach 2: If first fails, try without generic
             if (bgView == null) {
+                // Use the already found view from approach 1 instead of finding again
                 val tempView = findViewById<View>(R.id.background_image_view)
-                bgView = tempView as? ImageView
-                Log.d("MainActivity", "Approach 2 result: $bgView")
+                if (tempView != null && tempView != bgView) {
+                    bgView = tempView as? ImageView
+                    Log.d("MainActivity", "Approach 2 result: $bgView")
+                }
             }
 
             // Approach 3: Try to get the root view and search from there
@@ -715,7 +735,7 @@ class MainActivity : AppCompatActivity() {
                                 Log.d("MainActivity", "Set initial black background for dark mode")
                             } else {
                                 // In light mode, set the first background image
-                                val initialDrawable = resources.getDrawable(R.drawable.shiva_bg)
+                                val initialDrawable = ResourcesCompat.getDrawable(resources, R.drawable.shiva_bg, null)
                                 child.background = initialDrawable
                                 Log.d("MainActivity", "Set initial background on ScrollView: $initialDrawable")
                             }
@@ -994,19 +1014,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             
-            // Final fallback: set background on root content view
-            val contentView = findViewById<View>(android.R.id.content)
-            if (contentView != null) {
+            // Final fallback: set background on root content view (reuse rootView)
+            if (rootView != null) {
                 val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                 val darkModeEnabled = prefs.getBoolean(KEY_DARK_MODE_ENABLED, false)
                 
                 if (darkModeEnabled) {
-                    contentView.setBackgroundColor(android.graphics.Color.BLACK)
+                    rootView.setBackgroundColor(android.graphics.Color.BLACK)
                 } else {
                     try {
-                        contentView.setBackgroundResource(R.drawable.shiva_bg)
+                        rootView.setBackgroundResource(R.drawable.shiva_bg)
                     } catch (e: Exception) {
-                        Log.w("MainActivity", "Failed to set background on content view: ${e.message}")
+                        Log.w("MainActivity", "Failed to set background on root view: ${e.message}")
                     }
                 }
                 Log.d("MainActivity", "Using content view for background")
@@ -1145,7 +1164,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateStreak() {
         val calendar = Calendar.getInstance()
-        val today = String.format("%04d-%02d-%02d", 
+        val today = String.format(Locale.US, "%04d-%02d-%02d", 
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH) + 1,
             calendar.get(Calendar.DAY_OF_MONTH))
@@ -1345,12 +1364,7 @@ class MainActivity : AppCompatActivity() {
             val noAchievementsText = TextView(this).apply {
                 text = "Complete your first meditation to unlock achievements!"
                 textSize = 16f
-                setTextColor(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    resources.getColor(R.color.shiva_ash_gray, null)
-                } else {
-                    @Suppress("DEPRECATION")
-                    resources.getColor(R.color.shiva_ash_gray)
-                })
+                setTextColor(ContextCompat.getColor(this@MainActivity, R.color.shiva_ash_gray))
                 gravity = Gravity.CENTER
                 setPadding(32, 32, 32, 32)
             }
@@ -1557,19 +1571,9 @@ class MainActivity : AppCompatActivity() {
             gravity = Gravity.CENTER_VERTICAL
             setPadding(16, 12, 16, 12)
             background = if (isUnlocked) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    resources.getDrawable(R.drawable.achievement_unlocked_background, null)
-                } else {
-                    @Suppress("DEPRECATION")
-                    resources.getDrawable(R.drawable.achievement_unlocked_background)
-                }
+                ResourcesCompat.getDrawable(resources, R.drawable.achievement_unlocked_background, null)
             } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    resources.getDrawable(R.drawable.achievement_locked_background, null)
-                } else {
-                    @Suppress("DEPRECATION")
-                    resources.getDrawable(R.drawable.achievement_locked_background)
-                }
+                ResourcesCompat.getDrawable(resources, R.drawable.achievement_locked_background, null)
             }
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -1592,19 +1596,9 @@ class MainActivity : AppCompatActivity() {
             text = getAchievementDisplayName(achievementKey)
             textSize = 14f
             setTextColor(if (isUnlocked) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    resources.getColor(R.color.shiva_text_white, null)
-                } else {
-                    @Suppress("DEPRECATION")
-                    resources.getColor(R.color.shiva_text_white)
-                }
+                ContextCompat.getColor(this@MainActivity, R.color.shiva_text_white)
             } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    resources.getColor(R.color.shiva_ash_gray, null)
-                } else {
-                    @Suppress("DEPRECATION")
-                    resources.getColor(R.color.shiva_ash_gray)
-                }
+                ContextCompat.getColor(this@MainActivity, R.color.shiva_ash_gray)
             })
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -1746,7 +1740,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showBellSoundPicker() {
-        val dialogView = layoutInflater.inflate(R.layout.bell_sound_selection_dialog, null)
+        val dialogView = layoutInflater.inflate(R.layout.bell_sound_selection_dialog, null, false)
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .setCancelable(true)
@@ -1783,7 +1777,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showBackgroundSoundPicker() {
-        val dialogView = layoutInflater.inflate(R.layout.background_sound_selection_dialog, null)
+        val dialogView = layoutInflater.inflate(R.layout.background_sound_selection_dialog, null, false)
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .setCancelable(true)
@@ -1918,7 +1912,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun String.capitalizeWords(): String {
-        return split(" ").joinToString(" ") { it.capitalize() }
+        return split(" ").joinToString(" ") { it.capitalize(Locale.getDefault()) }
     }
 
     private fun setupBellButtons(dialogView: View, prefs: SharedPreferences, bellResIds: Array<Int>, currentBellText: TextView, dialog: AlertDialog) {
@@ -2009,7 +2003,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showGuidedMeditationPicker() {
-        val dialogView = layoutInflater.inflate(R.layout.guided_meditation_selection_dialog, null)
+        val dialogView = layoutInflater.inflate(R.layout.guided_meditation_selection_dialog, null, false)
         val dialog = Dialog(this, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
         dialog.setContentView(dialogView)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -2424,7 +2418,7 @@ class MainActivity : AppCompatActivity() {
                         // Prioritize ScrollView approach since ImageView has layout issues
                         if (scrollViewForBackground != null) {
                             Log.d("MainActivity", "Using ScrollView for background change (preferred method)")
-                            val drawable = resources.getDrawable(nextImageResId)
+                            val drawable = ResourcesCompat.getDrawable(resources, nextImageResId, null)
                             scrollViewForBackground?.background = drawable
                             scrollViewForBackground?.invalidate()
                             scrollViewForBackground?.requestLayout()

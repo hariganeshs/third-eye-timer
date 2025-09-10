@@ -29,6 +29,7 @@ import kotlinx.coroutines.*
 import kotlin.math.*
 import java.io.ByteArrayOutputStream
 import java.util.*
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -383,7 +384,7 @@ class SimpleHeartRateActivity : AppCompatActivity() {
         
         val mode = if (imageCapture != null && camera != null) "📷 Efficient PPG" else "❌ No Camera Available"
         val qualityInfo = if (DEBUG_MODE && imageCapture != null && camera != null) {
-            " | Signal: ${String.format("%.1f", stats.quality * 100)}%"
+            " | Signal: ${String.format(Locale.US, "%.1f", stats.quality * 100)}%"
         } else ""
         
                     val statusMessage = when {

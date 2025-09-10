@@ -71,7 +71,7 @@ class AchievementPopupManager(private val context: Context) {
     }
     
     private fun createPopupView(achievementKey: String, achievementName: String): View {
-        val popupView = layoutInflater.inflate(R.layout.achievement_popup, null)
+        val popupView = layoutInflater.inflate(R.layout.achievement_popup, null, false)
         
         // Set achievement details
         val nameTextView = popupView.findViewById<TextView>(R.id.achievement_name)

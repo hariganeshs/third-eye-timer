@@ -119,7 +119,6 @@
                 android:background="@drawable/play_button_background"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:elevation="3dp" />
 
             <!-- Selected Indicator -->

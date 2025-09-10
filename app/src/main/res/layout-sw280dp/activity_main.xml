@@ -8,10 +8,23 @@
     android:fillViewport="true"
     tools:context=".MainActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Single container for ScrollView -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/screen_padding">
+        android:layout_height="wrap_content">
+
+        <!-- Background ImageView -->
+        <ImageView
+            android:id="@+id/background_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@drawable/shiva_background" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/screen_padding">
 
         <!-- Top Banner Ad -->
         <com.google.android.gms.ads.AdView
@@ -237,4 +250,6 @@
             app:layout_constraintTop_toBottomOf="@id/button_reset" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
 </ScrollView>

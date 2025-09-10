@@ -8,6 +8,14 @@
     android:padding="@dimen/screen_padding"
     tools:context=".MainActivity">
 
+    <!-- Background ImageView -->
+    <ImageView
+        android:id="@+id/background_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:background="@drawable/shiva_background" />
+
     <!-- Top Banner Ad -->
     <com.google.android.gms.ads.AdView
         android:id="@+id/topAdView"
