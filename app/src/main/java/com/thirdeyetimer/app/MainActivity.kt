@@ -518,6 +518,11 @@ class MainActivity : AppCompatActivity() {
         // Initialize essential views and buttons first - this is critical for functionality
         initializeCoreViews()
         
+        // Apply theme-appropriate background after views are loaded
+        Handler(Looper.getMainLooper()).postDelayed({
+            updateBackgroundForTheme()
+        }, 100)
+        
         // Initialize ads and background asynchronously
         Handler(Looper.getMainLooper()).postDelayed({
             setupAds()
@@ -987,6 +992,7 @@ class MainActivity : AppCompatActivity() {
             val bgView = findViewById<ImageView>(R.id.background_image_view)
             if (bgView != null) {
                 backgroundImageView = bgView
+                updateBackgroundForTheme() // Apply theme-appropriate background
                 setupBackgroundSlideshow()
                 Log.d("MainActivity", "Background ImageView found and initialized")
                 return
@@ -998,18 +1004,7 @@ class MainActivity : AppCompatActivity() {
                 val scrollView = findScrollViewInHierarchy(rootView)
                 if (scrollView != null) {
                     scrollViewForBackground = scrollView
-                    val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                    val darkModeEnabled = prefs.getBoolean(KEY_DARK_MODE_ENABLED, false)
-                    
-                    if (darkModeEnabled) {
-                        scrollView.setBackgroundColor(android.graphics.Color.BLACK)
-                    } else {
-                        try {
-                            scrollView.setBackgroundResource(R.drawable.shiva_bg)
-                        } catch (e: Exception) {
-                            Log.w("MainActivity", "Failed to set background resource: ${e.message}")
-                        }
-                    }
+                    updateBackgroundForTheme() // Apply theme-appropriate background
                     Log.d("MainActivity", "Using ScrollView for background")
                     return
                 }
@@ -1017,18 +1012,7 @@ class MainActivity : AppCompatActivity() {
             
             // Final fallback: set background on root content view (reuse rootView)
             if (rootView != null) {
-                val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                val darkModeEnabled = prefs.getBoolean(KEY_DARK_MODE_ENABLED, false)
-                
-                if (darkModeEnabled) {
-                    rootView.setBackgroundColor(android.graphics.Color.BLACK)
-                } else {
-                    try {
-                        rootView.setBackgroundResource(R.drawable.shiva_bg)
-                    } catch (e: Exception) {
-                        Log.w("MainActivity", "Failed to set background on root view: ${e.message}")
-                    }
-                }
+                updateBackgroundForTheme() // Apply theme-appropriate background
                 Log.d("MainActivity", "Using content view for background")
             }
             
@@ -1680,10 +1664,20 @@ class MainActivity : AppCompatActivity() {
         }
         darkModeToggle?.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean(KEY_DARK_MODE_ENABLED, isChecked).apply()
+            
+            // Close dialog before recreating activity for better UX
+            dialog.dismiss()
+            
+            // Apply dark mode
             val mode = if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
             if (AppCompatDelegate.getDefaultNightMode() != mode) {
                 AppCompatDelegate.setDefaultNightMode(mode)
             }
+            
+            // Recreate activity to apply theme with slight delay for smooth transition
+            Handler(Looper.getMainLooper()).postDelayed({
+                recreate()
+            }, 100)
         }
         
         closeButton.setOnClickListener {
@@ -2366,6 +2360,64 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateBackgroundForTheme() {
+        try {
+            val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+            val darkModeEnabled = prefs.getBoolean(KEY_DARK_MODE_ENABLED, false)
+            
+            Log.d("MainActivity", "Updating background for theme. Dark mode: $darkModeEnabled")
+            
+            // Update background ImageView if available
+            if (::backgroundImageView.isInitialized) {
+                if (darkModeEnabled) {
+                    // Use solid dark background in dark mode
+                    backgroundImageView.setBackgroundColor(ContextCompat.getColor(this, android.R.color.black))
+                    backgroundImageView.setImageResource(0) // Clear any image
+                    Log.d("MainActivity", "Set dark background on ImageView")
+                } else {
+                    // Use light theme background
+                    try {
+                        backgroundImageView.setBackgroundResource(R.drawable.shiva_bg)
+                        Log.d("MainActivity", "Set light background on ImageView")
+                    } catch (e: Exception) {
+                        Log.w("MainActivity", "Failed to set light background resource: ${e.message}")
+                        backgroundImageView.setBackgroundColor(ContextCompat.getColor(this, R.color.shiva_ash_gray))
+                    }
+                }
+            }
+            
+            // Update ScrollView background if available
+            scrollViewForBackground?.let { scrollView ->
+                if (darkModeEnabled) {
+                    scrollView.setBackgroundColor(ContextCompat.getColor(this, android.R.color.black))
+                    Log.d("MainActivity", "Set dark background on ScrollView")
+                } else {
+                    try {
+                        scrollView.setBackgroundResource(R.drawable.shiva_bg)
+                        Log.d("MainActivity", "Set light background on ScrollView")
+                    } catch (e: Exception) {
+                        Log.w("MainActivity", "Failed to set light background on ScrollView: ${e.message}")
+                        scrollView.setBackgroundColor(ContextCompat.getColor(this, R.color.shiva_ash_gray))
+                    }
+                }
+            }
+            
+            // Update root content view background
+            val contentView = findViewById<View>(android.R.id.content)
+            contentView?.let {
+                if (darkModeEnabled) {
+                    it.setBackgroundColor(ContextCompat.getColor(this, android.R.color.black))
+                } else {
+                    // Let the theme handle the background color
+                    it.background = null
+                }
+            }
+            
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error updating background for theme: ${e.message}", e)
+        }
+    }
+    
     private fun setupBackgroundSlideshow() {
         backgroundHandler = Handler(Looper.getMainLooper())
 
