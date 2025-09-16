@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
     private var totalMeditationTimeMillis: Long = 0L
     private var sessionStartTime: Long = 0L
     private val KEY_BELL_SOUND = "bell_sound"
-    private var selectedBellResId: Int = R.raw.bell
+    private var selectedBellResId: Int = R.raw.bell_1
     private var selectedGuidedMeditationResId: Int = 0  // 0 = Complete Silence
     private var previewPlayer: MediaPlayer? = null
     private var isServiceRunning = false
@@ -878,7 +878,7 @@ class MainActivity : AppCompatActivity() {
             // Load preferences
             val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
             totalMeditationTimeMillis = prefs.getLong(KEY_TOTAL_TIME, 0L)
-            selectedBellResId = prefs.getInt(KEY_BELL_SOUND, R.raw.bell)
+            selectedBellResId = prefs.getInt(KEY_BELL_SOUND, R.raw.bell_1)
             selectedBackgroundResId = prefs.getInt("KEY_BACKGROUND_SOUND", 0)
             selectedGuidedMeditationResId = prefs.getInt("KEY_GUIDED_MEDITATION_SOUND", 0)
 

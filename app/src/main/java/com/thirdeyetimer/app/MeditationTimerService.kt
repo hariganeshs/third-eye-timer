@@ -153,7 +153,7 @@ class MeditationTimerService : Service() {
         Log.d("MeditationTimerService", "Playing default bell sound")
         try {
             mediaPlayer?.release()
-            mediaPlayer = MediaPlayer.create(this, R.raw.bell)
+            mediaPlayer = MediaPlayer.create(this, R.raw.bell_1)
             if (mediaPlayer != null) {
                 Log.d("MeditationTimerService", "Default MediaPlayer created successfully")
                 mediaPlayer?.setVolume(1.0f, 1.0f)
