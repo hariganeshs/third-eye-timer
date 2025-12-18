@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         COSMIC ZEN COLOR PALETTE
+         A premium meditation app color system inspired by the cosmos
+         ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <!-- Primary Colors - Cosmic Indigo -->
+    <color name="cosmic_primary">#6366F1</color>
+    <color name="cosmic_primary_dark">#4F46E5</color>
+    <color name="cosmic_primary_light">#818CF8</color>
+    <color name="cosmic_primary_container">#312E81</color>
+    
+    <!-- Secondary Colors - Aurora Teal -->
+    <color name="cosmic_secondary">#14B8A6</color>
+    <color name="cosmic_secondary_dark">#0D9488</color>
+    <color name="cosmic_secondary_light">#2DD4BF</color>
+    <color name="cosmic_secondary_container">#115E59</color>
+    
+    <!-- Accent Colors - Celestial Gold -->
+    <color name="cosmic_accent">#F59E0B</color>
+    <color name="cosmic_accent_dark">#D97706</color>
+    <color name="cosmic_accent_light">#FBBF24</color>
+    
+    <!-- Background Colors - Deep Space -->
+    <color name="cosmic_background_start">#0F0F23</color>
+    <color name="cosmic_background_end">#1E1E3F</color>
+    <color name="cosmic_surface">#252547</color>
+    <color name="cosmic_surface_variant">#2D2D5A</color>
+    
+    <!-- Glass Colors - Glassmorphism -->
+    <color name="cosmic_glass_background">#14FFFFFF</color>
+    <color name="cosmic_glass_border">#33FFFFFF</color>
+    <color name="cosmic_glass_highlight">#1AFFFFFF</color>
+    
+    <!-- Text Colors -->
+    <color name="cosmic_text_primary">#FFFFFF</color>
+    <color name="cosmic_text_secondary">#E0E7FF</color>
+    <color name="cosmic_text_tertiary">#A5B4FC</color>
+    <color name="cosmic_text_muted">#6B7280</color>
+    
+    <!-- Status Colors -->
+    <color name="cosmic_success">#10B981</color>
+    <color name="cosmic_warning">#F59E0B</color>
+    <color name="cosmic_error">#EF4444</color>
+    <color name="cosmic_info">#3B82F6</color>
+    
+    <!-- Gradient Colors -->
+    <color name="cosmic_gradient_start">#6366F1</color>
+    <color name="cosmic_gradient_mid">#8B5CF6</color>
+    <color name="cosmic_gradient_end">#14B8A6</color>
+    
+    <!-- Glow Colors -->
+    <color name="cosmic_glow_indigo">#806366F1</color>
+    <color name="cosmic_glow_teal">#8014B8A6</color>
+    <color name="cosmic_glow_gold">#80F59E0B</color>
+    
+    <!-- Breathing Circle Colors -->
+    <color name="breathing_ring_inner">#6366F1</color>
+    <color name="breathing_ring_outer">#14B8A6</color>
+    <color name="breathing_glow">#406366F1</color>
+    
+    <!-- Achievement Colors -->
+    <color name="cosmic_achievement_gold">#FFD700</color>
+    <color name="cosmic_achievement_silver">#C0C0C0</color>
+    <color name="cosmic_achievement_bronze">#CD7F32</color>
+    <color name="cosmic_achievement_locked">#4B5563</color>
+    
+    <!-- Streak Fire Gradient -->
+    <color name="streak_fire_start">#F59E0B</color>
+    <color name="streak_fire_mid">#EF4444</color>
+    <color name="streak_fire_end">#DC2626</color>
+    
+    <!-- Confetti Colors -->
+    <color name="confetti_1">#6366F1</color>
+    <color name="confetti_2">#14B8A6</color>
+    <color name="confetti_3">#F59E0B</color>
+    <color name="confetti_4">#EC4899</color>
+    <color name="confetti_5">#8B5CF6</color>
+</resources>

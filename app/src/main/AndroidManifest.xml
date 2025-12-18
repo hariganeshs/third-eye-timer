@@ -26,8 +26,9 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-2722920301958819~5438496026" />
 
+        <!-- New Compose-based Main Activity (Cosmic Zen UI) -->
         <activity
-            android:name=".MainActivity"
+            android:name=".MainActivityCompose"
             android:exported="true"
             android:theme="@style/Theme.ThirdEyeTimer"
             android:configChanges="orientation|screenSize|keyboardHidden">
@@ -35,6 +36,14 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        
+        <!-- Legacy XML-based Main Activity (for sound settings and achievements dialogs) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ThirdEyeTimer"
+            android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
         
         <activity
