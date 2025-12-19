@@ -2136,7 +2136,7 @@ class MainActivity : AppCompatActivity() {
             val cardView = layoutInflater.inflate(R.layout.featured_meditation_card, featuredContainer, false)
             
             // Set card data
-            cardView.findViewById<TextView>(R.id.featured_meditation_icon).text = meditation.icon
+            // cardView.findViewById<TextView>(R.id.featured_meditation_icon).text = meditation.icon
             cardView.findViewById<TextView>(R.id.featured_meditation_title).text = meditation.title
             cardView.findViewById<TextView>(R.id.featured_meditation_subtitle).text = meditation.description
             
@@ -2211,7 +2211,7 @@ class MainActivity : AppCompatActivity() {
             val cardView = layoutInflater.inflate(R.layout.meditation_item_card, containerView, false)
             
             // Set card data
-            cardView.findViewById<TextView>(R.id.meditation_icon).text = meditation.icon
+            // cardView.findViewById<TextView>(R.id.meditation_icon).text = meditation.icon
             cardView.findViewById<TextView>(R.id.meditation_title).text = meditation.title
             cardView.findViewById<TextView>(R.id.meditation_description).text = meditation.description
             

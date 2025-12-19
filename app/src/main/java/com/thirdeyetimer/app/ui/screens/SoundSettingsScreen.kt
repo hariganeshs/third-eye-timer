@@ -26,7 +26,7 @@ import com.thirdeyetimer.app.ui.theme.CosmicShapes
 data class SoundOption(
     val id: Int,
     val title: String,
-    val icon: String = "🎵"
+    val icon: ImageVector
 )
 
 /**
@@ -207,7 +207,7 @@ private fun TabButton(
 @Composable
 private fun SoundItemCard(
     title: String,
-    icon: String,
+    icon: ImageVector,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -232,7 +232,12 @@ private fun SoundItemCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = icon, fontSize = 24.sp)
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = if (isSelected) CosmicColors.Accent else CosmicColors.TextSecondary,
+                    modifier = Modifier.size(24.dp)
+                )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = title,

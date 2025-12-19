@@ -8,6 +8,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.SelfImprovement
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -153,9 +156,11 @@ fun CompletionScreen(
                         .background(CosmicColors.Accent.copy(alpha = glowAlpha * 0.3f))
                 )
                 
-                Text(
-                    text = "🪷",
-                    fontSize = 64.sp
+                Icon(
+                    imageVector = Icons.Filled.SelfImprovement,
+                    contentDescription = "Complete",
+                    tint = CosmicColors.Accent,
+                    modifier = Modifier.size(64.dp)
                 )
             }
             
@@ -191,7 +196,7 @@ fun CompletionScreen(
             ) {
                 // Duration
                 StatRow(
-                    icon = "⏱️",
+                    painter = androidx.compose.ui.graphics.vector.rememberVectorPainter(Icons.Default.Timer),
                     label = "Duration",
                     value = sessionDuration
                 )
@@ -200,7 +205,7 @@ fun CompletionScreen(
                 
                 // Streak
                 StatRow(
-                    icon = "🔥",
+                    painter = androidx.compose.ui.res.painterResource(id = com.thirdeyetimer.app.R.drawable.badge_streak_fire),
                     label = "Streak",
                     value = "$currentStreak Day${if (currentStreak != 1) "s" else ""}",
                     valueColor = CosmicColors.Accent
@@ -210,7 +215,7 @@ fun CompletionScreen(
                 
                 // Total time
                 StatRow(
-                    icon = "🧘",
+                    painter = androidx.compose.ui.res.painterResource(id = com.thirdeyetimer.app.R.drawable.badge_meditation_master),
                     label = "Total Time",
                     value = totalTime
                 )
@@ -220,7 +225,7 @@ fun CompletionScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     
                     StatRow(
-                        icon = "❤️",
+                        painter = androidx.compose.ui.graphics.vector.rememberVectorPainter(Icons.Default.Favorite),
                         label = "Heart Rate",
                         value = "${if (heartRateReduction > 0) "-" else "+"}${kotlin.math.abs(heartRateReduction)} bpm",
                         valueColor = if (heartRateReduction > 0) CosmicColors.Success else CosmicColors.Warning
@@ -240,9 +245,14 @@ fun CompletionScreen(
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.padding(16.dp)
                     ) {
-                        Text(text = "🏆", fontSize = 28.sp)
+                        androidx.compose.foundation.Image(
+                            painter = androidx.compose.ui.res.painterResource(id = com.thirdeyetimer.app.R.drawable.icon_trophy),
+                            contentDescription = "Achievement",
+                            modifier = Modifier.size(28.dp)
+                        )
                         Column {
                             Text(
                                 text = "Achievement Unlocked!",
@@ -321,7 +331,7 @@ fun CompletionScreen(
  */
 @Composable
 private fun StatRow(
-    icon: String,
+    painter: androidx.compose.ui.graphics.painter.Painter,
     label: String,
     value: String,
     valueColor: Color = CosmicColors.TextPrimary
@@ -335,7 +345,12 @@ private fun StatRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = icon, fontSize = 20.sp)
+            Icon(
+                painter = painter,
+                contentDescription = null,
+                tint = CosmicColors.TextSecondary,
+                modifier = Modifier.size(20.dp)
+            )
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium,

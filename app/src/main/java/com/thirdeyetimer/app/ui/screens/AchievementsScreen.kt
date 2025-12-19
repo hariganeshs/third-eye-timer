@@ -9,11 +9,15 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,7 +29,7 @@ data class AchievementItem(
     val id: String,
     val title: String,
     val description: String,
-    val icon: String,
+    val icon: ImageVector,
     val isUnlocked: Boolean
 )
 
@@ -101,19 +105,19 @@ fun AchievementsScreen(
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
                             StatItem(
-                                icon = "🔥",
+                                icon = Icons.Filled.LocalFireDepartment,
                                 value = "$currentStreak",
                                 label = "Current Streak",
                                 valueColor = CosmicColors.Accent
                             )
                             StatItem(
-                                icon = "⚡",
+                                icon = Icons.Filled.Bolt,
                                 value = "$longestStreak",
                                 label = "Best Streak",
                                 valueColor = CosmicColors.TextPrimary
                             )
                             StatItem(
-                                icon = "🧘",
+                                icon = Icons.Filled.Schedule,
                                 value = totalTime,
                                 label = "Total Time",
                                 valueColor = CosmicColors.Secondary
@@ -172,7 +176,7 @@ fun AchievementsScreen(
 
 @Composable
 private fun StatItem(
-    icon: String,
+    icon: ImageVector,
     value: String,
     label: String,
     valueColor: Color
@@ -180,7 +184,12 @@ private fun StatItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = icon, fontSize = 24.sp)
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = valueColor,
+            modifier = Modifier.size(24.dp)
+        )
         Text(
             text = value,
             style = MaterialTheme.typography.titleLarge,
@@ -221,20 +230,19 @@ private fun AchievementCard(
             ) {
                 if (!achievement.isUnlocked) {
                     // Lock overlay
-                    Text(
-                        text = "🔒",
-                        fontSize = 24.sp,
-                        modifier = Modifier.align(Alignment.Center)
+                    androidx.compose.foundation.Image(
+                        painter = androidx.compose.ui.res.painterResource(id = com.thirdeyetimer.app.R.drawable.icon_lock_locked),
+                        contentDescription = "Locked",
+                        modifier = Modifier.align(Alignment.Center).size(24.dp),
+                         colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(Color.White.copy(alpha=0.7f))
                     )
                 }
                 
-                Text(
-                    text = achievement.icon,
-                    fontSize = 32.sp,
-                    color = if (achievement.isUnlocked) 
-                        Color.Unspecified 
-                    else 
-                        Color.Gray.copy(alpha = 0.3f)
+                Icon(
+                    imageVector = achievement.icon,
+                    contentDescription = achievement.title,
+                    modifier = Modifier.size(56.dp),
+                    tint = if (achievement.isUnlocked) CosmicColors.Accent else CosmicColors.TextMuted.copy(alpha = 0.5f)
                 )
             }
             

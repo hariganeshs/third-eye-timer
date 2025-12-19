@@ -21,6 +21,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thirdeyetimer.app.domain.PetManager
 import com.thirdeyetimer.app.ui.theme.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material.icons.filled.SelfImprovement
+import androidx.compose.material.icons.filled.Egg
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Shield
 
 @Composable
 fun PetScreen(
@@ -72,7 +80,11 @@ fun PetScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBackClick) {
-                    Text("🔙", fontSize = 24.sp)
+                    Icon(
+                        imageVector = androidx.compose.material.icons.Icons.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
                 }
                 Text(
                     text = "Cosmic Companion",
@@ -109,18 +121,33 @@ fun PetScreen(
                         )
                 )
                 
-                // The Pet (Emoji for now, could be Image later)
-                Text(
-                    text = petManager.getPetEmoji(),
-                    fontSize = 150.sp
+                // The Pet (Vector Icon based on stage)
+                val petIcon = when (petManager.stage) {
+                    com.thirdeyetimer.app.domain.PetManager.STAGE_EGG -> androidx.compose.material.icons.Icons.Filled.Egg
+                    com.thirdeyetimer.app.domain.PetManager.STAGE_WISP -> androidx.compose.material.icons.Icons.Filled.AutoAwesome
+                    com.thirdeyetimer.app.domain.PetManager.STAGE_GUARDIAN -> androidx.compose.material.icons.Icons.Filled.Shield
+                    else -> androidx.compose.material.icons.Icons.Filled.Egg
+                }
+                val petColor = when (petManager.stage) {
+                    com.thirdeyetimer.app.domain.PetManager.STAGE_EGG -> Color(0xFF8B5CF6) // Purple
+                    com.thirdeyetimer.app.domain.PetManager.STAGE_WISP -> Color(0xFF60A5FA) // Blue
+                    com.thirdeyetimer.app.domain.PetManager.STAGE_GUARDIAN -> Color(0xFFFBBF24) // Gold
+                    else -> Color(0xFF8B5CF6)
+                }
+                Icon(
+                    imageVector = petIcon,
+                    contentDescription = petManager.getPetName(),
+                    tint = petColor,
+                    modifier = Modifier.size(180.dp)
                 )
                 
                 // Heart animation on feed
                 if (showHeartAnimation) {
-                     Text(
-                        text = "💖",
-                        fontSize = 60.sp,
-                        modifier = Modifier.align(Alignment.TopEnd)
+                     Icon(
+                        imageVector = androidx.compose.material.icons.Icons.Filled.Favorite,
+                        contentDescription = "Love",
+                        tint = Color(0xFFEC4899),
+                        modifier = Modifier.align(Alignment.TopEnd).size(48.dp)
                      )
                 }
             }
@@ -224,7 +251,14 @@ fun PetScreen(
                         .height(56.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text("🍎 Feed (Watch Ad)")
+                    Icon(
+                        imageVector = androidx.compose.material.icons.Icons.Filled.Restaurant,
+                        contentDescription = "Feed",
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Feed (Ad)")
                 }
                 
                  Button(
@@ -236,7 +270,14 @@ fun PetScreen(
                         .height(56.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text("🧘 Meditate w/ Pet")
+                    Icon(
+                        imageVector = androidx.compose.material.icons.Icons.Filled.SelfImprovement,
+                        contentDescription = "Meditate",
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Meditate")
                 }
             }
         }

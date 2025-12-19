@@ -168,17 +168,17 @@ class AchievementPopupManager(private val context: Context) {
     
     private fun getAchievementDisplayName(achievementKey: String): String {
         return when (achievementKey) {
-            "first_hour" -> "🌅 First Hour"
-            "dedicated_beginner" -> "🌟 Dedicated Beginner"
-            "mindful_explorer" -> "🧘‍♀️ Mindful Explorer"
-            "meditation_master" -> "👑 Meditation Master"
-            "zen_sage" -> "✨ Zen Sage"
-            "enlightened_one" -> "🕉️ Enlightened One"
-            "consistent_practitioner" -> "🔥 Consistent Practitioner"
-            "weekly_warrior" -> "⚡ Weekly Warrior"
-            "monthly_master" -> "🌙 Monthly Master"
-            "century_streak" -> "💎 Century Streak"
-            else -> "🏅 Achievement"
+            "first_hour" -> "First Hour"
+            "dedicated_beginner" -> "Dedicated Beginner"
+            "mindful_explorer" -> "Mindful Explorer"
+            "meditation_master" -> "Meditation Master"
+            "zen_sage" -> "Zen Sage"
+            "enlightened_one" -> "Enlightened One"
+            "consistent_practitioner" -> "Consistent Practitioner"
+            "weekly_warrior" -> "Weekly Warrior"
+            "monthly_master" -> "Monthly Master"
+            "century_streak" -> "Century Streak"
+            else -> "Achievement"
         }
     }
     
@@ -200,10 +200,14 @@ class AchievementPopupManager(private val context: Context) {
     
     private fun getAchievementIcon(achievementKey: String): Int {
         return when (achievementKey) {
-            "first_hour", "dedicated_beginner", "mindful_explorer" -> R.drawable.ic_achievement_trophy
-            "meditation_master", "zen_sage", "enlightened_one" -> R.drawable.ic_achievement_trophy
-            "consistent_practitioner", "weekly_warrior", "monthly_master", "century_streak" -> R.drawable.ic_achievement_trophy
-            else -> R.drawable.ic_achievement_trophy
+            "mindful_explorer" -> R.drawable.badge_mindful_explorer
+            "meditation_master" -> R.drawable.badge_meditation_master
+            "consistent_practitioner" -> R.drawable.badge_streak_fire
+            "weekly_warrior" -> R.drawable.badge_streak_bolt
+            "monthly_master" -> R.drawable.badge_moon_master
+            "zen_sage", "enlightened_one" -> R.drawable.icon_books
+            "century_streak" -> R.drawable.icon_sparkles
+            else -> R.drawable.icon_trophy
         }
     }
 } 

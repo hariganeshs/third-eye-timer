@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -18,6 +19,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thirdeyetimer.app.ui.components.*
 import com.thirdeyetimer.app.ui.theme.CosmicColors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.AutoStories
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Pets
+import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Assignment
 
 /**
  * HomeScreen
@@ -176,10 +186,21 @@ fun HomeScreen(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = if (currentStreak > 0) "🔥" else "✨",
-                            fontSize = 24.sp
-                        )
+                        if (currentStreak > 0) {
+                            Icon(
+                                imageVector = androidx.compose.material.icons.Icons.Filled.LocalFireDepartment,
+                                contentDescription = "Streak",
+                                tint = Color(0xFFFF5722), // Deep Orange
+                                modifier = Modifier.size(32.dp)
+                            )
+                        } else {
+                             Icon(
+                                 imageVector = androidx.compose.material.icons.Icons.Filled.Star,
+                                 contentDescription = "No Streak",
+                                 tint = CosmicColors.Accent,
+                                 modifier = Modifier.size(32.dp)
+                             )
+                        }
                         Text(
                             text = "$currentStreak Day${if (currentStreak != 1) "s" else ""}",
                             style = MaterialTheme.typography.titleMedium,
@@ -205,9 +226,11 @@ fun HomeScreen(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = "🧘",
-                            fontSize = 24.sp
+                        Icon(
+                            imageVector = androidx.compose.material.icons.Icons.Filled.Schedule,
+                            contentDescription = "Total Time",
+                            tint = CosmicColors.Accent,
+                            modifier = Modifier.size(32.dp)
                         )
                         Text(
                             text = totalMeditationTime,
@@ -238,7 +261,12 @@ fun HomeScreen(
                    horizontalArrangement = Arrangement.Center,
                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "📜", fontSize = 24.sp)
+                     Icon(
+                        imageVector = androidx.compose.material.icons.Icons.Filled.Assignment,
+                        contentDescription = "Quests",
+                        tint = CosmicColors.Accent,
+                        modifier = Modifier.size(48.dp)
+                    )
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
@@ -273,7 +301,12 @@ fun HomeScreen(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "🎵", fontSize = 24.sp)
+                        Icon(
+                            imageVector = androidx.compose.material.icons.Icons.Filled.MusicNote,
+                            contentDescription = "Sounds",
+                            tint = CosmicColors.Accent,
+                            modifier = Modifier.size(32.dp)
+                        )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "Sounds",
@@ -293,7 +326,12 @@ fun HomeScreen(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "📚", fontSize = 24.sp)
+                         Icon(
+                            imageVector = androidx.compose.material.icons.Icons.Filled.AutoStories,
+                            contentDescription = "Sessions",
+                            tint = CosmicColors.Accent,
+                            modifier = Modifier.size(32.dp)
+                        )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "Sessions",
@@ -313,7 +351,12 @@ fun HomeScreen(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "🏆", fontSize = 24.sp)
+                         Icon(
+                            imageVector = androidx.compose.material.icons.Icons.Filled.EmojiEvents,
+                            contentDescription = "Awards",
+                            tint = CosmicColors.Accent,
+                            modifier = Modifier.size(32.dp)
+                        )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "Awards",
@@ -333,7 +376,12 @@ fun HomeScreen(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "🥚", fontSize = 24.sp)
+                         Icon(
+                            imageVector = androidx.compose.material.icons.Icons.Filled.Pets,
+                            contentDescription = "My Pet",
+                            tint = CosmicColors.Accent,
+                            modifier = Modifier.size(32.dp)
+                        )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "My Pet",

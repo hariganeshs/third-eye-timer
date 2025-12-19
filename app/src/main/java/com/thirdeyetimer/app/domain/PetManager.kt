@@ -103,13 +103,13 @@ class PetManager(context: Context) {
         }
     }
     
-    // Emoji representation for MVP (Visuals will be handled by UI components later)
-    fun getPetEmoji(): String {
+    // Image representation for Pet
+    fun getPetImageRes(): Int {
          return when(stage) {
-            STAGE_EGG -> "🥚"
-            STAGE_WISP -> "👻" 
-            STAGE_GUARDIAN -> "🦁"
-            else -> "❓"
+            STAGE_EGG -> com.thirdeyetimer.app.R.drawable.pet_egg
+            STAGE_WISP -> com.thirdeyetimer.app.R.drawable.pet_wisp 
+            STAGE_GUARDIAN -> com.thirdeyetimer.app.R.drawable.pet_guardian
+            else -> com.thirdeyetimer.app.R.drawable.icon_lock_locked
         }
     }
 }

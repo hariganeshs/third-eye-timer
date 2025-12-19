@@ -17,6 +17,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thirdeyetimer.app.domain.QuestManager
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.filled.CheckCircle
 
 @Composable
 fun QuestBoardScreen(
@@ -49,7 +54,11 @@ fun QuestBoardScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBackClick) {
-                    Text("🔙", fontSize = 24.sp)
+                    Icon(
+                        imageVector = androidx.compose.material.icons.Icons.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
                 }
                 Text(
                     text = "Daily Quests",
@@ -68,7 +77,12 @@ fun QuestBoardScreen(
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("✨", fontSize = 16.sp)
+                        Icon(
+                            imageVector = androidx.compose.material.icons.Icons.Filled.Star,
+                            contentDescription = "Stardust",
+                            tint = Color(0xFFFBBF24),
+                            modifier = Modifier.size(16.dp)
+                        )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = "$stardust",
@@ -101,7 +115,13 @@ fun QuestBoardScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEC4899)),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                         Text("🎥 Watch Ad (+50 Stardust)")
+                         Icon(
+                             imageVector = androidx.compose.material.icons.Icons.Filled.Videocam,
+                             contentDescription = "Watch Ad",
+                             tint = Color.White
+                         )
+                         Spacer(modifier = Modifier.width(8.dp))
+                         Text("Watch Ad (+50 Stardust)")
                     }
                 }
             }
@@ -145,11 +165,21 @@ fun QuestItem(quest: QuestManager.Quest) {
             Spacer(modifier = Modifier.width(16.dp))
             
             if (quest.isCompleted) {
-                Text("✅", fontSize = 24.sp)
+                 Icon(
+                     imageVector = androidx.compose.material.icons.Icons.Filled.CheckCircle,
+                     contentDescription = "Completed",
+                     tint = Color(0xFF10B981),
+                     modifier = Modifier.size(24.dp)
+                 )
             } else {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                      Text("+${quest.reward}", color = Color(0xFFFBBF24), fontWeight = FontWeight.Bold)
-                     Text("✨", fontSize = 12.sp)
+                     Icon(
+                         imageVector = androidx.compose.material.icons.Icons.Filled.Star,
+                         contentDescription = "Stardust",
+                         tint = Color(0xFFFBBF24),
+                         modifier = Modifier.size(12.dp)
+                     )
                 }
             }
         }

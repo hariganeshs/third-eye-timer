@@ -33,6 +33,20 @@ import java.util.Locale
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.AdError
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.VolumeOff
+import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material.icons.filled.SelfImprovement
+import androidx.compose.material.icons.filled.Park
+import androidx.compose.material.icons.filled.RecordVoiceOver
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.Nightlight
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.LocalFireDepartment
 
 /**
  * MainActivityCompose
@@ -82,30 +96,30 @@ class MainActivityCompose : ComponentActivity() {
     
     // Data Lists
     private val achievementList = listOf(
-        AchievementItem("first_hour", "First Hour", "Meditate for 1 hour total", "🌅", false),
-        AchievementItem("dedicated_beginner", "Dedicated Beginner", "Meditate for 5 hours total", "🌟", false),
-        AchievementItem("mindful_explorer", "Mindful Explorer", "Meditate for 10 hours total", "🧘‍♀️", false),
-        AchievementItem("meditation_master", "Meditation Master", "Meditate for 25 hours total", "👑", false),
-        AchievementItem("consistent_practitioner", "3-Day Streak", "Meditate for 3 days in a row", "🔥", false),
-        AchievementItem("weekly_warrior", "Weekly Warrior", "Meditate for 7 days in a row", "⚡", false),
-        AchievementItem("monthly_master", "Monthly Master", "Meditate for 30 days in a row", "🌙", false)
+        AchievementItem("first_hour", "First Hour", "Meditate for 1 hour total", Icons.Filled.Schedule, false),
+        AchievementItem("dedicated_beginner", "Dedicated Beginner", "Meditate for 5 hours total", Icons.Filled.SelfImprovement, false),
+        AchievementItem("mindful_explorer", "Mindful Explorer", "Meditate for 10 hours total", Icons.Filled.Explore, false),
+        AchievementItem("meditation_master", "Meditation Master", "Meditate for 25 hours total", Icons.Filled.EmojiEvents, false),
+        AchievementItem("consistent_practitioner", "3-Day Streak", "Meditate for 3 days in a row", Icons.Filled.LocalFireDepartment, false),
+        AchievementItem("weekly_warrior", "Weekly Warrior", "Meditate for 7 days in a row", Icons.Filled.Bolt, false),
+        AchievementItem("monthly_master", "Monthly Master", "Meditate for 30 days in a row", Icons.Filled.Nightlight, false)
     )
 
     private val availableBells = listOf(
-        SoundOption(R.raw.bell_1, "Tibetan Bell", "🔔"),
-        SoundOption(R.raw.bell_2, "Meditation Chime", "🎐"),
-        SoundOption(R.raw.bell_3, "Zen Gong", "🛎️"),
-        SoundOption(R.raw.bell_4, "Crystal Bowl", "🥣"),
-        SoundOption(R.raw.bell_5, "Temple Bell", "⛩️"),
-        SoundOption(R.raw.bell_6, "Singing Bowl", "🎵")
+        SoundOption(R.raw.bell_1, "Tibetan Bell", Icons.Filled.Notifications),
+        SoundOption(R.raw.bell_2, "Meditation Chime", Icons.Filled.Notifications),
+        SoundOption(R.raw.bell_3, "Zen Gong", Icons.Filled.Notifications),
+        SoundOption(R.raw.bell_4, "Crystal Bowl", Icons.Filled.Notifications),
+        SoundOption(R.raw.bell_5, "Temple Bell", Icons.Filled.Notifications),
+        SoundOption(R.raw.bell_6, "Singing Bowl", Icons.Filled.Notifications)
     )
 
     private val availableBackgrounds = listOf(
-        SoundOption(0, "None (Silence)", "🔇"),
-        SoundOption(R.raw.birds, "Bird Song", "🐦"),
-        SoundOption(R.raw.jungle_rain, "Jungle Rain", "🌴"),
-        SoundOption(R.raw.tibetan_chant, "Tibetan Chant", "🕉️"),
-        SoundOption(R.raw.aum_mantra, "Om Mantra", "🧘")
+        SoundOption(0, "None (Silence)", Icons.Filled.VolumeOff),
+        SoundOption(R.raw.birds, "Bird Song", Icons.Filled.Park),
+        SoundOption(R.raw.jungle_rain, "Jungle Rain", Icons.Filled.WaterDrop),
+        SoundOption(R.raw.tibetan_chant, "Tibetan Chant", Icons.Filled.RecordVoiceOver),
+        SoundOption(R.raw.aum_mantra, "Om Mantra", Icons.Filled.SelfImprovement)
     )
     
     // Preview player for sound selection
