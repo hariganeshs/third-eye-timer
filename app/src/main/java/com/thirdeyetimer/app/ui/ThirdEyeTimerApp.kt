@@ -20,6 +20,7 @@ sealed class AppScreen {
     object Sessions : AppScreen()
     object Pet : AppScreen()
     object Quests : AppScreen()
+    object UpgradeShop : AppScreen()
 }
 
 /**
@@ -46,7 +47,15 @@ data class MeditationAppState(
     val availableBells: List<SoundOption> = emptyList(),
     val availableBackgrounds: List<SoundOption> = emptyList(),
     val userLevel: String = "Seeker",
-    val karmaPoints: Int = 0
+    val karmaPoints: Int = 0,
+    // Idle game state
+    val totalPrana: Long = 0L,
+    val sessionPrana: Long = 0L,
+    val pranaPerSecond: Double = 0.0,
+    val totalMultiplier: Double = 1.0,
+    val upgradeStatuses: List<com.thirdeyetimer.app.domain.UpgradeManager.UpgradeStatus> = emptyList(),
+    val sessionPranaEarned: Long = 0L,
+    val showDoubleAdButton: Boolean = true
 )
 
 /**
@@ -75,6 +84,11 @@ fun ThirdEyeTimerApp(
     onDismiss: () -> Unit,
     onBellSelected: (Int) -> Unit = {},
     onBackgroundSelected: (Int) -> Unit = {},
+    // Upgrade shop callbacks
+    onUpgradeShopClick: () -> Unit = {},
+    onPurchaseUpgrade: (com.thirdeyetimer.app.domain.UpgradeManager.Upgrade) -> Unit = {},
+    onWatchAdForKarma: () -> Unit = {},
+    onWatchAdForDoublePrana: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     CosmicZenTheme {
@@ -107,6 +121,8 @@ fun ThirdEyeTimerApp(
                     isRunning = state.isRunning,
                     isPaused = state.isPaused,
                     guidedMeditationName = state.guidedMeditationName,
+                    sessionPrana = state.sessionPrana,
+                    pranaPerSecond = state.pranaPerSecond,
                     onPauseResumeClick = onPauseResumeClick,
                     onStopClick = onStopClick,
                     modifier = modifier
@@ -170,6 +186,18 @@ fun ThirdEyeTimerApp(
                 com.thirdeyetimer.app.ui.screens.QuestBoardScreen(
                     onBackClick = onDismiss,
                     onWatchAdForStardust = onWatchAdForStardust
+                )
+            }
+            
+            is AppScreen.UpgradeShop -> {
+                UpgradeShopScreen(
+                    totalPrana = state.totalPrana,
+                    karmaBalance = state.karmaPoints,
+                    upgradeStatuses = state.upgradeStatuses,
+                    totalMultiplier = state.totalMultiplier,
+                    onPurchaseUpgrade = onPurchaseUpgrade,
+                    onWatchAdForKarma = onWatchAdForKarma,
+                    onBackClick = onDismiss
                 )
             }
         }

@@ -93,6 +93,12 @@ class MainActivityCompose : ComponentActivity() {
     private var interstitialAd: InterstitialAd? = null
     private lateinit var petManager: com.thirdeyetimer.app.domain.PetManager
     private lateinit var questManager: com.thirdeyetimer.app.domain.QuestManager
+    private lateinit var idleGameManager: com.thirdeyetimer.app.domain.IdleGameManager
+    private lateinit var upgradeManager: com.thirdeyetimer.app.domain.UpgradeManager
+    
+    // Idle game tracking
+    private var lastPranaUpdateTime: Long = 0L
+    private var sessionStartMinute: Double = 0.0
     
     // Data Lists
     private val achievementList = listOf(
@@ -162,6 +168,11 @@ class MainActivityCompose : ComponentActivity() {
         // Initialize Pet Manager
         petManager = com.thirdeyetimer.app.domain.PetManager(this)
         questManager = com.thirdeyetimer.app.domain.QuestManager(this)
+        
+        // Initialize Idle Game Managers
+        idleGameManager = com.thirdeyetimer.app.domain.IdleGameManager(this)
+        upgradeManager = com.thirdeyetimer.app.domain.UpgradeManager(this, idleGameManager)
+        upgradeManager.initialize()
         
         // Initialize ads
         initializeAds()
@@ -278,6 +289,32 @@ class MainActivityCompose : ComponentActivity() {
                                     } else {
                                         stopPreviewSound()
                                     }
+                                }
+                            },
+                            // Upgrade shop handlers
+                            onUpgradeShopClick = {
+                                updateAppState()
+                                _currentScreen.value = AppScreen.UpgradeShop
+                            },
+                            onPurchaseUpgrade = { upgrade ->
+                                val cost = upgradeManager.purchaseUpgrade(upgrade, karmaPoints)
+                                if (cost > 0) {
+                                    karmaPoints -= cost
+                                    savePreferences()
+                                    updateAppState()
+                                }
+                            },
+                            onWatchAdForKarma = {
+                                showRewardedAd {
+                                    karmaPoints += 50
+                                    savePreferences()
+                                    updateAppState()
+                                }
+                            },
+                            onWatchAdForDoublePrana = {
+                                showRewardedAd {
+                                    idleGameManager.doubleSessionPrana()
+                                    updateAppState()
                                 }
                             }
                         )
@@ -426,7 +463,12 @@ class MainActivityCompose : ComponentActivity() {
             availableBells = availableBells,
             availableBackgrounds = availableBackgrounds,
             userLevel = userLevel,
-            karmaPoints = karmaPoints
+            karmaPoints = karmaPoints,
+            // Idle game state
+            totalPrana = idleGameManager.totalPrana,
+            sessionPrana = idleGameManager.sessionPrana,
+            totalMultiplier = upgradeManager.calculateTotalMultiplier(),
+            upgradeStatuses = upgradeManager.getUpgradeStatuses()
         )
     }
     
@@ -475,11 +517,17 @@ class MainActivityCompose : ComponentActivity() {
                 initialTimeMillis = timeInMilliSeconds
                 sessionStartTime = System.currentTimeMillis()
                 
+                // Reset Prana session tracking
+                idleGameManager.resetSession()
+                lastPranaUpdateTime = System.currentTimeMillis()
+                
                 startTimerService(timeInMilliSeconds, selectedBellResId)
                 
                 _appState.value = state.copy(
                     isRunning = true,
-                    isPaused = false
+                    isPaused = false,
+                    sessionPrana = 0L,
+                    pranaPerSecond = 0.0
                 )
                 _currentScreen.value = AppScreen.Meditation
             }
@@ -587,6 +635,10 @@ class MainActivityCompose : ComponentActivity() {
              questManager.updateProgress(com.thirdeyetimer.app.domain.QuestManager.QUEST_USE_BELL, 1)
         }
         
+        // Commit Prana earned in this session
+        val pranaEarned = idleGameManager.commitSession()
+        lastPranaUpdateTime = 0L  // Reset for next session
+        
         // Update Level
         userLevel = calculateLevel(karmaPoints)
         
@@ -602,7 +654,9 @@ class MainActivityCompose : ComponentActivity() {
             isPaused = false,
             sessionDuration = durationText,
             progress = 1f,
-            timerText = "Done!"
+            timerText = "Done!",
+            sessionPranaEarned = pranaEarned,
+            showDoubleAdButton = true
         )
         
         updateAppState()
@@ -618,9 +672,32 @@ class MainActivityCompose : ComponentActivity() {
             1f - (remainingTime.toFloat() / initialTimeMillis.toFloat())
         } else 0f
         
+        // Calculate elapsed time for Prana calculation
+        val elapsedTimeMs = initialTimeMillis - remainingTime
+        val elapsedMinutes = elapsedTimeMs / 60000.0
+        
+        // Calculate Prana per second based on current state
+        val pranaPerSecond = idleGameManager.calculatePranaPerSecond(
+            streakDays = currentStreak,
+            elapsedMinutes = elapsedMinutes
+        )
+        
+        // Calculate Prana earned since last tick (approximately 1 second intervals)
+        val currentTime = System.currentTimeMillis()
+        if (lastPranaUpdateTime > 0) {
+            val deltaSeconds = (currentTime - lastPranaUpdateTime) / 1000.0
+            val pranaEarned = (pranaPerSecond * deltaSeconds).toLong()
+            if (pranaEarned > 0) {
+                idleGameManager.addSessionPrana(pranaEarned)
+            }
+        }
+        lastPranaUpdateTime = currentTime
+        
         _appState.value = _appState.value.copy(
             timerText = timerText,
-            progress = progress.coerceIn(0f, 1f)
+            progress = progress.coerceIn(0f, 1f),
+            sessionPrana = idleGameManager.sessionPrana,
+            pranaPerSecond = pranaPerSecond
         )
     }
     

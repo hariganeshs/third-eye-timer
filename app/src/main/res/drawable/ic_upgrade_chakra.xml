@@ -1,0 +1,54 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    
+    <!-- Background circle -->
+    <path
+        android:pathData="M24,4 C35.046,4 44,12.954 44,24 C44,35.046 35.046,44 24,44 C12.954,44 4,35.046 4,24 C4,12.954 12.954,4 24,4z"
+        android:fillColor="#4A148C"/>
+    
+    <!-- Root chakra -->
+    <path
+        android:pathData="M24,38 C25.657,38 27,36.657 27,35 C27,33.343 25.657,32 24,32 C22.343,32 21,33.343 21,35 C21,36.657 22.343,38 24,38z"
+        android:fillColor="#F44336"/>
+    
+    <!-- Sacral chakra -->
+    <path
+        android:pathData="M24,34 C25.657,34 27,32.657 27,31 C27,29.343 25.657,28 24,28 C22.343,28 21,29.343 21,31 C21,32.657 22.343,34 24,34z"
+        android:fillColor="#FF9800"/>
+    
+    <!-- Solar plexus -->
+    <path
+        android:pathData="M24,30 C25.657,30 27,28.657 27,27 C27,25.343 25.657,24 24,24 C22.343,24 21,25.343 21,27 C21,28.657 22.343,30 24,30z"
+        android:fillColor="#FFEB3B"/>
+    
+    <!-- Heart chakra -->
+    <path
+        android:pathData="M24,26 C25.657,26 27,24.657 27,23 C27,21.343 25.657,20 24,20 C22.343,20 21,21.343 21,23 C21,24.657 22.343,26 24,26z"
+        android:fillColor="#4CAF50"/>
+    
+    <!-- Throat chakra -->
+    <path
+        android:pathData="M24,22 C25.657,22 27,20.657 27,19 C27,17.343 25.657,16 24,16 C22.343,16 21,17.343 21,19 C21,20.657 22.343,22 24,22z"
+        android:fillColor="#2196F3"/>
+    
+    <!-- Third eye chakra -->
+    <path
+        android:pathData="M24,18 C25.657,18 27,16.657 27,15 C27,13.343 25.657,12 24,12 C22.343,12 21,13.343 21,15 C21,16.657 22.343,18 24,18z"
+        android:fillColor="#673AB7"/>
+    
+    <!-- Crown chakra -->
+    <path
+        android:pathData="M24,14 C25.657,14 27,12.657 27,11 C27,9.343 25.657,8 24,8 C22.343,8 21,9.343 21,11 C21,12.657 22.343,14 24,14z"
+        android:fillColor="#9C27B0"/>
+    
+    <!-- Connecting line -->
+    <path
+        android:pathData="M24,35 L24,11"
+        android:strokeWidth="1.5"
+        android:strokeColor="#E1BEE7"
+        android:fillColor="#00000000"/>
+    
+</vector>

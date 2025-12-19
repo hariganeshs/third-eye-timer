@@ -28,6 +28,8 @@ import androidx.compose.material.icons.filled.Pets
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Upgrade
 
 /**
  * HomeScreen
@@ -43,11 +45,13 @@ fun HomeScreen(
     currentStreak: Int,
     userLevel: String = "Seeker",
     karmaPoints: Int = 0,
+    totalPrana: Long = 0L,
     onStartClick: () -> Unit,
     onSoundSettingsClick: () -> Unit,
     onAchievementsClick: () -> Unit,
     onPetClick: () -> Unit,
     onQuestsClick: () -> Unit,
+    onUpgradeShopClick: () -> Unit = {},
     onBrowseSessionsClick: () -> Unit = {},
     isTimerRunning: Boolean = false,
     timerText: String = "00:00",
@@ -98,19 +102,59 @@ fun HomeScreen(
                 textAlign = TextAlign.Center
             )
             
-            Text(
-                text = "$userLevel • $karmaPoints Karma",
-                style = MaterialTheme.typography.labelMedium,
-                color = CosmicColors.Accent,
-                textAlign = TextAlign.Center,
+            // Prana and Karma display row
+            Row(
                 modifier = Modifier
-                    .padding(top = 4.dp)
+                    .padding(top = 8.dp)
                     .background(
                         color = CosmicColors.GlassHighlight,
-                        shape = MaterialTheme.shapes.small
+                        shape = MaterialTheme.shapes.medium
                     )
-                    .padding(horizontal = 8.dp, vertical = 2.dp)
-            )
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Prana
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.AutoAwesome,
+                        contentDescription = "Prana",
+                        tint = CosmicColors.Accent,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = formatPranaHome(totalPrana),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = CosmicColors.Accent,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                
+                // Divider
+                Box(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .height(16.dp)
+                        .background(CosmicColors.GlassBorder)
+                )
+                
+                // Karma
+                Text(
+                    text = "$karmaPoints Karma",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = CosmicColors.TextSecondary
+                )
+                
+                // Level
+                Text(
+                    text = userLevel,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = CosmicColors.TextTertiary
+                )
+            }
             
             Spacer(modifier = Modifier.height(32.dp))
             
@@ -392,7 +436,43 @@ fun HomeScreen(
                 }
             }
             
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Upgrades Button - Access the upgrade shop
+            GlassmorphicButton(
+                onClick = onUpgradeShopClick,
+                modifier = Modifier.fillMaxWidth(),
+                cornerRadius = 16.dp,
+                contentPadding = PaddingValues(vertical = 14.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Upgrade,
+                        contentDescription = "Upgrades",
+                        tint = CosmicColors.Accent,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Upgrades",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = CosmicColors.TextPrimary,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Boost your Prana",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = CosmicColors.TextTertiary
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(24.dp))
             
             // Start Button
             PrimaryGradientButton(
@@ -430,10 +510,21 @@ fun HomeScreenPreview() {
         currentStreak = 5,
         userLevel = "Adept",
         karmaPoints = 4500,
+        totalPrana = 12500L,
         onStartClick = {},
         onSoundSettingsClick = {},
         onAchievementsClick = {},
         onPetClick = {},
         onQuestsClick = {}
     )
+}
+
+// Helper function for formatting Prana in HomeScreen
+private fun formatPranaHome(prana: Long): String {
+    return when {
+        prana >= 1_000_000_000L -> String.format("%.1fB", prana / 1_000_000_000.0)
+        prana >= 1_000_000L -> String.format("%.1fM", prana / 1_000_000.0)
+        prana >= 1_000L -> String.format("%.1fK", prana / 1_000.0)
+        else -> prana.toString()
+    }
 }

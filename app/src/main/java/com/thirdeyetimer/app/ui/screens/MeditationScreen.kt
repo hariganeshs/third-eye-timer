@@ -27,6 +27,7 @@ import com.thirdeyetimer.app.ui.theme.TimerTypography
  * 
  * The immersive full-screen meditation experience.
  * Designed to be distraction-free with minimal UI and calming animations.
+ * Now includes real-time Prana accumulation display for idle game feel.
  */
 @Composable
 fun MeditationScreen(
@@ -35,6 +36,8 @@ fun MeditationScreen(
     isRunning: Boolean,
     isPaused: Boolean,
     guidedMeditationName: String? = null,
+    sessionPrana: Long = 0L,
+    pranaPerSecond: Double = 0.0,
     onPauseResumeClick: () -> Unit,
     onStopClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -144,6 +147,15 @@ fun MeditationScreen(
                         style = MaterialTheme.typography.bodyMedium,
                         color = CosmicColors.TextTertiary
                     )
+                    
+                    // Prana counter - shows real-time accumulation
+                    if (sessionPrana > 0 || pranaPerSecond > 0) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        PranaCounterCompact(
+                            sessionPrana = sessionPrana,
+                            pranaPerSecond = pranaPerSecond
+                        )
+                    }
                 }
             }
             
