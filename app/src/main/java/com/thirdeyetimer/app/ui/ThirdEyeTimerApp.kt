@@ -18,6 +18,8 @@ sealed class AppScreen {
     object Achievements : AppScreen()
     object SoundSettings : AppScreen()
     object Sessions : AppScreen()
+    object Pet : AppScreen()
+    object Quests : AppScreen()
 }
 
 /**
@@ -62,6 +64,10 @@ fun ThirdEyeTimerApp(
     onStopClick: () -> Unit,
     onSoundSettingsClick: () -> Unit,
     onAchievementsClick: () -> Unit,
+    onPetClick: () -> Unit,
+    onFeedPetClick: () -> Unit,
+    onQuestsClick: () -> Unit,
+    onWatchAdForStardust: () -> Unit,
     onBrowseSessionsClick: () -> Unit,
     onMeditationSelected: (Int) -> Unit,
     onStartAnotherClick: () -> Unit,
@@ -82,6 +88,8 @@ fun ThirdEyeTimerApp(
                     onStartClick = onStartClick,
                     onSoundSettingsClick = onSoundSettingsClick,
                     onAchievementsClick = onAchievementsClick,
+                    onPetClick = onPetClick,
+                    onQuestsClick = onQuestsClick,
                     onBrowseSessionsClick = onBrowseSessionsClick,
                     isTimerRunning = state.isRunning,
                     timerText = state.timerText,
@@ -150,6 +158,20 @@ fun ThirdEyeTimerApp(
                     modifier = modifier
                 )
             }
+            
+            is AppScreen.Pet -> {
+                PetScreen(
+                    onBackClick = onDismiss,
+                    onFeedClick = onFeedPetClick
+                )
+            }
+            
+            is AppScreen.Quests -> {
+                com.thirdeyetimer.app.ui.screens.QuestBoardScreen(
+                    onBackClick = onDismiss,
+                    onWatchAdForStardust = onWatchAdForStardust
+                )
+            }
         }
     }
 }
@@ -182,6 +204,10 @@ fun ThirdEyeTimerAppPreview() {
         },
         onSoundSettingsClick = { },
         onAchievementsClick = { },
+        onPetClick = { },
+        onFeedPetClick = { },
+        onQuestsClick = { },
+        onWatchAdForStardust = { },
         onBrowseSessionsClick = { },
         onMeditationSelected = { },
         onStartAnotherClick = {

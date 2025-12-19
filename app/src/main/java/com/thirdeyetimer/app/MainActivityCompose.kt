@@ -77,6 +77,8 @@ class MainActivityCompose : ComponentActivity() {
     private var initialTimeMillis: Long = 0L
     private var lastSessionDuration: Long = 0L
     private var interstitialAd: InterstitialAd? = null
+    private lateinit var petManager: com.thirdeyetimer.app.domain.PetManager
+    private lateinit var questManager: com.thirdeyetimer.app.domain.QuestManager
     
     // Data Lists
     private val achievementList = listOf(
@@ -143,6 +145,10 @@ class MainActivityCompose : ComponentActivity() {
         // Load saved data
         loadPreferences()
         
+        // Initialize Pet Manager
+        petManager = com.thirdeyetimer.app.domain.PetManager(this)
+        questManager = com.thirdeyetimer.app.domain.QuestManager(this)
+        
         // Initialize ads
         initializeAds()
         
@@ -195,6 +201,26 @@ class MainActivityCompose : ComponentActivity() {
                             onAchievementsClick = { 
                                 updateAppState()
                                 _currentScreen.value = AppScreen.Achievements 
+                            },
+                            onPetClick = {
+                                updateAppState()
+                                questManager.updateProgress(com.thirdeyetimer.app.domain.QuestManager.QUEST_VISIT_PET, 1)
+                                _currentScreen.value = AppScreen.Pet
+                            },
+                            onFeedPetClick = {
+                                showRewardedAd {
+                                    petManager.feedPet()
+                                    // ideally trigger UI update in PetScreen via state, but PetScreen manages its own state from manager
+                                }
+                            },
+                            onQuestsClick = {
+                                updateAppState()
+                                _currentScreen.value = AppScreen.Quests
+                            },
+                            onWatchAdForStardust = {
+                                showRewardedAd {
+                                    questManager.addStardust(50)
+                                }
                             },
                             onBrowseSessionsClick = { _currentScreen.value = AppScreen.Sessions },
                             onMeditationSelected = { id -> handleMeditationSelected(id) },
@@ -534,6 +560,18 @@ class MainActivityCompose : ComponentActivity() {
         val minutesMeditated = (sessionDuration / 60000).toInt()
         val karmaEarned = minutesMeditated * 10
         karmaPoints += karmaEarned
+        
+        // Update Pet XP
+        if (minutesMeditated > 0) {
+            petManager.addExp(minutesMeditated)
+            // Update Quest: Meditate 10 min
+            questManager.updateProgress(com.thirdeyetimer.app.domain.QuestManager.QUEST_MEDITATE_10_MIN, minutesMeditated)
+        }
+        
+        // Quest: Use Bell (if bell was used)
+        if (selectedBellResId != 0) { 
+             questManager.updateProgress(com.thirdeyetimer.app.domain.QuestManager.QUEST_USE_BELL, 1)
+        }
         
         // Update Level
         userLevel = calculateLevel(karmaPoints)

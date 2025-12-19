@@ -36,6 +36,8 @@ fun HomeScreen(
     onStartClick: () -> Unit,
     onSoundSettingsClick: () -> Unit,
     onAchievementsClick: () -> Unit,
+    onPetClick: () -> Unit,
+    onQuestsClick: () -> Unit,
     onBrowseSessionsClick: () -> Unit = {},
     isTimerRunning: Boolean = false,
     timerText: String = "00:00",
@@ -224,6 +226,38 @@ fun HomeScreen(
             
             Spacer(modifier = Modifier.height(24.dp))
             
+            // Daily Quests
+            GlassmorphicButton(
+                onClick = onQuestsClick,
+                modifier = Modifier.fillMaxWidth(),
+                cornerRadius = 16.dp,
+                contentPadding = PaddingValues(vertical = 16.dp)
+            ) {
+                Row(
+                   verticalAlignment = Alignment.CenterVertically,
+                   horizontalArrangement = Arrangement.Center,
+                   modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "📜", fontSize = 24.sp)
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = "Daily Quests",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = CosmicColors.TextPrimary,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "Complete tasks for Stardust ✨",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = CosmicColors.TextSecondary
+                        )
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
             // Quick Actions Grid
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -288,6 +322,26 @@ fun HomeScreen(
                         )
                     }
                 }
+                
+                // Pet
+                GlassmorphicButton(
+                    onClick = onPetClick,
+                    modifier = Modifier.weight(1f),
+                    cornerRadius = 16.dp,
+                    contentPadding = PaddingValues(vertical = 16.dp)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "🥚", fontSize = 24.sp)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "My Pet",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = CosmicColors.TextSecondary
+                        )
+                    }
+                }
             }
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -330,6 +384,8 @@ fun HomeScreenPreview() {
         karmaPoints = 4500,
         onStartClick = {},
         onSoundSettingsClick = {},
-        onAchievementsClick = {}
+        onAchievementsClick = {},
+        onPetClick = {},
+        onQuestsClick = {}
     )
 }
