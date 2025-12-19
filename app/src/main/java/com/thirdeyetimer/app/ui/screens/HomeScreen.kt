@@ -320,7 +320,7 @@ fun HomeScreen(
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "Complete tasks for Stardust ✨",
+                            text = "Complete tasks for Karma ✨",
                             style = MaterialTheme.typography.labelSmall,
                             color = CosmicColors.TextSecondary
                         )

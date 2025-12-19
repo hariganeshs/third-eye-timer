@@ -654,8 +654,8 @@ class MainActivityCompose : ComponentActivity() {
         val pranaEarned = idleGameManager.commitSession()
         lastPranaUpdateTime = 0L  // Reset for next session
         
-        // Update Level
-        userLevel = calculateLevel(karmaPoints)
+        // Update Level based on lifetime Prana (permanent XP)
+        userLevel = calculateLevel(idleGameManager.lifetimePrana)
         
         checkAchievements()
         savePreferences()
@@ -852,13 +852,17 @@ class MainActivityCompose : ComponentActivity() {
         thread.start()
     }
 
-    private fun calculateLevel(karma: Int): String {
+    private fun calculateLevel(prana: Long): String {
         return when {
-            karma < 500 -> "Seeker"
-            karma < 2000 -> "Initiate"
-            karma < 5000 -> "Adept"
-            karma < 10000 -> "Master"
-            else -> "Guru"
+            prana < 100L -> "Seeker"
+            prana < 500L -> "Initiate"
+            prana < 2_000L -> "Adept"
+            prana < 10_000L -> "Sage"
+            prana < 50_000L -> "Master"
+            prana < 200_000L -> "Guru"
+            prana < 1_000_000L -> "Enlightened"
+            prana < 10_000_000L -> "Transcendent"
+            else -> "Cosmic Being"
         }
     }
     
