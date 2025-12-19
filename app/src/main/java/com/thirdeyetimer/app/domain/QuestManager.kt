@@ -8,15 +8,17 @@ import java.util.Locale
 /**
  * QuestManager
  * 
- * Manages Daily Quests and the "Stardust" economy.
- * Quests reset daily. Rewards are Stardust.
+ * Manages Daily Quests and Karma rewards.
+ * Quests reset daily. Completing quests awards Karma.
+ * Also manages ad reward cooldowns.
  */
 class QuestManager(context: Context) {
     
     private val PREFS_NAME = "QuestPrefs"
-    private val KEY_STARDUST = "stardust_amount"
+    private val KEY_KARMA_FROM_QUESTS = "karma_from_quests"
     private val KEY_LAST_QUEST_DATE = "last_quest_date"
-    private val KEY_QUESTS_JSON = "quests_json" // Simplified: "id:progress:completed|..."
+    private val KEY_QUESTS_JSON = "quests_json"
+    private val KEY_LAST_AD_REWARD_TIME = "last_ad_reward_time"
     
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     
@@ -26,7 +28,9 @@ class QuestManager(context: Context) {
         const val QUEST_VISIT_PET = "visit_pet"
         const val QUEST_SHARE_STREAK = "share_streak"
         
-        const val REWARD_STANDARD = 50
+        const val REWARD_STANDARD = 50  // Karma per quest
+        const val AD_REWARD_KARMA = 25  // Karma per ad
+        const val AD_COOLDOWN_MS = 5 * 60 * 1000L  // 5 minutes cooldown
     }
     
     data class Quest(
@@ -38,9 +42,13 @@ class QuestManager(context: Context) {
         val reward: Int = REWARD_STANDARD
     )
     
-    var stardust: Int
-        get() = prefs.getInt(KEY_STARDUST, 0)
-        private set(value) = prefs.edit().putInt(KEY_STARDUST, value).apply()
+    // Track karma earned from quests (for display purposes)
+    var karmaFromQuests: Int
+        get() = prefs.getInt(KEY_KARMA_FROM_QUESTS, 0)
+        private set(value) = prefs.edit().putInt(KEY_KARMA_FROM_QUESTS, value).apply()
+    
+    // Callback to add karma to main activity
+    var onKarmaEarned: ((Int) -> Unit)? = null
         
     private var _quests: MutableList<Quest> = mutableListOf()
     val quests: List<Quest>
@@ -51,16 +59,48 @@ class QuestManager(context: Context) {
         loadQuests()
     }
     
-    fun addStardust(amount: Int) {
-        stardust += amount
+    /**
+     * Add karma (uses callback to main activity)
+     */
+    fun addKarma(amount: Int) {
+        karmaFromQuests += amount
+        onKarmaEarned?.invoke(amount)
     }
     
-    fun spendStardust(amount: Int): Boolean {
-        if (stardust >= amount) {
-            stardust -= amount
-            return true
-        }
-        return false
+    /**
+     * Check if ad reward is available (cooldown expired)
+     */
+    fun isAdRewardAvailable(): Boolean {
+        val lastTime = prefs.getLong(KEY_LAST_AD_REWARD_TIME, 0L)
+        return System.currentTimeMillis() - lastTime >= AD_COOLDOWN_MS
+    }
+    
+    /**
+     * Get remaining cooldown time in milliseconds
+     */
+    fun getAdCooldownRemaining(): Long {
+        val lastTime = prefs.getLong(KEY_LAST_AD_REWARD_TIME, 0L)
+        val elapsed = System.currentTimeMillis() - lastTime
+        val remaining = AD_COOLDOWN_MS - elapsed
+        return if (remaining > 0) remaining else 0L
+    }
+    
+    /**
+     * Record that ad was watched (start cooldown)
+     */
+    fun recordAdWatched() {
+        prefs.edit().putLong(KEY_LAST_AD_REWARD_TIME, System.currentTimeMillis()).apply()
+    }
+    
+    /**
+     * Format cooldown for display
+     */
+    fun formatCooldown(): String {
+        val remaining = getAdCooldownRemaining()
+        if (remaining <= 0) return "Ready!"
+        val minutes = (remaining / 60000).toInt()
+        val seconds = ((remaining % 60000) / 1000).toInt()
+        return String.format(Locale.US, "%d:%02d", minutes, seconds)
     }
     
     fun updateProgress(questId: String, amount: Int = 1) {
@@ -70,7 +110,7 @@ class QuestManager(context: Context) {
             if (quest.progress >= quest.target) {
                 quest.progress = quest.target
                 quest.isCompleted = true
-                addStardust(quest.reward)
+                addKarma(quest.reward)  // Award Karma instead of Stardust
             }
             saveQuests()
         }
@@ -95,7 +135,6 @@ class QuestManager(context: Context) {
     }
     
     private fun saveQuests() {
-        // Simple serialization for MVP: id:progress:completed|id:progress:completed
         val serialized = _quests.joinToString("|") { "${it.id}:${it.progress}:${it.isCompleted}" }
         prefs.edit().putString(KEY_QUESTS_JSON, serialized).apply()
     }
@@ -116,7 +155,6 @@ class QuestManager(context: Context) {
                 val progress = data[1].toInt()
                 val isCompleted = data[2].toBoolean()
                 
-                // Reconstruct simple descriptions (Ideal: Map ID to static definition)
                 val (desc, target) = when(id) {
                     QUEST_MEDITATE_10_MIN -> "Meditate for 10 minutes" to 10
                     QUEST_USE_BELL -> "Complete a session with a Bell" to 1

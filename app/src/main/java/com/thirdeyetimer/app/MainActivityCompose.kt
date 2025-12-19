@@ -169,6 +169,13 @@ class MainActivityCompose : ComponentActivity() {
         petManager = com.thirdeyetimer.app.domain.PetManager(this)
         questManager = com.thirdeyetimer.app.domain.QuestManager(this)
         
+        // Connect quest karma rewards to main karma tracking
+        questManager.onKarmaEarned = { amount ->
+            karmaPoints += amount
+            savePreferences()
+            updateAppState()
+        }
+        
         // Initialize Idle Game Managers
         idleGameManager = com.thirdeyetimer.app.domain.IdleGameManager(this)
         upgradeManager = com.thirdeyetimer.app.domain.UpgradeManager(this, idleGameManager)
@@ -243,8 +250,12 @@ class MainActivityCompose : ComponentActivity() {
                                 _currentScreen.value = AppScreen.Quests
                             },
                             onWatchAdForStardust = {
-                                showRewardedAd {
-                                    questManager.addStardust(50)
+                                // Check cooldown before showing ad
+                                if (questManager.isAdRewardAvailable()) {
+                                    showRewardedAd {
+                                        questManager.addKarma(com.thirdeyetimer.app.domain.QuestManager.AD_REWARD_KARMA)
+                                        questManager.recordAdWatched()
+                                    }
                                 }
                             },
                             onBrowseSessionsClick = { _currentScreen.value = AppScreen.Sessions },
@@ -305,10 +316,14 @@ class MainActivityCompose : ComponentActivity() {
                                 }
                             },
                             onWatchAdForKarma = {
-                                showRewardedAd {
-                                    karmaPoints += 50
-                                    savePreferences()
-                                    updateAppState()
+                                // Check cooldown before showing ad
+                                if (questManager.isAdRewardAvailable()) {
+                                    showRewardedAd {
+                                        karmaPoints += com.thirdeyetimer.app.domain.QuestManager.AD_REWARD_KARMA
+                                        questManager.recordAdWatched()  // Start cooldown
+                                        savePreferences()
+                                        updateAppState()
+                                    }
                                 }
                             },
                             onWatchAdForDoublePrana = {
@@ -682,14 +697,16 @@ class MainActivityCompose : ComponentActivity() {
             elapsedMinutes = elapsedMinutes
         )
         
-        // Calculate Prana earned since last tick (approximately 1 second intervals)
+        // Calculate Prana earned since last tick using precise accumulation
         val currentTime = System.currentTimeMillis()
         if (lastPranaUpdateTime > 0) {
             val deltaSeconds = (currentTime - lastPranaUpdateTime) / 1000.0
-            val pranaEarned = (pranaPerSecond * deltaSeconds).toLong()
-            if (pranaEarned > 0) {
-                idleGameManager.addSessionPrana(pranaEarned)
-            }
+            // Use the improved accumulation method that handles fractional prana
+            idleGameManager.accumulatePrana(
+                streakDays = currentStreak,
+                elapsedMinutes = elapsedMinutes,
+                deltaSeconds = deltaSeconds
+            )
         }
         lastPranaUpdateTime = currentTime
         

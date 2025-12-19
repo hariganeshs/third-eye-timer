@@ -104,12 +104,14 @@ fun ThirdEyeTimerApp(
                     onAchievementsClick = onAchievementsClick,
                     onPetClick = onPetClick,
                     onQuestsClick = onQuestsClick,
+                    onUpgradeShopClick = onUpgradeShopClick,
                     onBrowseSessionsClick = onBrowseSessionsClick,
                     isTimerRunning = state.isRunning,
                     timerText = state.timerText,
                     progress = state.progress,
                     userLevel = state.userLevel,
                     karmaPoints = state.karmaPoints,
+                    totalPrana = state.totalPrana,
                     modifier = modifier
                 )
             }
@@ -136,8 +138,11 @@ fun ThirdEyeTimerApp(
                     totalTime = state.totalMeditationTime,
                     heartRateReduction = state.heartRateReduction,
                     newAchievement = state.newAchievement,
+                    pranaEarned = state.sessionPranaEarned,
+                    showDoubleAdButton = state.showDoubleAdButton,
                     onStartAnotherClick = onStartAnotherClick,
                     onShareClick = onShareClick,
+                    onWatchAdForDoublePrana = onWatchAdForDoublePrana,
                     onDismiss = onDismiss,
                     modifier = modifier
                 )

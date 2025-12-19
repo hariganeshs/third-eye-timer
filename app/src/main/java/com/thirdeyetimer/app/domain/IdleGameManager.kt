@@ -2,6 +2,7 @@ package com.thirdeyetimer.app.domain
 
 import android.content.Context
 import android.content.SharedPreferences
+import java.util.Locale
 
 /**
  * IdleGameManager
@@ -14,6 +15,9 @@ import android.content.SharedPreferences
  * 
  * The longer you meditate in a session, the faster Prana accumulates,
  * creating the satisfying "idle game" feel.
+ * 
+ * High-speed handling: Uses precise time tracking to ensure no Prana is lost
+ * even when the rate is millions per second.
  */
 class IdleGameManager(context: Context) {
     
@@ -31,8 +35,11 @@ class IdleGameManager(context: Context) {
         // Base rate: 1 Prana per second at the start
         const val BASE_RATE = 1.0
         
-        // Session bonus increases by 1% per minute of meditation
-        const val SESSION_BONUS_PER_MINUTE = 0.01
+        // Session bonus increases by 2% per minute of meditation (faster growth)
+        const val SESSION_BONUS_PER_MINUTE = 0.02
+        
+        // Maximum session bonus to prevent overflow
+        const val MAX_SESSION_BONUS = 10.0
         
         // Streak multiplier thresholds
         val STREAK_MULTIPLIERS = mapOf(
@@ -60,9 +67,12 @@ class IdleGameManager(context: Context) {
         get() = prefs.getLong(KEY_LIFETIME_PRANA, 0L)
         private set(value) = prefs.edit().putLong(KEY_LIFETIME_PRANA, value).apply()
     
-    // Current session's Prana (reset each session)
-    var sessionPrana: Long = 0L
-        private set
+    // Current session's Prana (in memory, reset each session)
+    private var _sessionPrana: Long = 0L
+    val sessionPrana: Long get() = _sessionPrana
+    
+    // Accumulated fractional prana (for high precision at low rates)
+    private var fractionalPrana: Double = 0.0
     
     // Base upgrade multiplier (from purchased upgrades)
     var upgradeMultiplier: Double
@@ -70,7 +80,7 @@ class IdleGameManager(context: Context) {
         set(value) = prefs.edit().putFloat(KEY_UPGRADE_MULTIPLIER, value.toFloat()).apply()
     
     // Ad boost state
-    private val isAdBoostActive: Boolean
+    val isAdBoostActive: Boolean
         get() {
             val expiry = prefs.getLong(KEY_AD_BOOST_EXPIRY, 0L)
             return System.currentTimeMillis() < expiry
@@ -92,9 +102,11 @@ class IdleGameManager(context: Context) {
     /**
      * Calculate the session bonus based on elapsed minutes
      * The longer you meditate, the higher the bonus
+     * Capped at MAX_SESSION_BONUS to prevent overflow
      */
     fun getSessionBonus(elapsedMinutes: Double): Double {
-        return 1.0 + (SESSION_BONUS_PER_MINUTE * elapsedMinutes)
+        val bonus = 1.0 + (SESSION_BONUS_PER_MINUTE * elapsedMinutes)
+        return bonus.coerceAtMost(MAX_SESSION_BONUS)
     }
     
     /**
@@ -112,27 +124,33 @@ class IdleGameManager(context: Context) {
     }
     
     /**
-     * Calculate Prana earned for a time interval
-     * Uses integration to account for increasing session bonus
+     * Calculate and add Prana for a time delta
+     * Uses fractional accumulation for precision at any speed
      */
-    fun calculatePranaForInterval(
+    fun accumulatePrana(
         streakDays: Int,
-        startMinute: Double,
-        endMinute: Double
+        elapsedMinutes: Double,
+        deltaSeconds: Double
     ): Long {
-        // For short intervals, use average rate
-        val avgMinute = (startMinute + endMinute) / 2
-        val durationSeconds = (endMinute - startMinute) * 60
-        val rate = calculatePranaPerSecond(streakDays, avgMinute)
+        val rate = calculatePranaPerSecond(streakDays, elapsedMinutes)
+        val pranaEarned = rate * deltaSeconds + fractionalPrana
         
-        return (rate * durationSeconds).toLong()
+        // Split into whole and fractional parts
+        val wholePrana = pranaEarned.toLong()
+        fractionalPrana = pranaEarned - wholePrana
+        
+        if (wholePrana > 0) {
+            _sessionPrana += wholePrana
+        }
+        
+        return wholePrana
     }
     
     /**
      * Called periodically during meditation to add Prana
      */
     fun addSessionPrana(amount: Long) {
-        sessionPrana += amount
+        _sessionPrana += amount
     }
     
     /**
@@ -140,10 +158,18 @@ class IdleGameManager(context: Context) {
      * Commits session Prana to totals
      */
     fun commitSession(): Long {
-        val earned = sessionPrana
+        val earned = _sessionPrana
         totalPrana += earned
         lifetimePrana += earned
-        sessionPrana = 0L
+        _sessionPrana = 0L
+        fractionalPrana = 0.0
+        
+        // Persist immediately
+        prefs.edit()
+            .putLong(KEY_TOTAL_PRANA, totalPrana)
+            .putLong(KEY_LIFETIME_PRANA, lifetimePrana)
+            .apply()
+            
         return earned
     }
     
@@ -151,14 +177,15 @@ class IdleGameManager(context: Context) {
      * Double the session Prana (rewarded ad)
      */
     fun doubleSessionPrana() {
-        sessionPrana *= 2
+        _sessionPrana *= 2
     }
     
     /**
      * Reset session Prana (when stopping early without completing)
      */
     fun resetSession() {
-        sessionPrana = 0L
+        _sessionPrana = 0L
+        fractionalPrana = 0.0
     }
     
     /**
@@ -179,14 +206,14 @@ class IdleGameManager(context: Context) {
     }
     
     /**
-     * Format Prana for display with K/M/B notation
+     * Format Prana for display with K/M/B/T notation
      */
     fun formatPrana(prana: Long): String {
         return when {
-            prana >= 1_000_000_000_000L -> String.format("%.2fT", prana / 1_000_000_000_000.0)
-            prana >= 1_000_000_000L -> String.format("%.2fB", prana / 1_000_000_000.0)
-            prana >= 1_000_000L -> String.format("%.2fM", prana / 1_000_000.0)
-            prana >= 1_000L -> String.format("%.1fK", prana / 1_000.0)
+            prana >= 1_000_000_000_000L -> String.format(Locale.US, "%.2fT", prana / 1_000_000_000_000.0)
+            prana >= 1_000_000_000L -> String.format(Locale.US, "%.2fB", prana / 1_000_000_000.0)
+            prana >= 1_000_000L -> String.format(Locale.US, "%.2fM", prana / 1_000_000.0)
+            prana >= 1_000L -> String.format(Locale.US, "%.1fK", prana / 1_000.0)
             else -> prana.toString()
         }
     }
@@ -196,11 +223,11 @@ class IdleGameManager(context: Context) {
      */
     fun formatRate(rate: Double): String {
         return when {
-            rate >= 1_000_000_000L -> String.format("%.2fB/s", rate / 1_000_000_000.0)
-            rate >= 1_000_000L -> String.format("%.2fM/s", rate / 1_000_000.0)
-            rate >= 1_000L -> String.format("%.1fK/s", rate / 1_000.0)
-            rate >= 10 -> String.format("%.0f/s", rate)
-            else -> String.format("%.1f/s", rate)
+            rate >= 1_000_000_000L -> String.format(Locale.US, "%.2fB/s", rate / 1_000_000_000.0)
+            rate >= 1_000_000L -> String.format(Locale.US, "%.2fM/s", rate / 1_000_000.0)
+            rate >= 1_000L -> String.format(Locale.US, "%.1fK/s", rate / 1_000.0)
+            rate >= 10 -> String.format(Locale.US, "%.0f/s", rate)
+            else -> String.format(Locale.US, "%.1f/s", rate)
         }
     }
 }

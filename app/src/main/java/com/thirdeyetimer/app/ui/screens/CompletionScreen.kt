@@ -24,6 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thirdeyetimer.app.ui.components.*
 import com.thirdeyetimer.app.ui.theme.CosmicColors
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.PlayCircle
+import java.util.Locale
 import kotlin.random.Random
 
 /**
@@ -53,8 +56,11 @@ fun CompletionScreen(
     totalTime: String,
     heartRateReduction: Int? = null,
     newAchievement: String? = null,
+    pranaEarned: Long = 0L,
+    showDoubleAdButton: Boolean = true,
     onStartAnotherClick: () -> Unit,
     onShareClick: () -> Unit,
+    onWatchAdForDoublePrana: () -> Unit = {},
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -231,6 +237,49 @@ fun CompletionScreen(
                         valueColor = if (heartRateReduction > 0) CosmicColors.Success else CosmicColors.Warning
                     )
                 }
+                
+                // Prana earned
+                if (pranaEarned > 0) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    StatRow(
+                        painter = androidx.compose.ui.graphics.vector.rememberVectorPainter(Icons.Default.AutoAwesome),
+                        label = "Prana Earned",
+                        value = "+${formatPranaCompact(pranaEarned)}",
+                        valueColor = CosmicColors.Accent
+                    )
+                    
+                    // 2x Ad button
+                    if (showDoubleAdButton) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        
+                        GlassmorphicButton(
+                            onClick = onWatchAdForDoublePrana,
+                            modifier = Modifier.fillMaxWidth(),
+                            cornerRadius = 12.dp,
+                            contentPadding = PaddingValues(vertical = 10.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.PlayCircle,
+                                    contentDescription = null,
+                                    tint = CosmicColors.Accent,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Watch Ad for 2x Prana",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = CosmicColors.Accent,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+                    }
+                }
             }
             
             // Achievement notification (if new)
@@ -381,4 +430,14 @@ private fun createConfettiParticle(maxWidth: Float, maxHeight: Float): ConfettiP
         rotation = Random.nextFloat() * 360,
         rotationSpeed = (Random.nextFloat() - 0.5f) * 10
     )
+}
+
+// Helper function for formatting Prana in CompletionScreen
+private fun formatPranaCompact(prana: Long): String {
+    return when {
+        prana >= 1_000_000_000L -> String.format(Locale.US, "%.1fB", prana / 1_000_000_000.0)
+        prana >= 1_000_000L -> String.format(Locale.US, "%.1fM", prana / 1_000_000.0)
+        prana >= 1_000L -> String.format(Locale.US, "%.1fK", prana / 1_000.0)
+        else -> prana.toString()
+    }
 }
