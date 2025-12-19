@@ -114,29 +114,11 @@ class MeditationTimerService : Service() {
                 
                 exoPlayer?.prepare()
                 
-                // Sync duration for guided meditations
-                if (guidedResId != 0) {
-                    exoPlayer?.addListener(object : Player.Listener {
-                        override fun onPlaybackStateChanged(playbackState: Int) {
-                            if (playbackState == Player.STATE_READY && exoPlayer?.duration != C.TIME_UNSET) {
-                                val actualDuration = exoPlayer?.duration ?: 0L
-                                if (actualDuration > 0) {
-                                    Log.d("MeditationTimerService", "ExoPlayer duration ready: $actualDuration ms")
-                                    // We only want to update this once
-                                    val intent = Intent(TIMER_UPDATE_DURATION_ACTION)
-                                    intent.putExtra(EXTRA_TIME_MILLIS, actualDuration)
-                                    LocalBroadcastManager.getInstance(this@MeditationTimerService).sendBroadcast(intent)
-                                    
-                                    // Restart timer with actual duration
-                                    startCountdownTimer(actualDuration, bellResId)
-                                    
-                                    // Remove this listener to prevent loops
-                                    exoPlayer?.removeListener(this)
-                                }
-                            }
-                        }
-                    })
-                }
+
+                
+                // No need to sync duration anymore - we trust the metadata duration
+                // The audio will simply end when it ends, and silence/ambient will continue
+                // until the timer finishes.
                 
                 exoPlayer?.play()
                 Log.d("MeditationTimerService", "ExoPlayer started")

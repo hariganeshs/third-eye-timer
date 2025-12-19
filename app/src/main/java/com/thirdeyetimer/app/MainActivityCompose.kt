@@ -103,7 +103,7 @@ class MainActivityCompose : ComponentActivity() {
     // Timer receiver
     private val TIMER_FINISHED_ACTION = "com.thirdeyetimer.app.TIMER_FINISHED"
     private val TIMER_TICK_ACTION = "com.thirdeyetimer.app.TIMER_TICK"
-    private val TIMER_UPDATE_DURATION_ACTION = "com.thirdeyetimer.app.TIMER_UPDATE_DURATION"
+
     
     // Compose state holders
     private var _appState = mutableStateOf(MeditationAppState())
@@ -119,14 +119,6 @@ class MainActivityCompose : ComponentActivity() {
                     val remainingTime = intent.getLongExtra(MeditationTimerService.EXTRA_REMAINING_TIME, 0L)
                     timeInMilliSeconds = remainingTime
                     updateTimerState(remainingTime)
-                }
-                TIMER_UPDATE_DURATION_ACTION -> {
-                    val newDuration = intent.getLongExtra(MeditationTimerService.EXTRA_TIME_MILLIS, 0L)
-                    if (newDuration > 0) {
-                        timeInMilliSeconds = newDuration
-                        initialTimeMillis = newDuration
-                        updateTimerState(newDuration)
-                    }
                 }
             }
         }
@@ -151,7 +143,7 @@ class MainActivityCompose : ComponentActivity() {
             IntentFilter().apply {
                 addAction(TIMER_FINISHED_ACTION)
                 addAction(TIMER_TICK_ACTION)
-                addAction(TIMER_UPDATE_DURATION_ACTION)
+
             }
         )
         
