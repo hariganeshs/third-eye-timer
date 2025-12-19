@@ -103,6 +103,7 @@ class MainActivityCompose : ComponentActivity() {
     // Timer receiver
     private val TIMER_FINISHED_ACTION = "com.thirdeyetimer.app.TIMER_FINISHED"
     private val TIMER_TICK_ACTION = "com.thirdeyetimer.app.TIMER_TICK"
+    private val TIMER_UPDATE_DURATION_ACTION = "com.thirdeyetimer.app.TIMER_UPDATE_DURATION"
     
     // Compose state holders
     private var _appState = mutableStateOf(MeditationAppState())
@@ -118,6 +119,14 @@ class MainActivityCompose : ComponentActivity() {
                     val remainingTime = intent.getLongExtra(MeditationTimerService.EXTRA_REMAINING_TIME, 0L)
                     timeInMilliSeconds = remainingTime
                     updateTimerState(remainingTime)
+                }
+                TIMER_UPDATE_DURATION_ACTION -> {
+                    val newDuration = intent.getLongExtra(MeditationTimerService.EXTRA_TIME_MILLIS, 0L)
+                    if (newDuration > 0) {
+                        timeInMilliSeconds = newDuration
+                        initialTimeMillis = newDuration
+                        updateTimerState(newDuration)
+                    }
                 }
             }
         }
@@ -142,6 +151,7 @@ class MainActivityCompose : ComponentActivity() {
             IntentFilter().apply {
                 addAction(TIMER_FINISHED_ACTION)
                 addAction(TIMER_TICK_ACTION)
+                addAction(TIMER_UPDATE_DURATION_ACTION)
             }
         )
         
@@ -179,7 +189,8 @@ class MainActivityCompose : ComponentActivity() {
                             onStopClick = { handleStop() },
                             onSoundSettingsClick = { _currentScreen.value = AppScreen.SoundSettings },
                             onAchievementsClick = { _currentScreen.value = AppScreen.Achievements },
-                            onBrowseSessionsClick = { /* TODO */ },
+                            onBrowseSessionsClick = { _currentScreen.value = AppScreen.Sessions },
+                            onMeditationSelected = { id -> handleMeditationSelected(id) },
                             onStartAnotherClick = { handleStartAnother() },
                             onShareClick = { handleShare() },
                             onDismiss = { _currentScreen.value = AppScreen.Home },
@@ -345,6 +356,39 @@ class MainActivityCompose : ComponentActivity() {
         }
     }
     
+    private fun handleMeditationSelected(resourceId: Int) {
+        val meditation = GuidedMeditationData.getMeditationByResourceId(resourceId) ?: return
+        
+        // Parse duration string (e.g. "15 min") to millis
+        var durationMillis = 15 * 60 * 1000L // Default fallback
+        try {
+            val minutes = meditation.duration.split(" ")[0].toLong()
+            durationMillis = minutes * 60 * 1000L
+        } catch (e: Exception) {
+            Log.e("MainActivityCompose", "Error parsing duration: ${meditation.duration}")
+        }
+        
+        timeInMilliSeconds = durationMillis
+        initialTimeMillis = timeInMilliSeconds
+        sessionStartTime = System.currentTimeMillis()
+        
+        // Update state
+        _appState.value = _appState.value.copy(
+            isRunning = true,
+            isPaused = false,
+            guidedMeditationName = meditation.title,
+            timeInput = (durationMillis / 60000).toString()
+        )
+        
+        // Start service with guided meditation
+        selectedGuidedMeditationResId = resourceId
+        savePreferences() // Ideally we should save this preference
+        
+        startTimerService(timeInMilliSeconds, 0) // 0 for bell means use guided audio only if needed
+        
+        _currentScreen.value = AppScreen.Meditation
+    }
+
     private fun handleStop() {
         stopTimerService()
         
@@ -366,7 +410,8 @@ class MainActivityCompose : ComponentActivity() {
         _appState.value = _appState.value.copy(
             isRunning = false,
             isPaused = false,
-            sessionDuration = durationText
+            sessionDuration = durationText,
+            guidedMeditationName = null // Reset guided name
         )
         
         updateAppState()

@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.CountDownTimer
 import android.os.IBinder
@@ -15,6 +14,11 @@ import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.util.Log
 import android.content.pm.ServiceInfo
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 
 class MeditationTimerService : Service() {
     companion object {
@@ -27,14 +31,22 @@ class MeditationTimerService : Service() {
         const val EXTRA_GUIDED_RES_ID = "EXTRA_GUIDED_RES_ID"
         const val TIMER_FINISHED_ACTION = "com.thirdeyetimer.app.TIMER_FINISHED"
         const val TIMER_TICK_ACTION = "com.thirdeyetimer.app.TIMER_TICK"
+        const val TIMER_UPDATE_DURATION_ACTION = "com.thirdeyetimer.app.TIMER_UPDATE_DURATION"
         const val EXTRA_REMAINING_TIME = "EXTRA_REMAINING_TIME"
     }
 
     private var countdownTimer: CountDownTimer? = null
-    private var mediaPlayer: MediaPlayer? = null
-    private var backgroundPlayer: MediaPlayer? = null
+    private var exoPlayer: ExoPlayer? = null
+    private var bellPlayer: ExoPlayer? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    override fun onCreate() {
+        super.onCreate()
+        // Initialize ExoPlayers
+        exoPlayer = ExoPlayer.Builder(this).build()
+        bellPlayer = ExoPlayer.Builder(this).build()
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == ACTION_START) {
@@ -60,30 +72,74 @@ class MeditationTimerService : Service() {
             }
         } catch (e: Exception) {
             Log.e("MeditationTimerService", "Error starting foreground service: ${e.message}", e)
-            // Fallback to regular foreground service
             startForeground(1, notification)
         }
 
-        // Start background sound or guided meditation if selected
-        backgroundPlayer?.release()
+        // Stop any previous playback
+        exoPlayer?.stop()
+        exoPlayer?.clearMediaItems()
         
         // Priority: guided meditation first, then background sound
         val soundToPlay = if (guidedResId != 0) guidedResId else backgroundResId
+        var durationToUse = timeMillis
         
         if (soundToPlay != 0) {
             try {
-                Log.d("MeditationTimerService", "Starting playback for resource: $soundToPlay (guided: ${guidedResId != 0})")
-                backgroundPlayer = MediaPlayer.create(this, soundToPlay)
+                Log.d("MeditationTimerService", "Starting ExoPlayer for resource: $soundToPlay (guided: ${guidedResId != 0})")
                 
-                if (backgroundPlayer != null) {
-                    // Only loop ambient sounds, not guided meditations
-                    backgroundPlayer?.isLooping = shouldLoopBackgroundSound(soundToPlay)
-                    backgroundPlayer?.setVolume(1.0f, 1.0f)
-                    backgroundPlayer?.start()
-                    Log.d("MeditationTimerService", "Successfully started playback")
+                val uri = "android.resource://$packageName/$soundToPlay"
+                val mediaItem = MediaItem.fromUri(uri)
+                
+                exoPlayer?.setMediaItem(mediaItem)
+                
+                // Set AudioAttributes
+                val contentType = if (guidedResId != 0) C.AUDIO_CONTENT_TYPE_SPEECH else C.AUDIO_CONTENT_TYPE_MUSIC
+                val audioAttributes = AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(contentType)
+                    .build()
+                exoPlayer?.setAudioAttributes(audioAttributes, true)
+                
+                // Looping logic
+                if (guidedResId != 0) {
+                    exoPlayer?.repeatMode = Player.REPEAT_MODE_OFF
                 } else {
-                    Log.e("MeditationTimerService", "Failed to create MediaPlayer for resource: $soundToPlay")
+                    // Ambient sounds loop
+                    if (shouldLoopBackgroundSound(soundToPlay)) {
+                        exoPlayer?.repeatMode = Player.REPEAT_MODE_ONE
+                    } else {
+                        exoPlayer?.repeatMode = Player.REPEAT_MODE_OFF
+                    }
                 }
+                
+                exoPlayer?.prepare()
+                
+                // Sync duration for guided meditations
+                if (guidedResId != 0) {
+                    exoPlayer?.addListener(object : Player.Listener {
+                        override fun onPlaybackStateChanged(playbackState: Int) {
+                            if (playbackState == Player.STATE_READY && exoPlayer?.duration != C.TIME_UNSET) {
+                                val actualDuration = exoPlayer?.duration ?: 0L
+                                if (actualDuration > 0) {
+                                    Log.d("MeditationTimerService", "ExoPlayer duration ready: $actualDuration ms")
+                                    // We only want to update this once
+                                    val intent = Intent(TIMER_UPDATE_DURATION_ACTION)
+                                    intent.putExtra(EXTRA_TIME_MILLIS, actualDuration)
+                                    LocalBroadcastManager.getInstance(this@MeditationTimerService).sendBroadcast(intent)
+                                    
+                                    // Restart timer with actual duration
+                                    startCountdownTimer(actualDuration, bellResId)
+                                    
+                                    // Remove this listener to prevent loops
+                                    exoPlayer?.removeListener(this)
+                                }
+                            }
+                        }
+                    })
+                }
+                
+                exoPlayer?.play()
+                Log.d("MeditationTimerService", "ExoPlayer started")
             } catch (e: Exception) {
                 Log.e("MeditationTimerService", "Error playing background/guided sound: ${e.message}", e)
             }
@@ -91,10 +147,14 @@ class MeditationTimerService : Service() {
             Log.d("MeditationTimerService", "No background or guided meditation sound selected (silent meditation)")
         }
 
+        // Initial timer start (will be restarted if duration update happens)
+        startCountdownTimer(timeMillis, bellResId)
+    }
+
+    private fun startCountdownTimer(durationMillis: Long, bellResId: Int) {
         countdownTimer?.cancel()
-        countdownTimer = object : CountDownTimer(timeMillis, 1000) {
+        countdownTimer = object : CountDownTimer(durationMillis, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                // Send broadcast with remaining time
                 val intent = Intent(TIMER_TICK_ACTION)
                 intent.putExtra(EXTRA_REMAINING_TIME, millisUntilFinished)
                 LocalBroadcastManager.getInstance(this@MeditationTimerService).sendBroadcast(intent)
@@ -102,87 +162,44 @@ class MeditationTimerService : Service() {
             override fun onFinish() {
                 Log.d("MeditationTimerService", "Timer finished! Playing bell sound...")
                 playBell(bellResId)
-                // Stop background sound
-                backgroundPlayer?.stop()
-                backgroundPlayer?.release()
-                backgroundPlayer = null
-                // Send broadcast to MainActivity
+                
+                exoPlayer?.stop()
+                
                 val intent = Intent(TIMER_FINISHED_ACTION)
                 LocalBroadcastManager.getInstance(this@MeditationTimerService).sendBroadcast(intent)
-                Log.d("MeditationTimerService", "Timer finished broadcast sent")
-                // Delay stopping the service to allow bell sound to play
+                
                 android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                    Log.d("MeditationTimerService", "Stopping service after bell sound")
                     stopSelf()
-                }, 3000) // Wait 3 seconds for bell sound to complete
+                }, 3000)
             }
         }.start()
     }
 
     private fun playBell(bellResId: Int) {
-        Log.d("MeditationTimerService", "Attempting to play bell sound with resId: $bellResId")
+        Log.d("MeditationTimerService", "Attempting to play bell sound with ExoPlayer: $bellResId")
         try {
-            mediaPlayer?.release()
-            mediaPlayer = MediaPlayer.create(this, bellResId)
-            if (mediaPlayer != null) {
-                Log.d("MeditationTimerService", "MediaPlayer created successfully")
-                mediaPlayer?.setVolume(1.0f, 1.0f)
-                mediaPlayer?.setOnCompletionListener {
-                    Log.d("MeditationTimerService", "Bell sound finished playing")
-                }
-                mediaPlayer?.setOnErrorListener { mp, what, extra ->
-                    Log.e("MeditationTimerService", "MediaPlayer error: what=$what, extra=$extra")
-                    playDefaultBell()
-                    true
-                }
-                mediaPlayer?.start()
-                Log.d("MeditationTimerService", "Bell sound started playing")
-            } else {
-                Log.e("MeditationTimerService", "Failed to create MediaPlayer for bell sound: $bellResId")
-                // Fallback to default bell sound
-                playDefaultBell()
-            }
+            bellPlayer?.stop()
+            bellPlayer?.clearMediaItems()
+            
+            val soundId = if (bellResId != 0) bellResId else R.raw.bell_1
+            val uri = "android.resource://$packageName/$soundId"
+            val mediaItem = MediaItem.fromUri(uri)
+            
+            bellPlayer?.setMediaItem(mediaItem)
+            bellPlayer?.prepare()
+            bellPlayer?.play()
         } catch (e: Exception) {
             Log.e("MeditationTimerService", "Error playing bell sound: ${e.message}", e)
-            // Fallback to default bell sound
-            playDefaultBell()
-        }
-    }
-
-    private fun playDefaultBell() {
-        Log.d("MeditationTimerService", "Playing default bell sound")
-        try {
-            mediaPlayer?.release()
-            mediaPlayer = MediaPlayer.create(this, R.raw.bell_1)
-            if (mediaPlayer != null) {
-                Log.d("MeditationTimerService", "Default MediaPlayer created successfully")
-                mediaPlayer?.setVolume(1.0f, 1.0f)
-                mediaPlayer?.setOnCompletionListener {
-                    Log.d("MeditationTimerService", "Default bell sound finished playing")
-                }
-                mediaPlayer?.setOnErrorListener { mp, what, extra ->
-                    Log.e("MeditationTimerService", "Default MediaPlayer error: what=$what, extra=$extra")
-                    true
-                }
-                mediaPlayer?.start()
-                Log.d("MeditationTimerService", "Default bell sound started playing")
-            } else {
-                Log.e("MeditationTimerService", "Failed to create default MediaPlayer")
-            }
-        } catch (e: Exception) {
-            Log.e("MeditationTimerService", "Error playing default bell sound: ${e.message}", e)
         }
     }
 
     private fun shouldLoopBackgroundSound(resId: Int): Boolean {
-        // Define ambient sound resource IDs that should loop
         val ambientSoundIds = arrayOf(
             R.raw.tibetan_chant,
             R.raw.aum_mantra,
             R.raw.birds,
             R.raw.jungle_rain
         )
-
         return ambientSoundIds.contains(resId)
     }
 
@@ -215,20 +232,11 @@ class MeditationTimerService : Service() {
         countdownTimer?.cancel()
         countdownTimer = null
         
-        try {
-            mediaPlayer?.stop()
-            mediaPlayer?.release()
-            mediaPlayer = null
-        } catch (e: Exception) {
-            Log.e("MeditationTimerService", "Error releasing mediaPlayer: ${e.message}", e)
-        }
+        exoPlayer?.release()
+        exoPlayer = null
         
-        try {
-            backgroundPlayer?.stop()
-            backgroundPlayer?.release()
-            backgroundPlayer = null
-        } catch (e: Exception) {
-            Log.e("MeditationTimerService", "Error releasing backgroundPlayer: ${e.message}", e)
-        }
+        bellPlayer?.release()
+        bellPlayer = null
     }
 }
+

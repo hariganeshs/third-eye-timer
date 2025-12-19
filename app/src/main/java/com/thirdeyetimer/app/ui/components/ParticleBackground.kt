@@ -8,7 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.thirdeyetimer.app.ui.theme.CosmicColors
 import kotlinx.coroutines.delay
@@ -78,13 +80,16 @@ fun ParticleBackground(
     }
     
     Canvas(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .onSizeChanged { size ->
+                val newWidth = size.width.toFloat()
+                val newHeight = size.height.toFloat()
+                if (canvasSize.first != newWidth || canvasSize.second != newHeight) {
+                    canvasSize = Pair(newWidth, newHeight)
+                }
+            }
     ) {
-        // Update canvas size
-        if (canvasSize.first != size.width || canvasSize.second != size.height) {
-            canvasSize = Pair(size.width, size.height)
-        }
-        
         // Draw gradient background
         drawRect(
             brush = Brush.verticalGradient(

@@ -17,6 +17,7 @@ sealed class AppScreen {
     object Completion : AppScreen()
     object Achievements : AppScreen()
     object SoundSettings : AppScreen()
+    object Sessions : AppScreen()
 }
 
 /**
@@ -60,6 +61,7 @@ fun ThirdEyeTimerApp(
     onSoundSettingsClick: () -> Unit,
     onAchievementsClick: () -> Unit,
     onBrowseSessionsClick: () -> Unit,
+    onMeditationSelected: (Int) -> Unit,
     onStartAnotherClick: () -> Unit,
     onShareClick: () -> Unit,
     onDismiss: () -> Unit,
@@ -136,6 +138,14 @@ fun ThirdEyeTimerApp(
                     modifier = modifier
                 )
             }
+
+            is AppScreen.Sessions -> {
+                SessionsScreen(
+                    onBackClick = onDismiss,
+                    onMeditationSelected = onMeditationSelected,
+                    modifier = modifier
+                )
+            }
         }
     }
 }
@@ -169,6 +179,7 @@ fun ThirdEyeTimerAppPreview() {
         onSoundSettingsClick = { },
         onAchievementsClick = { },
         onBrowseSessionsClick = { },
+        onMeditationSelected = { },
         onStartAnotherClick = {
             appState = appState.copy(
                 isRunning = false,

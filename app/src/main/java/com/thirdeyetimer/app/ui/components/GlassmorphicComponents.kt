@@ -2,6 +2,7 @@ package com.thirdeyetimer.app.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
@@ -63,22 +64,37 @@ fun GlassmorphicCardWithGlow(
     modifier: Modifier = Modifier,
     glowColor: Color = CosmicColors.GlowIndigo,
     cornerRadius: Dp = 20.dp,
-    glowRadius: Dp = 16.dp,
+    glowRadius: Dp = 8.dp,
     contentPadding: PaddingValues = PaddingValues(16.dp),
+    onClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    val shape = RoundedCornerShape(cornerRadius)
+    
     Box(
         modifier = modifier
+            .clip(shape)
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable(onClick = onClick)
+                } else {
+                    Modifier
+                }
+            )
     ) {
-        // Glow layer
+        // Glow layer - subtle inner glow effect
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .padding(4.dp)
-                .blur(glowRadius)
                 .background(
-                    color = glowColor,
-                    shape = RoundedCornerShape(cornerRadius)
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            glowColor.copy(alpha = 0.15f),
+                            glowColor.copy(alpha = 0.05f),
+                            Color.Transparent
+                        )
+                    ),
+                    shape = shape
                 )
         )
         
