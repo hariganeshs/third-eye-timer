@@ -31,6 +31,8 @@ fun HomeScreen(
     onTimeInputChange: (String) -> Unit,
     totalMeditationTime: String,
     currentStreak: Int,
+    userLevel: String = "Seeker",
+    karmaPoints: Int = 0,
     onStartClick: () -> Unit,
     onSoundSettingsClick: () -> Unit,
     onAchievementsClick: () -> Unit,
@@ -82,6 +84,20 @@ fun HomeScreen(
                 style = MaterialTheme.typography.bodyMedium,
                 color = CosmicColors.TextTertiary,
                 textAlign = TextAlign.Center
+            )
+            
+            Text(
+                text = "$userLevel • $karmaPoints Karma",
+                style = MaterialTheme.typography.labelMedium,
+                color = CosmicColors.Accent,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .background(
+                        color = CosmicColors.GlassHighlight,
+                        shape = MaterialTheme.shapes.small
+                    )
+                    .padding(horizontal = 8.dp, vertical = 2.dp)
             )
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -310,6 +326,8 @@ fun HomeScreenPreview() {
         onTimeInputChange = { timeInput = it },
         totalMeditationTime = "12h 30m",
         currentStreak = 5,
+        userLevel = "Adept",
+        karmaPoints = 4500,
         onStartClick = {},
         onSoundSettingsClick = {},
         onAchievementsClick = {}

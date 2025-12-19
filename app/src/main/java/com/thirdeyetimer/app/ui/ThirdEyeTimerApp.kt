@@ -42,7 +42,9 @@ data class MeditationAppState(
     val selectedBellId: Int = 0,
     val selectedBackgroundId: Int = 0,
     val availableBells: List<SoundOption> = emptyList(),
-    val availableBackgrounds: List<SoundOption> = emptyList()
+    val availableBackgrounds: List<SoundOption> = emptyList(),
+    val userLevel: String = "Seeker",
+    val karmaPoints: Int = 0
 )
 
 /**
@@ -84,6 +86,8 @@ fun ThirdEyeTimerApp(
                     isTimerRunning = state.isRunning,
                     timerText = state.timerText,
                     progress = state.progress,
+                    userLevel = state.userLevel,
+                    karmaPoints = state.karmaPoints,
                     modifier = modifier
                 )
             }
