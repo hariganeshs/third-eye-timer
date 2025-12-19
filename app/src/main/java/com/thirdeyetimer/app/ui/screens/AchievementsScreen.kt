@@ -136,22 +136,32 @@ fun AchievementsScreen(
                 // Note: Nested LazyVerticalGrid inside LazyColumn needs fixed height or distinct layout approach
                 // Here we calculate items per row to render manually or use a simple Column since grid items are limited
                 
-                items(achievements.chunked(2)) { rowItems ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        for (item in rowItems) {
-                            AchievementCard(
-                                achievement = item,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(bottom = 16.dp)
-                            )
-                        }
-                        // Fill empty space if odd number of items
-                        if (rowItems.size < 2) {
-                            Spacer(modifier = Modifier.weight(1f))
+                if (achievements.isEmpty()) {
+                    item {
+                        Text(
+                            text = "No badges yet. Start meditating to earn achievements!",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = CosmicColors.TextTertiary
+                        )
+                    }
+                } else {
+                    items(achievements.chunked(2)) { rowItems ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            for (item in rowItems) {
+                                AchievementCard(
+                                    achievement = item,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(bottom = 16.dp)
+                                )
+                            }
+                            // Fill empty space if odd number of items
+                            if (rowItems.size < 2) {
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
                         }
                     }
                 }

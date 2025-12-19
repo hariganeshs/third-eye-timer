@@ -85,20 +85,29 @@ class MainActivityCompose : ComponentActivity() {
     )
 
     private val availableBells = listOf(
-        SoundOption(R.raw.bell_1, "Tibetan Bell 1", "🔔"),
-        SoundOption(R.raw.bell_2, "Tibetan Bell 2", "🔔"),
+        SoundOption(R.raw.bell_1, "Tibetan Bell", "🔔"),
+        SoundOption(R.raw.bell_2, "Meditation Chime", "🎐"),
         SoundOption(R.raw.bell_3, "Zen Gong", "🛎️"),
-        SoundOption(R.raw.bell_4, "Crystal Bowl", "🥣")
+        SoundOption(R.raw.bell_4, "Crystal Bowl", "🥣"),
+        SoundOption(R.raw.bell_5, "Temple Bell", "⛩️"),
+        SoundOption(R.raw.bell_6, "Singing Bowl", "🎵")
     )
 
     private val availableBackgrounds = listOf(
-        SoundOption(0, "None", "🔇"),
-        SoundOption(R.raw.rain, "Rain", "🌧️"),
-        SoundOption(R.raw.forest, "Forest", "🌲"),
-        SoundOption(R.raw.ocean, "Ocean", "🌊"),
-        SoundOption(R.raw.river, "River", "💧"),
-        SoundOption(R.raw.temple, "Temple", "🕌")
+        SoundOption(0, "None (Silence)", "🔇"),
+        SoundOption(R.raw.rain, "Gentle Rain", "🌧️"),
+        SoundOption(R.raw.forest, "Forest Ambience", "🌲"),
+        SoundOption(R.raw.ocean, "Ocean Waves", "🌊"),
+        SoundOption(R.raw.river, "Flowing River", "💧"),
+        SoundOption(R.raw.birds, "Bird Song", "🐦"),
+        SoundOption(R.raw.cave, "Cave Echo", "🕳️"),
+        SoundOption(R.raw.jungle_rain, "Jungle Rain", "🌴"),
+        SoundOption(R.raw.tibetan_chant, "Tibetan Chant", "🕉️"),
+        SoundOption(R.raw.aum_mantra, "Om Mantra", "🧘")
     )
+    
+    // Preview player for sound selection
+    private var previewPlayer: MediaPlayer? = null
     
     // Timer receiver
     private val TIMER_FINISHED_ACTION = "com.thirdeyetimer.app.TIMER_FINISHED"
@@ -179,22 +188,39 @@ class MainActivityCompose : ComponentActivity() {
                             onStartClick = { handleStartPause() },
                             onPauseResumeClick = { handlePauseResume() },
                             onStopClick = { handleStop() },
-                            onSoundSettingsClick = { _currentScreen.value = AppScreen.SoundSettings },
-                            onAchievementsClick = { _currentScreen.value = AppScreen.Achievements },
+                            onSoundSettingsClick = { 
+                                updateAppState()
+                                _currentScreen.value = AppScreen.SoundSettings 
+                            },
+                            onAchievementsClick = { 
+                                updateAppState()
+                                _currentScreen.value = AppScreen.Achievements 
+                            },
                             onBrowseSessionsClick = { _currentScreen.value = AppScreen.Sessions },
                             onMeditationSelected = { id -> handleMeditationSelected(id) },
                             onStartAnotherClick = { handleStartAnother() },
                             onShareClick = { handleShare() },
-                            onDismiss = { _currentScreen.value = AppScreen.Home },
+                            onDismiss = { 
+                                stopPreviewSound()
+                                _currentScreen.value = AppScreen.Home 
+                            },
                             onBellSelected = { id -> 
                                 selectedBellResId = id
                                 savePreferences()
                                 updateAppState()
+                                // Play preview sound
+                                playPreviewSound(id)
                             },
                             onBackgroundSelected = { id -> 
                                 selectedBackgroundResId = id
                                 savePreferences()
                                 updateAppState()
+                                // Play a short preview for background sounds
+                                if (id != 0) {
+                                    playPreviewSound(id)
+                                } else {
+                                    stopPreviewSound()
+                                }
                             }
                         )
                     }
@@ -292,6 +318,8 @@ class MainActivityCompose : ComponentActivity() {
             item.copy(isUnlocked = achievementsUnlocked.contains(item.id))
         }
         
+        Log.d("MainActivityCompose", "updateAppState: bells=${availableBells.size}, backgrounds=${availableBackgrounds.size}, achievements=${updatedAchievements.size}")
+        
         _appState.value = _appState.value.copy(
             totalMeditationTime = totalTimeText,
             currentStreak = currentStreak,
@@ -306,6 +334,32 @@ class MainActivityCompose : ComponentActivity() {
     
     private fun updateTimeInput(input: String) {
         _appState.value = _appState.value.copy(timeInput = input)
+    }
+    
+    private fun playPreviewSound(resId: Int) {
+        try {
+            stopPreviewSound()
+            previewPlayer = MediaPlayer.create(this, resId)?.apply {
+                setVolume(1.0f, 1.0f)
+                setOnCompletionListener { 
+                    it.release()
+                    if (previewPlayer == it) previewPlayer = null
+                }
+                start()
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivityCompose", "Error playing preview sound: ${e.message}")
+        }
+    }
+    
+    private fun stopPreviewSound() {
+        try {
+            previewPlayer?.stop()
+            previewPlayer?.release()
+            previewPlayer = null
+        } catch (e: Exception) {
+            Log.e("MainActivityCompose", "Error stopping preview sound: ${e.message}")
+        }
     }
     
     private fun handleStartPause() {

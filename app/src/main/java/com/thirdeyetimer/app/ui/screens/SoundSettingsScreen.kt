@@ -122,22 +122,42 @@ fun SoundSettingsScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 if (selectedTab == 0) {
-                    items(bells) { bell ->
-                        SoundItemCard(
-                            title = bell.title,
-                            icon = bell.icon,
-                            isSelected = bell.id == selectedBellId,
-                            onClick = { onBellSelected(bell.id) }
-                        )
+                    if (bells.isEmpty()) {
+                        item {
+                            Text(
+                                text = "No bell sounds available",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = CosmicColors.TextTertiary
+                            )
+                        }
+                    } else {
+                        items(bells) { bell ->
+                            SoundItemCard(
+                                title = bell.title,
+                                icon = bell.icon,
+                                isSelected = bell.id == selectedBellId,
+                                onClick = { onBellSelected(bell.id) }
+                            )
+                        }
                     }
                 } else {
-                    items(backgrounds) { bg ->
-                        SoundItemCard(
-                            title = bg.title,
-                            icon = bg.icon,
-                            isSelected = bg.id == selectedBackgroundId,
-                            onClick = { onBackgroundSelected(bg.id) }
-                        )
+                    if (backgrounds.isEmpty()) {
+                        item {
+                            Text(
+                                text = "No background sounds available",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = CosmicColors.TextTertiary
+                            )
+                        }
+                    } else {
+                        items(backgrounds) { bg ->
+                            SoundItemCard(
+                                title = bg.title,
+                                icon = bg.icon,
+                                isSelected = bg.id == selectedBackgroundId,
+                                onClick = { onBackgroundSelected(bg.id) }
+                            )
+                        }
                     }
                 }
                 
