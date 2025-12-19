@@ -95,12 +95,7 @@ class MainActivityCompose : ComponentActivity() {
 
     private val availableBackgrounds = listOf(
         SoundOption(0, "None (Silence)", "🔇"),
-        SoundOption(R.raw.rain, "Gentle Rain", "🌧️"),
-        SoundOption(R.raw.forest, "Forest Ambience", "🌲"),
-        SoundOption(R.raw.ocean, "Ocean Waves", "🌊"),
-        SoundOption(R.raw.river, "Flowing River", "💧"),
         SoundOption(R.raw.birds, "Bird Song", "🐦"),
-        SoundOption(R.raw.cave, "Cave Echo", "🕳️"),
         SoundOption(R.raw.jungle_rain, "Jungle Rain", "🌴"),
         SoundOption(R.raw.tibetan_chant, "Tibetan Chant", "🕉️"),
         SoundOption(R.raw.aum_mantra, "Om Mantra", "🧘")
