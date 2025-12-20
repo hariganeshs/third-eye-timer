@@ -79,10 +79,10 @@ class MainActivityCompose : ComponentActivity() {
     private val KEY_KARMA = "karma_points"
     private val KEY_LEVEL = "user_level"
     
-    // Ad Unit IDs - USING TEST IDS
-    private val PROD_TOP_BANNER_AD_ID = "ca-app-pub-3940256099942544/6300978111" // Test Banner ID
-    private val PROD_BOTTOM_BANNER_AD_ID = "ca-app-pub-3940256099942544/6300978111" // Test Banner ID
-    private val PROD_INTERSTITIAL_AD_ID = "ca-app-pub-3940256099942544/1033173712" // Test Interstitial ID
+    // Ad Unit IDs - PRODUCTION
+    private val PROD_TOP_BANNER_AD_ID = "ca-app-pub-2722920301958819/3959238290" // Banner One
+    private val PROD_BOTTOM_BANNER_AD_ID = "ca-app-pub-2722920301958819/2481160193" // Banner Two
+    private val PROD_INTERSTITIAL_AD_ID = "ca-app-pub-2722920301958819/7531366385" // Interstitial
     
     // State
     private var totalMeditationTimeMillis: Long = 0L
@@ -500,7 +500,7 @@ class MainActivityCompose : ComponentActivity() {
     
     // Rewarded Ads
     private var rewardedAd: com.google.android.gms.ads.rewarded.RewardedAd? = null
-    private val PROD_REWARDED_AD_ID = "ca-app-pub-3940256099942544/5224354917" // Test Rewarded ID
+    private val PROD_REWARDED_AD_ID = "ca-app-pub-2722920301958819/5857135718" // Rewarded Ad Unit
 
     private fun loadRewardedAd() {
         val adRequest = AdRequest.Builder().build()
@@ -937,14 +937,14 @@ class MainActivityCompose : ComponentActivity() {
                     streakDays = currentStreak,
                     totalMinutes = totalMeditationTimeMillis / 60000,
                     level = userLevel,
-                    karma = karmaPoints
+                    spiritualEgo = idleGameManager.lifetimeSpiritualEgo
                 )
                 
                 runOnUiThread {
                     com.thirdeyetimer.app.utils.SocialManager.shareImage(
                         this,
                         bitmap,
-                        "🧘 Just reached level $userLevel on Third Eye Timer! $karmaPoints Karma points and counting. #ThirdEyeTimer #Meditation"
+                        "🧘 Just reached $userLevel level on Third Eye Timer! #ThirdEyeTimer #Meditation"
                     )
                 }
             } catch (e: Exception) {

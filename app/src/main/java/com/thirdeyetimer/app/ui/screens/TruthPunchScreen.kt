@@ -179,7 +179,7 @@ private fun TruthHeader(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "DISILLUSIONMENT: ${overallProgress.toInt()}%",
+                    text = "SELF-DECONSTRUCTION: ${overallProgress.toInt()}%",
                     fontFamily = FontFamily.Monospace,
                     fontSize = 12.sp,
                     color = TerminalAmber

@@ -20,6 +20,9 @@ import androidx.compose.ui.unit.sp
 import com.thirdeyetimer.app.ui.components.*
 import com.thirdeyetimer.app.ui.theme.CosmicColors
 import androidx.compose.material.icons.Icons
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.Image
+import com.thirdeyetimer.app.R
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.AutoStories
@@ -126,13 +129,13 @@ fun HomeScreen(
                 // Spiritual Ego
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.AutoAwesome,
+                        painter = painterResource(id = R.drawable.ic_spiritual_ego),
                         contentDescription = "Spiritual Ego",
-                        tint = CosmicColors.Accent,
-                        modifier = Modifier.size(16.dp)
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(22.dp)
                     )
                     Text(
                         text = formatSpiritualEgoHome(totalSpiritualEgo),
@@ -151,11 +154,23 @@ fun HomeScreen(
                 )
                 
                 // Karma
-                Text(
-                    text = "$karmaPoints Karma",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = CosmicColors.TextSecondary
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_karma),
+                        contentDescription = "Karma",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Text(
+                        text = "$karmaPoints",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = CosmicColors.TextSecondary,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
                 
                 // Level
                 Text(
@@ -198,10 +213,12 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         TerminalButton(
-                            text = "> TAKE THE SHORTCUT",
+                            text = "TAKE THE SHORTCUT",
                             onClick = onWatchAdToBypassWaitWall,
                             color = Color(0xFFFF3B3B),
-                            modifier = Modifier.height(36.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
                         )
                     }
                 }

@@ -49,7 +49,7 @@ object SocialManager {
         streakDays: Int,
         totalMinutes: Long,
         level: String,
-        karma: Int
+        spiritualEgo: Long
     ): Bitmap {
         val width = 1080
         val height = 1350 // 4:5 aspect ratio (Instagram friendly)
@@ -100,12 +100,13 @@ object SocialManager {
         )
         canvas.drawText(level.uppercase(), width / 2f, 350f, textPaint)
 
-        // Karma
+        // Spiritual Ego value (formatted, no label)
         textPaint.shader = null
-        textPaint.color = android.graphics.Color.parseColor("#E0E7FF") // TextSecondary
+        textPaint.color = android.graphics.Color.parseColor("#F59E0B") // Accent Gold
         textPaint.textSize = 80f
         textPaint.letterSpacing = 0f
-        canvas.drawText("$karma Karma Points", width / 2f, 450f, textPaint)
+        val formattedEgo = formatSpiritualEgoForShare(spiritualEgo)
+        canvas.drawText("✦ $formattedEgo", width / 2f, 450f, textPaint)
 
         // Center Icon (Hollow Circle)
         val circlePaint = android.graphics.Paint()
@@ -171,4 +172,14 @@ object SocialManager {
         paint.typeface = android.graphics.Typeface.DEFAULT
         canvas.drawText(label, x, y + 60f, paint)
     }
+    
+    private fun formatSpiritualEgoForShare(spiritualEgo: Long): String {
+        return when {
+            spiritualEgo >= 1_000_000_000L -> String.format("%.1fB", spiritualEgo / 1_000_000_000.0)
+            spiritualEgo >= 1_000_000L -> String.format("%.1fM", spiritualEgo / 1_000_000.0)
+            spiritualEgo >= 1_000L -> String.format("%.1fK", spiritualEgo / 1_000.0)
+            else -> spiritualEgo.toString()
+        }
+    }
 }
+

@@ -1,5 +1,6 @@
 package com.thirdeyetimer.app.ui.components
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -234,7 +236,7 @@ fun BrutalistDialog(
 }
 
 /**
- * Harsh-styled button for brutalist UI
+ * Harsh-styled button for brutalist UI with pulsing glow animation
  */
 @Composable
 fun TerminalButton(
@@ -243,12 +245,36 @@ fun TerminalButton(
     modifier: Modifier = Modifier,
     color: Color = TerminalGreen
 ) {
+    // Pulsing animation for attention
+    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+    val pulseAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 0.8f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulseAlpha"
+    )
+    
+    val glowScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.02f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "glowScale"
+    )
+    
     Box(
         modifier = modifier
+            .graphicsLayer { scaleX = glowScale; scaleY = glowScale }
+            .background(color.copy(alpha = pulseAlpha * 0.15f))
             .background(Color.Black)
-            .border(1.dp, color)
+            .border(2.dp, color.copy(alpha = pulseAlpha + 0.2f))
             .clickable { onClick() }
-            .padding(vertical = 12.dp, horizontal = 16.dp),
+            .padding(vertical = 14.dp, horizontal = 20.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -256,7 +282,9 @@ fun TerminalButton(
             color = color,
             fontFamily = FontFamily.Monospace,
             fontSize = 14.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.sp
         )
     }
 }
+

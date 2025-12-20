@@ -25,6 +25,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thirdeyetimer.app.ui.theme.CosmicColors
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
+import com.thirdeyetimer.app.R
 
 /**
  * BragCard
@@ -38,7 +41,7 @@ fun BragCard(
     streakDays: Int,
     totalMinutes: Long,
     level: String = "Seeker",
-    karma: Int,
+    spiritualEgo: Long = 0L,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -98,11 +101,26 @@ fun BragCard(
                         )
                     )
                 )
-                Text(
-                    text = "$karma Karma Points",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = CosmicColors.TextSecondary
-                )
+                
+                // Spiritual Ego Icon (centered, without label)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_spiritual_ego),
+                        contentDescription = "Spiritual Ego",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(28.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = formatSpiritualEgoBrag(spiritualEgo),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = CosmicColors.Accent,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             }
             
             // Central Visual - The "Badge"
@@ -216,3 +234,14 @@ private fun StatItem(
 interface BragCardController {
     fun shareCard()
 }
+
+// Helper function for formatting Spiritual Ego in BragCard
+private fun formatSpiritualEgoBrag(spiritualEgo: Long): String {
+    return when {
+        spiritualEgo >= 1_000_000_000L -> String.format("%.1fB", spiritualEgo / 1_000_000_000.0)
+        spiritualEgo >= 1_000_000L -> String.format("%.1fM", spiritualEgo / 1_000_000.0)
+        spiritualEgo >= 1_000L -> String.format("%.1fK", spiritualEgo / 1_000.0)
+        else -> spiritualEgo.toString()
+    }
+}
+
