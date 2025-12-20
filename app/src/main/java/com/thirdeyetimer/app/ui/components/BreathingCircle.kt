@@ -294,22 +294,15 @@ fun ProgressRing(
         val radius = (size.toPx() - strokeWidth.toPx()) / 2
         val sweepAngle = 360f * animatedProgress
         
-        // Glow for progress
+        // Glow for progress - using solid color to avoid thickness inconsistency
         if (animatedProgress > 0) {
             drawArc(
-                brush = Brush.sweepGradient(
-                    colors = listOf(
-                        glowColor.copy(alpha = 0.4f),
-                        glowColor.copy(alpha = 0.1f),
-                        Color.Transparent
-                    ),
-                    center = center
-                ),
+                color = glowColor.copy(alpha = 0.3f),
                 startAngle = -90f,
                 sweepAngle = sweepAngle,
                 useCenter = false,
                 style = Stroke(
-                    width = strokeWidth.toPx() * 3,
+                    width = strokeWidth.toPx() * 2.5f,
                     cap = StrokeCap.Round
                 ),
                 topLeft = Offset(
