@@ -2,6 +2,7 @@ package com.thirdeyetimer.app.ui.screens
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,17 +24,20 @@ import androidx.compose.ui.unit.sp
 import com.thirdeyetimer.app.domain.UpgradeManager
 import com.thirdeyetimer.app.ui.components.*
 import com.thirdeyetimer.app.ui.theme.CosmicColors
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 
 /**
  * UpgradeShopScreen
  * 
  * The upgrade shop where players spend Karma to purchase
- * permanent upgrades that increase their Prana accumulation rate.
+ * permanent upgrades that increase their Spiritual Ego accumulation rate.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpgradeShopScreen(
-    totalPrana: Long,
+    totalSpiritualEgo: Long,
     karmaBalance: Int,
     upgradeStatuses: List<UpgradeManager.UpgradeStatus>,
     totalMultiplier: Double,
@@ -54,6 +58,25 @@ fun UpgradeShopScreen(
                 )
             )
     ) {
+        // State for ironic popup
+        var showIronicPopup by remember { mutableStateOf(false) }
+        var lastPurchasedUpgrade by remember { mutableStateOf<UpgradeManager.Upgrade?>(null) }
+        
+        // Handle purchase with ironic follow-up
+        val handlePurchase: (UpgradeManager.Upgrade) -> Unit = { upgrade ->
+            onPurchaseUpgrade(upgrade)
+            lastPurchasedUpgrade = upgrade
+            showIronicPopup = true
+        }
+        
+        // Ironic popup dialog
+        if (showIronicPopup && lastPurchasedUpgrade != null) {
+            IronicPurchaseDialog(
+                upgrade = lastPurchasedUpgrade!!,
+                onDismiss = { showIronicPopup = false }
+            )
+        }
+        
         // Particle background
         ParticleBackground(
             particleCount = 25,
@@ -94,7 +117,7 @@ fun UpgradeShopScreen(
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Prana balance
+                // Spiritual Ego balance
                 GlassmorphicCard(
                     modifier = Modifier.weight(1f),
                     cornerRadius = 16.dp,
@@ -106,19 +129,19 @@ fun UpgradeShopScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.AutoAwesome,
-                            contentDescription = "Prana",
+                            contentDescription = "Spiritual Ego",
                             tint = CosmicColors.Accent,
                             modifier = Modifier.size(24.dp)
                         )
                         Column {
                             Text(
-                                text = formatLargeNumber(totalPrana),
+                                text = formatLargeNumber(totalSpiritualEgo),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = CosmicColors.TextPrimary,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "Prana",
+                                text = "Spiritual Ego",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = CosmicColors.TextTertiary
                             )
@@ -226,7 +249,7 @@ fun UpgradeShopScreen(
                     UpgradeCard(
                         status = status,
                         canAfford = karmaBalance >= status.cost && !status.isMaxed,
-                        onPurchase = { onPurchaseUpgrade(status.upgrade) }
+                        onPurchase = { handlePurchase(status.upgrade) }
                     )
                 }
                 
@@ -368,6 +391,93 @@ private fun getUpgradeIcon(iconName: String): ImageVector {
         "breath" -> Icons.Default.Air
         "lotus" -> Icons.Default.FilterVintage
         else -> Icons.Default.Upgrade
+    }
+}
+
+/**
+ * Satirical dialog shown after purchasing an upgrade.
+ * Frames the purchase as a reinforcement of the player's Spiritual Ego.
+ */
+@Composable
+private fun IronicPurchaseDialog(
+    upgrade: UpgradeManager.Upgrade,
+    onDismiss: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF0A0A0A), RoundedCornerShape(8.dp))
+                .border(2.dp, Color(0xFFFF3B3B), RoundedCornerShape(8.dp))
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "TRANSACTION COMPLETE",
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                color = Color(0xFFFF3B3B),
+                letterSpacing = 2.sp
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                text = upgrade.name.uppercase(),
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // The "Truth Punch" description
+            Text(
+                text = "\"${upgrade.ironicDescription}\"",
+                fontFamily = FontFamily.Monospace,
+                fontSize = 14.sp,
+                color = Color(0xFFE0E0E0),
+                textAlign = TextAlign.Center,
+                lineHeight = 22.sp
+            )
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF1A1A1A),
+                    contentColor = Color(0xFFFF3B3B)
+                ),
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier.border(1.dp, Color(0xFFFF3B3B).copy(alpha = 0.5f), RoundedCornerShape(4.dp))
+            ) {
+                Text(
+                    text = "> I UNDERSTAND",
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                text = "[ Your Spiritual Ego has increased ]",
+                fontFamily = FontFamily.Monospace,
+                fontSize = 10.sp,
+                color = Color(0xFF666666)
+            )
+        }
     }
 }
 

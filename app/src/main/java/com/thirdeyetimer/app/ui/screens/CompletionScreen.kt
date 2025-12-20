@@ -56,11 +56,11 @@ fun CompletionScreen(
     totalTime: String,
     heartRateReduction: Int? = null,
     newAchievement: String? = null,
-    pranaEarned: Long = 0L,
+    spiritualEgoEarned: Long = 0L,
     showDoubleAdButton: Boolean = true,
     onStartAnotherClick: () -> Unit,
     onShareClick: () -> Unit,
-    onWatchAdForDoublePrana: () -> Unit = {},
+    onWatchAdForDoubleSpiritualEgo: () -> Unit = {},
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -238,14 +238,14 @@ fun CompletionScreen(
                     )
                 }
                 
-                // Prana earned
-                if (pranaEarned > 0) {
+                // Spiritual Ego earned
+                if (spiritualEgoEarned > 0) {
                     Spacer(modifier = Modifier.height(16.dp))
                     
                     StatRow(
                         painter = androidx.compose.ui.graphics.vector.rememberVectorPainter(Icons.Default.AutoAwesome),
-                        label = "Prana Earned",
-                        value = "+${formatPranaCompact(pranaEarned)}",
+                        label = "Spiritual Ego Accumulated",
+                        value = "+${formatSpiritualEgoCompact(spiritualEgoEarned)}",
                         valueColor = CosmicColors.Accent
                     )
                     
@@ -254,7 +254,7 @@ fun CompletionScreen(
                         Spacer(modifier = Modifier.height(12.dp))
                         
                         GlassmorphicButton(
-                            onClick = onWatchAdForDoublePrana,
+                            onClick = onWatchAdForDoubleSpiritualEgo,
                             modifier = Modifier.fillMaxWidth(),
                             cornerRadius = 12.dp,
                             contentPadding = PaddingValues(vertical = 10.dp)
@@ -271,7 +271,7 @@ fun CompletionScreen(
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "Watch Ad for 2x Prana",
+                                    text = "Watch Ad for 2x Spiritual Ego",
                                     style = MaterialTheme.typography.labelMedium,
                                     color = CosmicColors.Accent,
                                     fontWeight = FontWeight.Medium
@@ -432,12 +432,12 @@ private fun createConfettiParticle(maxWidth: Float, maxHeight: Float): ConfettiP
     )
 }
 
-// Helper function for formatting Prana in CompletionScreen
-private fun formatPranaCompact(prana: Long): String {
+// Helper function for formatting Spiritual Ego in CompletionScreen
+private fun formatSpiritualEgoCompact(spiritualEgo: Long): String {
     return when {
-        prana >= 1_000_000_000L -> String.format(Locale.US, "%.1fB", prana / 1_000_000_000.0)
-        prana >= 1_000_000L -> String.format(Locale.US, "%.1fM", prana / 1_000_000.0)
-        prana >= 1_000L -> String.format(Locale.US, "%.1fK", prana / 1_000.0)
-        else -> prana.toString()
+        spiritualEgo >= 1_000_000_000L -> String.format(Locale.US, "%.1fB", spiritualEgo / 1_000_000_000.0)
+        spiritualEgo >= 1_000_000L -> String.format(Locale.US, "%.1fM", spiritualEgo / 1_000_000.0)
+        spiritualEgo >= 1_000L -> String.format(Locale.US, "%.1fK", spiritualEgo / 1_000.0)
+        else -> spiritualEgo.toString()
     }
 }

@@ -30,6 +30,8 @@ import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Assignment
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Upgrade
+import androidx.compose.material.icons.filled.Psychology
+import com.thirdeyetimer.app.domain.TruthPunchManager
 
 /**
  * HomeScreen
@@ -45,17 +47,24 @@ fun HomeScreen(
     currentStreak: Int,
     userLevel: String = "Seeker",
     karmaPoints: Int = 0,
-    totalPrana: Long = 0L,
+    totalSpiritualEgo: Long = 0L,
+    lifetimeSpiritualEgo: Long = 0L,
+    allTruths: List<TruthPunchManager.TruthPunch> = emptyList(),
     onStartClick: () -> Unit,
     onSoundSettingsClick: () -> Unit,
     onAchievementsClick: () -> Unit,
     onPetClick: () -> Unit,
     onQuestsClick: () -> Unit,
     onUpgradeShopClick: () -> Unit = {},
+    onTruthsClick: () -> Unit = {},
     onBrowseSessionsClick: () -> Unit = {},
+    unseenTruthCount: Int = 0,
     isTimerRunning: Boolean = false,
     timerText: String = "00:00",
     progress: Float = 0f,
+    isWaitWallActive: Boolean = false,
+    waitWallRemainingMs: Long = 0L,
+    onWatchAdToBypassWaitWall: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -102,7 +111,7 @@ fun HomeScreen(
                 textAlign = TextAlign.Center
             )
             
-            // Prana and Karma display row
+            // Spiritual Ego and Karma display row
             Row(
                 modifier = Modifier
                     .padding(top = 8.dp)
@@ -114,19 +123,19 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Prana
+                // Spiritual Ego
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Filled.AutoAwesome,
-                        contentDescription = "Prana",
+                        contentDescription = "Spiritual Ego",
                         tint = CosmicColors.Accent,
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
-                        text = formatPranaHome(totalPrana),
+                        text = formatSpiritualEgoHome(totalSpiritualEgo),
                         style = MaterialTheme.typography.labelMedium,
                         color = CosmicColors.Accent,
                         fontWeight = FontWeight.Bold
@@ -156,9 +165,53 @@ fun HomeScreen(
                 )
             }
             
+            // Wait Wall / Fatigue Banner
+            if (isWaitWallActive && !isTimerRunning) {
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                GlassmorphicCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 12.dp,
+                    backgroundColor = Color(0xFF1A0A0A), // Darker, ominous
+                    borderWidth = 2.dp,
+                    borderColor = Color(0xFFFF3B3B).copy(alpha = 0.5f)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "MEDITATIVE FATIGUE DETECTED",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFFFF3B3B),
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "System needs ${waitWallRemainingMs / 60000 + 1}m to cool down.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = CosmicColors.TextSecondary,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        TerminalButton(
+                            text = "> TAKE THE SHORTCUT",
+                            onClick = onWatchAdToBypassWaitWall,
+                            color = Color(0xFFFF3B3B),
+                            modifier = Modifier.height(36.dp)
+                        )
+                    }
+                }
+            }
+            
             Spacer(modifier = Modifier.height(32.dp))
             
             // Meditation Timer with breathing circle
+            val disintegrationLevel = (lifetimeSpiritualEgo / 1_000_000f).coerceIn(0f, 1f)
+            
             Box(
                 modifier = Modifier.size(320.dp),
                 contentAlignment = Alignment.Center
@@ -167,7 +220,8 @@ fun HomeScreen(
                     timeText = if (isTimerRunning) timerText else timeInput.ifEmpty { "00" } + ":00",
                     progress = progress,
                     isRunning = isTimerRunning,
-                    size = 300.dp
+                    size = 300.dp,
+                    disintegrationLevel = disintegrationLevel
                 )
             }
             
@@ -465,10 +519,62 @@ fun HomeScreen(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "Boost your Prana",
+                        text = "Boost your Spiritual Ego",
                         style = MaterialTheme.typography.labelSmall,
                         color = CosmicColors.TextTertiary
                     )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Truths Button - Access the Truth Punch system
+            GlassmorphicButton(
+                onClick = onTruthsClick,
+                modifier = Modifier.fillMaxWidth(),
+                cornerRadius = 16.dp,
+                contentPadding = PaddingValues(vertical = 14.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Psychology,
+                        contentDescription = "Truths",
+                        tint = Color(0xFFFF3B3B), // Terminal Red
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Truths",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = CosmicColors.TextPrimary,
+                        fontWeight = FontWeight.Medium
+                    )
+                    if (unseenTruthCount > 0) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .background(Color(0xFFFF3B3B), MaterialTheme.shapes.small)
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = "$unseenTruthCount NEW",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Terminal of Truth",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = CosmicColors.TextTertiary
+                        )
+                    }
                 }
             }
             
@@ -477,15 +583,15 @@ fun HomeScreen(
             // Start Button
             PrimaryGradientButton(
                 onClick = onStartClick,
-                enabled = timeInput.isNotEmpty() || isTimerRunning,
+                enabled = (timeInput.isNotEmpty() || isTimerRunning) && !isWaitWallActive,
                 modifier = Modifier.fillMaxWidth(0.7f),
                 cornerRadius = 32.dp,
                 contentPadding = PaddingValues(vertical = 18.dp)
             ) {
                 Text(
-                    text = if (isTimerRunning) "Pause" else "Start",
+                    text = if (isTimerRunning) "Pause" else if (isWaitWallActive) "Locked" else "Start",
                     style = MaterialTheme.typography.titleMedium,
-                    color = CosmicColors.TextPrimary,
+                    color = if (isWaitWallActive) CosmicColors.TextMuted else CosmicColors.TextPrimary,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 )
@@ -510,21 +616,24 @@ fun HomeScreenPreview() {
         currentStreak = 5,
         userLevel = "Adept",
         karmaPoints = 4500,
-        totalPrana = 12500L,
+        totalSpiritualEgo = 12500L, 
         onStartClick = {},
         onSoundSettingsClick = {},
         onAchievementsClick = {},
         onPetClick = {},
-        onQuestsClick = {}
+        onQuestsClick = {},
+        onUpgradeShopClick = {},
+        onTruthsClick = {},
+        onBrowseSessionsClick = {}
     )
 }
 
-// Helper function for formatting Prana in HomeScreen
-private fun formatPranaHome(prana: Long): String {
+// Helper function for formatting Spiritual Ego in HomeScreen
+private fun formatSpiritualEgoHome(spiritualEgo: Long): String {
     return when {
-        prana >= 1_000_000_000L -> String.format("%.1fB", prana / 1_000_000_000.0)
-        prana >= 1_000_000L -> String.format("%.1fM", prana / 1_000_000.0)
-        prana >= 1_000L -> String.format("%.1fK", prana / 1_000.0)
-        else -> prana.toString()
+        spiritualEgo >= 1_000_000_000L -> String.format("%.1fB", spiritualEgo / 1_000_000_000.0)
+        spiritualEgo >= 1_000_000L -> String.format("%.1fM", spiritualEgo / 1_000_000.0)
+        spiritualEgo >= 1_000L -> String.format("%.1fK", spiritualEgo / 1_000.0)
+        else -> spiritualEgo.toString()
     }
 }

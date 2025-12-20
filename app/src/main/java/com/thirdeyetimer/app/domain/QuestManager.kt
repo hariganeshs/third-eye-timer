@@ -110,7 +110,7 @@ class QuestManager(context: Context) {
             if (quest.progress >= quest.target) {
                 quest.progress = quest.target
                 quest.isCompleted = true
-                addKarma(quest.reward)  // Award Karma instead of Stardust
+                addKarma(quest.reward)  // Award Karma
             }
             saveQuests()
         }

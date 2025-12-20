@@ -7,32 +7,33 @@ import java.util.Locale
 /**
  * IdleGameManager
  * 
- * Core idle game logic managing Prana (spiritual energy/XP) accumulation.
+ * Core idle game logic managing Spiritual Ego (spiritual energy/XP) accumulation.
  * Uses exponential growth formulas typical of idle games to create
- * an addictive progression system.
+ * an addictive progression system built on false progress.
  * 
- * Formula: pranaPerSecond = baseRate * streakMultiplier * upgradeMultiplier * sessionBonus
+ * Formula: spiritualEgoPerSecond = baseRate * streakMultiplier * upgradeMultiplier * sessionBonus
  * 
- * The longer you meditate in a session, the faster Prana accumulates,
+ * The longer you meditate in a session, the faster Spiritual Ego accumulates,
  * creating the satisfying "idle game" feel.
  * 
- * High-speed handling: Uses precise time tracking to ensure no Prana is lost
+ * High-speed handling: Uses precise time tracking to ensure no Spiritual Ego is lost
  * even when the rate is millions per second.
  */
 class IdleGameManager(context: Context) {
     
     private val PREFS_NAME = "IdleGamePrefs"
-    private val KEY_TOTAL_PRANA = "total_prana"
-    private val KEY_LIFETIME_PRANA = "lifetime_prana"
-    private val KEY_SESSION_PRANA = "session_prana"
+    private val KEY_TOTAL_SPIRITUAL_EGO = "total_spiritual_ego"
+    private val KEY_LIFETIME_SPIRITUAL_EGO = "lifetime_spiritual_ego"
+    private val KEY_SESSION_SPIRITUAL_EGO = "session_spiritual_ego"
     private val KEY_UPGRADE_MULTIPLIER = "upgrade_multiplier"
     private val KEY_AD_BOOST_ACTIVE = "ad_boost_active"
     private val KEY_AD_BOOST_EXPIRY = "ad_boost_expiry"
+    private val KEY_LAST_SESSION_END_TIME = "last_session_end_time"
     
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     
     companion object {
-        // Base rate: 1 Prana per second at the start
+        // Base rate: 1 Spiritual Ego per second at the start
         const val BASE_RATE = 1.0
         
         // Session bonus increases by 2% per minute of meditation (faster growth)
@@ -55,24 +56,27 @@ class IdleGameManager(context: Context) {
         // Ad boost multiplier (2x for watching rewarded ad)
         const val AD_BOOST_MULTIPLIER = 2.0
         const val AD_BOOST_DURATION_MS = 30 * 60 * 1000L // 30 minutes
+
+        // Wait Wall: How long to wait between sessions
+        const val WAIT_WALL_DURATION_MS = 10 * 60 * 1000L // 10 minutes (satirical bottleneck)
     }
     
-    // Total Prana (can be spent on upgrades in future)
-    var totalPrana: Long
-        get() = prefs.getLong(KEY_TOTAL_PRANA, 0L)
-        private set(value) = prefs.edit().putLong(KEY_TOTAL_PRANA, value).apply()
+    // Total Spiritual Ego (can be spent on upgrades)
+    var totalSpiritualEgo: Long
+        get() = prefs.getLong(KEY_TOTAL_SPIRITUAL_EGO, 0L)
+        private set(value) = prefs.edit().putLong(KEY_TOTAL_SPIRITUAL_EGO, value).apply()
     
-    // Lifetime Prana earned (never decreases, for achievements)
-    var lifetimePrana: Long
-        get() = prefs.getLong(KEY_LIFETIME_PRANA, 0L)
-        private set(value) = prefs.edit().putLong(KEY_LIFETIME_PRANA, value).apply()
+    // Lifetime Spiritual Ego earned (never decreases, for achievements)
+    var lifetimeSpiritualEgo: Long
+        get() = prefs.getLong(KEY_LIFETIME_SPIRITUAL_EGO, 0L)
+        private set(value) = prefs.edit().putLong(KEY_LIFETIME_SPIRITUAL_EGO, value).apply()
     
-    // Current session's Prana (in memory, reset each session)
-    private var _sessionPrana: Long = 0L
-    val sessionPrana: Long get() = _sessionPrana
+    // Current session's Spiritual Ego (in memory, reset each session)
+    private var _sessionSpiritualEgo: Long = 0L
+    val sessionSpiritualEgo: Long get() = _sessionSpiritualEgo
     
-    // Accumulated fractional prana (for high precision at low rates)
-    private var fractionalPrana: Double = 0.0
+    // Accumulated fractional spiritual ego (for high precision at low rates)
+    private var fractionalSpiritualEgo: Double = 0.0
     
     // Base upgrade multiplier (from purchased upgrades)
     var upgradeMultiplier: Double
@@ -110,9 +114,9 @@ class IdleGameManager(context: Context) {
     }
     
     /**
-     * Calculate Prana per second at the current moment
+     * Calculate Spiritual Ego per second at the current moment
      */
-    fun calculatePranaPerSecond(
+    fun calculateSpiritualEgoPerSecond(
         streakDays: Int,
         elapsedMinutes: Double
     ): Double {
@@ -124,68 +128,69 @@ class IdleGameManager(context: Context) {
     }
     
     /**
-     * Calculate and add Prana for a time delta
+     * Calculate and add Spiritual Ego for a time delta
      * Uses fractional accumulation for precision at any speed
      */
-    fun accumulatePrana(
+    fun accumulateSpiritualEgo(
         streakDays: Int,
         elapsedMinutes: Double,
         deltaSeconds: Double
     ): Long {
-        val rate = calculatePranaPerSecond(streakDays, elapsedMinutes)
-        val pranaEarned = rate * deltaSeconds + fractionalPrana
+        val rate = calculateSpiritualEgoPerSecond(streakDays, elapsedMinutes)
+        val spiritualEgoEarned = rate * deltaSeconds + fractionalSpiritualEgo
         
         // Split into whole and fractional parts
-        val wholePrana = pranaEarned.toLong()
-        fractionalPrana = pranaEarned - wholePrana
+        val wholeSpiritualEgo = spiritualEgoEarned.toLong()
+        fractionalSpiritualEgo = spiritualEgoEarned - wholeSpiritualEgo
         
-        if (wholePrana > 0) {
-            _sessionPrana += wholePrana
+        if (wholeSpiritualEgo > 0) {
+            _sessionSpiritualEgo += wholeSpiritualEgo
         }
         
-        return wholePrana
+        return wholeSpiritualEgo
     }
     
     /**
-     * Called periodically during meditation to add Prana
+     * Called periodically during meditation to add Spiritual Ego
      */
-    fun addSessionPrana(amount: Long) {
-        _sessionPrana += amount
+    fun addSessionSpiritualEgo(amount: Long) {
+        _sessionSpiritualEgo += amount
     }
     
     /**
      * Called when meditation session completes
-     * Commits session Prana to totals
+     * Commits session Spiritual Ego to totals
      */
     fun commitSession(): Long {
-        val earned = _sessionPrana
-        totalPrana += earned
-        lifetimePrana += earned
-        _sessionPrana = 0L
-        fractionalPrana = 0.0
+        val earned = _sessionSpiritualEgo
+        totalSpiritualEgo += earned
+        lifetimeSpiritualEgo += earned
+        _sessionSpiritualEgo = 0L
+        fractionalSpiritualEgo = 0.0
         
-        // Persist immediately
+        // Persist immediately and set wait wall
         prefs.edit()
-            .putLong(KEY_TOTAL_PRANA, totalPrana)
-            .putLong(KEY_LIFETIME_PRANA, lifetimePrana)
+            .putLong(KEY_TOTAL_SPIRITUAL_EGO, totalSpiritualEgo)
+            .putLong(KEY_LIFETIME_SPIRITUAL_EGO, lifetimeSpiritualEgo)
+            .putLong(KEY_LAST_SESSION_END_TIME, System.currentTimeMillis())
             .apply()
             
         return earned
     }
     
     /**
-     * Double the session Prana (rewarded ad)
+     * Double the session Spiritual Ego (rewarded ad)
      */
-    fun doubleSessionPrana() {
-        _sessionPrana *= 2
+    fun doubleSessionSpiritualEgo() {
+        _sessionSpiritualEgo *= 2
     }
     
     /**
-     * Reset session Prana (when stopping early without completing)
+     * Reset session Spiritual Ego (when stopping early without completing)
      */
     fun resetSession() {
-        _sessionPrana = 0L
-        fractionalPrana = 0.0
+        _sessionSpiritualEgo = 0L
+        fractionalSpiritualEgo = 0.0
     }
     
     /**
@@ -206,20 +211,46 @@ class IdleGameManager(context: Context) {
     }
     
     /**
-     * Format Prana for display with K/M/B/T notation
+     * Format Spiritual Ego for display with K/M/B/T notation
      */
-    fun formatPrana(prana: Long): String {
+    fun formatSpiritualEgo(spiritualEgo: Long): String {
         return when {
-            prana >= 1_000_000_000_000L -> String.format(Locale.US, "%.2fT", prana / 1_000_000_000_000.0)
-            prana >= 1_000_000_000L -> String.format(Locale.US, "%.2fB", prana / 1_000_000_000.0)
-            prana >= 1_000_000L -> String.format(Locale.US, "%.2fM", prana / 1_000_000.0)
-            prana >= 1_000L -> String.format(Locale.US, "%.1fK", prana / 1_000.0)
-            else -> prana.toString()
+            spiritualEgo >= 1_000_000_000_000L -> String.format(Locale.US, "%.2fT", spiritualEgo / 1_000_000_000_000.0)
+            spiritualEgo >= 1_000_000_000L -> String.format(Locale.US, "%.2fB", spiritualEgo / 1_000_000_000.0)
+            spiritualEgo >= 1_000_000L -> String.format(Locale.US, "%.2fM", spiritualEgo / 1_000_000.0)
+            spiritualEgo >= 1_000L -> String.format(Locale.US, "%.1fK", spiritualEgo / 1_000.0)
+            else -> spiritualEgo.toString()
         }
     }
     
     /**
-     * Format Prana per second rate
+     * Wait Wall: Check if a meditation session is currently blocked
+     */
+    fun isWaitWallActive(): Boolean {
+        val lastEnd = prefs.getLong(KEY_LAST_SESSION_END_TIME, 0L)
+        val elapsed = System.currentTimeMillis() - lastEnd
+        return elapsed < WAIT_WALL_DURATION_MS
+    }
+
+    /**
+     * Get remaining wait wall time in milliseconds
+     */
+    fun getWaitWallRemainingMs(): Long {
+        val lastEnd = prefs.getLong(KEY_LAST_SESSION_END_TIME, 0L)
+        val elapsed = System.currentTimeMillis() - lastEnd
+        val remaining = WAIT_WALL_DURATION_MS - elapsed
+        return if (remaining > 0) remaining else 0L
+    }
+
+    /**
+     * Bypass wait wall (e.g. after watching a "Shortcut" ad)
+     */
+    fun bypassWaitWall() {
+        prefs.edit().putLong(KEY_LAST_SESSION_END_TIME, 0L).apply()
+    }
+
+    /**
+     * Format Spiritual Ego per second rate
      */
     fun formatRate(rate: Double): String {
         return when {
@@ -231,3 +262,4 @@ class IdleGameManager(context: Context) {
         }
     }
 }
+

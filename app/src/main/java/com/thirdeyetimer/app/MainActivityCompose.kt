@@ -14,7 +14,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.core.view.WindowCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.ads.AdRequest
@@ -25,7 +33,9 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.LoadAdError
 import com.thirdeyetimer.app.ui.*
+import com.thirdeyetimer.app.ui.components.*
 import com.thirdeyetimer.app.ui.theme.CosmicZenTheme
+import com.thirdeyetimer.app.ui.theme.TerminalColors
 import com.thirdeyetimer.app.ui.screens.AchievementItem
 import com.thirdeyetimer.app.ui.screens.SoundOption
 import java.util.Calendar
@@ -95,9 +105,11 @@ class MainActivityCompose : ComponentActivity() {
     private lateinit var questManager: com.thirdeyetimer.app.domain.QuestManager
     private lateinit var idleGameManager: com.thirdeyetimer.app.domain.IdleGameManager
     private lateinit var upgradeManager: com.thirdeyetimer.app.domain.UpgradeManager
+    private lateinit var truthPunchManager: com.thirdeyetimer.app.domain.TruthPunchManager
+    private lateinit var nudgeManager: com.thirdeyetimer.app.domain.NudgeManager
     
     // Idle game tracking
-    private var lastPranaUpdateTime: Long = 0L
+    private var lastSpiritualEgoUpdateTime: Long = 0L
     private var sessionStartMinute: Double = 0.0
     
     // Data Lists
@@ -139,6 +151,8 @@ class MainActivityCompose : ComponentActivity() {
     // Compose state holders
     private var _appState = mutableStateOf(MeditationAppState())
     private var _currentScreen = mutableStateOf<AppScreen>(AppScreen.Home)
+    private var showMindChatter = mutableStateOf(false)
+    private var activeNudge = mutableStateOf<String?>(null)
     
     private val timerReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -181,6 +195,13 @@ class MainActivityCompose : ComponentActivity() {
         upgradeManager = com.thirdeyetimer.app.domain.UpgradeManager(this, idleGameManager)
         upgradeManager.initialize()
         
+        // Initialize Truth Punch Manager
+        truthPunchManager = com.thirdeyetimer.app.domain.TruthPunchManager(this)
+        truthPunchManager.checkUnlocks(idleGameManager.lifetimeSpiritualEgo)
+        
+        // Initialize Nudge Manager
+        nudgeManager = com.thirdeyetimer.app.domain.NudgeManager(this)
+        
         // Initialize ads
         initializeAds()
         
@@ -204,18 +225,20 @@ class MainActivityCompose : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) {
                     // Top ad banner
-                    AndroidView(
-                        factory = { context ->
-                            AdView(context).apply {
-                                setAdSize(AdSize.BANNER)
-                                adUnitId = PROD_TOP_BANNER_AD_ID
-                                loadAd(AdRequest.Builder().build())
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    )
+                    SocietalProgrammingFrame(label = "PRIORITY SOCIETAL FEED") {
+                        AndroidView(
+                            factory = { context ->
+                                AdView(context).apply {
+                                    setAdSize(AdSize.BANNER)
+                                    adUnitId = PROD_TOP_BANNER_AD_ID
+                                    loadAd(AdRequest.Builder().build())
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                        )
+                    }
                     
                     // Main app content
                     Box(modifier = Modifier.weight(1f)) {
@@ -240,21 +263,21 @@ class MainActivityCompose : ComponentActivity() {
                                 _currentScreen.value = AppScreen.Pet
                             },
                             onFeedPetClick = {
-                                showRewardedAd {
+                                showRewardedAd("divine treats") {
                                     petManager.feedPet()
-                                    // ideally trigger UI update in PetScreen via state, but PetScreen manages its own state from manager
                                 }
                             },
                             onQuestsClick = {
                                 updateAppState()
                                 _currentScreen.value = AppScreen.Quests
                             },
-                            onWatchAdForStardust = {
-                                // Check cooldown before showing ad
+                            onWatchAdForKarma = {
                                 if (questManager.isAdRewardAvailable()) {
-                                    showRewardedAd {
-                                        questManager.addKarma(com.thirdeyetimer.app.domain.QuestManager.AD_REWARD_KARMA)
+                                    showRewardedAd("imaginary merit points") {
+                                        karmaPoints += com.thirdeyetimer.app.domain.QuestManager.AD_REWARD_KARMA
                                         questManager.recordAdWatched()
+                                        savePreferences()
+                                        updateAppState()
                                     }
                                 }
                             },
@@ -270,21 +293,12 @@ class MainActivityCompose : ComponentActivity() {
                                 selectedBellResId = id
                                 savePreferences()
                                 updateAppState()
-                                // Play preview sound
                                 playPreviewSound(id)
                             },
                             onBackgroundSelected = { id -> 
-                                // Premium Content Logic
                                 val premiumIds = listOf(R.raw.jungle_rain, R.raw.tibetan_chant)
                                 if (id in premiumIds) {
-                                    // Show dialog or just trigger ad directly for this MVP
-                                    // ideally show a dialog "Watch Ad to Unlock?"
-                                    // For simplicity in this sprint, we'll trigger the flow directly
-                                    // We need a way to tell the UI to show a confirmation, but let's assume
-                                    // the user clicked a "locked" icon.
-                                    
-                                    // Trigger Ad
-                                    showRewardedAd {
+                                    showRewardedAd("cosmic ambience") {
                                         selectedBackgroundResId = id
                                         savePreferences()
                                         updateAppState()
@@ -294,15 +308,9 @@ class MainActivityCompose : ComponentActivity() {
                                     selectedBackgroundResId = id
                                     savePreferences()
                                     updateAppState()
-                                    // Play a short preview for background sounds
-                                    if (id != 0) {
-                                        playPreviewSound(id)
-                                    } else {
-                                        stopPreviewSound()
-                                    }
+                                    if (id != 0) playPreviewSound(id) else stopPreviewSound()
                                 }
                             },
-                            // Upgrade shop handlers
                             onUpgradeShopClick = {
                                 updateAppState()
                                 _currentScreen.value = AppScreen.UpgradeShop
@@ -315,40 +323,88 @@ class MainActivityCompose : ComponentActivity() {
                                     updateAppState()
                                 }
                             },
-                            onWatchAdForKarma = {
-                                // Check cooldown before showing ad
-                                if (questManager.isAdRewardAvailable()) {
-                                    showRewardedAd {
-                                        karmaPoints += com.thirdeyetimer.app.domain.QuestManager.AD_REWARD_KARMA
-                                        questManager.recordAdWatched()  // Start cooldown
-                                        savePreferences()
-                                        updateAppState()
-                                    }
+                            onWatchAdForDoubleSpiritualEgo = {
+                                showRewardedAd("vibrational alignment") {
+                                    idleGameManager.doubleSessionSpiritualEgo()
+                                    updateAppState()
                                 }
                             },
-                            onWatchAdForDoublePrana = {
-                                showRewardedAd {
-                                    idleGameManager.doubleSessionPrana()
+                            onTruthPunchesClick = {
+                                updateAppState()
+                                _currentScreen.value = AppScreen.TruthPunches
+                            },
+                            onTruthClick = { truth ->
+                                truthPunchManager.markAsSeen(truth.rank)
+                                updateAppState()
+                            },
+                            getTierName = { tier -> truthPunchManager.getTierName(tier) },
+                            getTierSubtitle = { tier -> truthPunchManager.getTierSubtitle(tier) },
+                            onWatchAdToBypassWaitWall = {
+                                showRewardedAd("fatigue bypass") {
+                                    idleGameManager.bypassWaitWall()
                                     updateAppState()
                                 }
                             }
                         )
+
+                        // Ad payoffs and transitions
+                        val rewardMessage by rewardedAdPayoffMessage
+                        rewardMessage?.let {
+                            ShortcutAftermathFrame(
+                                rewardDescription = it,
+                                onDismiss = { rewardedAdPayoffMessage.value = null }
+                            )
+                        }
+
+                        if (showMindChatter.value) {
+                            MindChatterFrame(
+                                onComplete = {
+                                    showMindChatter.value = false
+                                    interstitialAd?.show(this@MainActivityCompose)
+                                }
+                            )
+                        }
                     }
                     
-                    // Bottom ad banner (only show on Home screen)
+                     // Bottom ad banner (only show on Home screen)
                     if (currentScreen == AppScreen.Home) {
-                        AndroidView(
-                            factory = { context ->
-                                AdView(context).apply {
-                                    setAdSize(AdSize.BANNER)
-                                    adUnitId = PROD_BOTTOM_BANNER_AD_ID
-                                    loadAd(AdRequest.Builder().build())
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                        )
+                        SocietalProgrammingFrame(label = "SECONDARY SUBCONSCIOUS FEED") {
+                            AndroidView(
+                                factory = { context ->
+                                    AdView(context).apply {
+                                        setAdSize(AdSize.BANNER)
+                                        adUnitId = PROD_BOTTOM_BANNER_AD_ID
+                                        loadAd(AdRequest.Builder().build())
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                            )
+                        }
+                    }
+                    
+                    // Nudge Dialog (Phase 4 Satire)
+                    activeNudge.value?.let { nudgeText ->
+                        BrutalistDialog(
+                            title = "SYSTEM ADVISORY",
+                            onDismiss = { activeNudge.value = null }
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = nudgeText,
+                                    color = TerminalColors.TerminalWhite,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(vertical = 16.dp)
+                                )
+                                TerminalButton(
+                                    text = "I WILL IGNORE THIS",
+                                    onClick = { activeNudge.value = null },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -423,6 +479,25 @@ class MainActivityCompose : ComponentActivity() {
         }
     }
     
+     private fun showInterstitialAd(onAdDismissed: () -> Unit = {}) {
+        if (interstitialAd != null) {
+            interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    interstitialAd = null
+                    loadInterstitialAd()
+                    onAdDismissed()
+                }
+                override fun onAdFailedToShowFullScreenContent(error: AdError) {
+                    interstitialAd = null
+                    onAdDismissed()
+                }
+            }
+            showMindChatter.value = true
+        } else {
+            onAdDismissed()
+        }
+    }
+    
     // Rewarded Ads
     private var rewardedAd: com.google.android.gms.ads.rewarded.RewardedAd? = null
     private val PROD_REWARDED_AD_ID = "ca-app-pub-3940256099942544/5224354917" // Test Rewarded ID
@@ -443,15 +518,19 @@ class MainActivityCompose : ComponentActivity() {
             })
     }
     
-    private fun showRewardedAd(onRewardEarned: () -> Unit) {
+    private var rewardedAdPayoffMessage = mutableStateOf<String?>(null)
+
+    private fun showRewardedAd(rewardName: String, onRewardEarned: () -> Unit) {
         if (rewardedAd != null) {
             rewardedAd?.show(this) { _ ->
                 onRewardEarned()
+                rewardedAdPayoffMessage.value = rewardName
                 loadRewardedAd()
             }
         } else {
             Log.d("MainActivityCompose", "Ad not ready, granting reward anyway (fallback)")
             onRewardEarned()
+            rewardedAdPayoffMessage.value = rewardName
             loadRewardedAd()
         }
     }
@@ -480,10 +559,19 @@ class MainActivityCompose : ComponentActivity() {
             userLevel = userLevel,
             karmaPoints = karmaPoints,
             // Idle game state
-            totalPrana = idleGameManager.totalPrana,
-            sessionPrana = idleGameManager.sessionPrana,
+            totalSpiritualEgo = idleGameManager.totalSpiritualEgo,
+            lifetimeSpiritualEgo = idleGameManager.lifetimeSpiritualEgo,
+            sessionSpiritualEgo = idleGameManager.sessionSpiritualEgo,
             totalMultiplier = upgradeManager.calculateTotalMultiplier(),
-            upgradeStatuses = upgradeManager.getUpgradeStatuses()
+            upgradeStatuses = upgradeManager.getUpgradeStatuses(),
+            // Truth Punch state
+            allTruths = truthPunchManager.getAllTruths(),
+            nextUnlockThreshold = truthPunchManager.getNextUnlockThreshold(),
+            truthProgress = truthPunchManager.getOverallProgress(),
+            unseenTruthCount = truthPunchManager.getUnseenCount(),
+            // Wait Wall state
+            isWaitWallActive = idleGameManager.isWaitWallActive(),
+            waitWallRemainingMs = idleGameManager.getWaitWallRemainingMs()
         )
     }
     
@@ -525,6 +613,12 @@ class MainActivityCompose : ComponentActivity() {
             handlePauseResume()
         } else {
             // Start
+            if (state.isWaitWallActive) {
+                // Cannot start if wait wall is active
+                _appState.value = state.copy(timeInput = "Wait...") 
+                return
+            }
+            
             val timeInput = state.timeInput
             if (timeInput.isNotEmpty()) {
                 val minutes = timeInput.toLongOrNull() ?: return
@@ -532,17 +626,17 @@ class MainActivityCompose : ComponentActivity() {
                 initialTimeMillis = timeInMilliSeconds
                 sessionStartTime = System.currentTimeMillis()
                 
-                // Reset Prana session tracking
+                // Reset Spiritual Ego session tracking
                 idleGameManager.resetSession()
-                lastPranaUpdateTime = System.currentTimeMillis()
+                lastSpiritualEgoUpdateTime = System.currentTimeMillis()
                 
                 startTimerService(timeInMilliSeconds, selectedBellResId)
                 
                 _appState.value = state.copy(
                     isRunning = true,
                     isPaused = false,
-                    sessionPrana = 0L,
-                    pranaPerSecond = 0.0
+                    sessionSpiritualEgo = 0L,
+                    spiritualEgoPerSecond = 0.0
                 )
                 _currentScreen.value = AppScreen.Meditation
             }
@@ -650,12 +744,16 @@ class MainActivityCompose : ComponentActivity() {
              questManager.updateProgress(com.thirdeyetimer.app.domain.QuestManager.QUEST_USE_BELL, 1)
         }
         
-        // Commit Prana earned in this session
-        val pranaEarned = idleGameManager.commitSession()
-        lastPranaUpdateTime = 0L  // Reset for next session
+        // Commit Spiritual Ego earned in this session
+        val spiritualEgoEarned = idleGameManager.commitSession()
+        lastSpiritualEgoUpdateTime = 0L  // Reset for next session
         
-        // Update Level based on lifetime Prana (permanent XP)
-        userLevel = calculateLevel(idleGameManager.lifetimePrana)
+        // Check for newly unlocked truths
+        val newTruths = truthPunchManager.checkUnlocks(idleGameManager.lifetimeSpiritualEgo)
+        // TODO: Could show a popup for newTruths if desired
+        
+        // Update Level based on lifetime Spiritual Ego (permanent XP)
+        userLevel = calculateLevel(idleGameManager.lifetimeSpiritualEgo)
         
         checkAchievements()
         savePreferences()
@@ -670,7 +768,7 @@ class MainActivityCompose : ComponentActivity() {
             sessionDuration = durationText,
             progress = 1f,
             timerText = "Done!",
-            sessionPranaEarned = pranaEarned,
+            sessionSpiritualEgoEarned = spiritualEgoEarned,
             showDoubleAdButton = true
         )
         
@@ -687,34 +785,34 @@ class MainActivityCompose : ComponentActivity() {
             1f - (remainingTime.toFloat() / initialTimeMillis.toFloat())
         } else 0f
         
-        // Calculate elapsed time for Prana calculation
+        // Calculate elapsed time for Spiritual Ego calculation
         val elapsedTimeMs = initialTimeMillis - remainingTime
         val elapsedMinutes = elapsedTimeMs / 60000.0
         
-        // Calculate Prana per second based on current state
-        val pranaPerSecond = idleGameManager.calculatePranaPerSecond(
+        // Calculate Spiritual Ego per second based on current state
+        val spiritualEgoPerSecond = idleGameManager.calculateSpiritualEgoPerSecond(
             streakDays = currentStreak,
             elapsedMinutes = elapsedMinutes
         )
         
-        // Calculate Prana earned since last tick using precise accumulation
+        // Calculate Spiritual Ego earned since last tick using precise accumulation
         val currentTime = System.currentTimeMillis()
-        if (lastPranaUpdateTime > 0) {
-            val deltaSeconds = (currentTime - lastPranaUpdateTime) / 1000.0
-            // Use the improved accumulation method that handles fractional prana
-            idleGameManager.accumulatePrana(
+        if (lastSpiritualEgoUpdateTime > 0) {
+            val deltaSeconds = (currentTime - lastSpiritualEgoUpdateTime) / 1000.0
+            // Use the improved accumulation method that handles fractional Spiritual Ego
+            idleGameManager.accumulateSpiritualEgo(
                 streakDays = currentStreak,
                 elapsedMinutes = elapsedMinutes,
                 deltaSeconds = deltaSeconds
             )
         }
-        lastPranaUpdateTime = currentTime
+        lastSpiritualEgoUpdateTime = currentTime
         
         _appState.value = _appState.value.copy(
             timerText = timerText,
             progress = progress.coerceIn(0f, 1f),
-            sessionPrana = idleGameManager.sessionPrana,
-            pranaPerSecond = pranaPerSecond
+            sessionSpiritualEgo = idleGameManager.sessionSpiritualEgo,
+            spiritualEgoPerSecond = spiritualEgoPerSecond
         )
     }
     
@@ -817,12 +915,16 @@ class MainActivityCompose : ComponentActivity() {
         return newAchievement
     }
     
-    private fun handleStartAnother() {
-        _appState.value = MeditationAppState(
-            totalMeditationTime = _appState.value.totalMeditationTime,
-            currentStreak = currentStreak
-        )
-        _currentScreen.value = AppScreen.Home
+     private fun handleStartAnother() {
+        showInterstitialAd {
+            _currentScreen.value = AppScreen.Home
+            updateAppState()
+            
+            // Randomly nudge user to stop playing (Phase 4 satire)
+            if (nudgeManager.shouldShowNudge()) {
+                activeNudge.value = nudgeManager.getRandomNudge()
+            }
+        }
     }
     
     private fun handleShare() {
@@ -852,16 +954,16 @@ class MainActivityCompose : ComponentActivity() {
         thread.start()
     }
 
-    private fun calculateLevel(prana: Long): String {
+    private fun calculateLevel(spiritualEgo: Long): String {
         return when {
-            prana < 100L -> "Seeker"
-            prana < 500L -> "Initiate"
-            prana < 2_000L -> "Adept"
-            prana < 10_000L -> "Sage"
-            prana < 50_000L -> "Master"
-            prana < 200_000L -> "Guru"
-            prana < 1_000_000L -> "Enlightened"
-            prana < 10_000_000L -> "Transcendent"
+            spiritualEgo < 100L -> "Seeker"
+            spiritualEgo < 500L -> "Initiate"
+            spiritualEgo < 2_000L -> "Adept"
+            spiritualEgo < 10_000L -> "Sage"
+            spiritualEgo < 50_000L -> "Master"
+            spiritualEgo < 200_000L -> "Guru"
+            spiritualEgo < 1_000_000L -> "Enlightened"
+            spiritualEgo < 10_000_000L -> "Transcendent"
             else -> "Cosmic Being"
         }
     }
@@ -913,7 +1015,7 @@ class MainActivityCompose : ComponentActivity() {
                         .setTitle("🔥 Oh no! Streak at Risk!")
                         .setMessage("You missed a day! Watch a short video to restore your $longestStreak day streak?")
                         .setPositiveButton("Rescue Streak") { _, _ ->
-                            showRewardedAd {
+                            showRewardedAd("streak salvation") {
                                 // Restore streak
                                 lastMeditationDate = String.format(Locale.US, "%04d-%02d-%02d",
                                     todayCalendar.get(Calendar.YEAR),

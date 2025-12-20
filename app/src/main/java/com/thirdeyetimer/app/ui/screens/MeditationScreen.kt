@@ -27,7 +27,7 @@ import com.thirdeyetimer.app.ui.theme.TimerTypography
  * 
  * The immersive full-screen meditation experience.
  * Designed to be distraction-free with minimal UI and calming animations.
- * Now includes real-time Prana accumulation display for idle game feel.
+ * Now includes real-time Spiritual Ego accumulation display for idle game feel.
  */
 @Composable
 fun MeditationScreen(
@@ -36,12 +36,15 @@ fun MeditationScreen(
     isRunning: Boolean,
     isPaused: Boolean,
     guidedMeditationName: String? = null,
-    sessionPrana: Long = 0L,
-    pranaPerSecond: Double = 0.0,
+    sessionSpiritualEgo: Long = 0L,
+    spiritualEgoPerSecond: Double = 0.0,
     onPauseResumeClick: () -> Unit,
     onStopClick: () -> Unit,
+    lifetimeSpiritualEgo: Long = 0L,
     modifier: Modifier = Modifier
 ) {
+    val disintegrationLevel = (lifetimeSpiritualEgo / 1_000_000f).coerceIn(0f, 1f)
+
     val infiniteTransition = rememberInfiniteTransition(label = "meditationAmbient")
     
     // Subtle background pulse
@@ -118,14 +121,16 @@ fun MeditationScreen(
                     isActive = isRunning && !isPaused,
                     size = 340.dp,
                     breathInDuration = 4000,
-                    breathOutDuration = 4000
+                    breathOutDuration = 4000,
+                    disintegrationLevel = disintegrationLevel
                 )
                 
                 // Progress ring
                 ProgressRing(
                     progress = progress,
                     size = 320.dp,
-                    strokeWidth = 6.dp
+                    strokeWidth = 6.dp,
+                    disintegrationLevel = disintegrationLevel
                 )
                 
                 // Timer display
@@ -148,12 +153,12 @@ fun MeditationScreen(
                         color = CosmicColors.TextTertiary
                     )
                     
-                    // Prana counter - shows real-time accumulation
-                    if (sessionPrana > 0 || pranaPerSecond > 0) {
+                    // Spiritual Ego counter - shows real-time accumulation
+                    if (sessionSpiritualEgo > 0 || spiritualEgoPerSecond > 0) {
                         Spacer(modifier = Modifier.height(16.dp))
-                        PranaCounterCompact(
-                            sessionPrana = sessionPrana,
-                            pranaPerSecond = pranaPerSecond
+                        SpiritualEgoCounterCompact(
+                            sessionSpiritualEgo = sessionSpiritualEgo,
+                            spiritualEgoPerSecond = spiritualEgoPerSecond
                         )
                     }
                 }

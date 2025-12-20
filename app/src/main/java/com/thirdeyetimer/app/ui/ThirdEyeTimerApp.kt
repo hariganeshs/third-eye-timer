@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.thirdeyetimer.app.ui.screens.*
 import com.thirdeyetimer.app.ui.theme.CosmicZenTheme
+import com.thirdeyetimer.app.domain.TruthPunchManager
 
 /**
  * Main App Compose Entry Point
@@ -21,6 +22,7 @@ sealed class AppScreen {
     object Pet : AppScreen()
     object Quests : AppScreen()
     object UpgradeShop : AppScreen()
+    object TruthPunches : AppScreen()
 }
 
 /**
@@ -49,13 +51,22 @@ data class MeditationAppState(
     val userLevel: String = "Seeker",
     val karmaPoints: Int = 0,
     // Idle game state
-    val totalPrana: Long = 0L,
-    val sessionPrana: Long = 0L,
-    val pranaPerSecond: Double = 0.0,
+    val totalSpiritualEgo: Long = 0L,
+    val lifetimeSpiritualEgo: Long = 0L,
+    val sessionSpiritualEgo: Long = 0L,
+    val spiritualEgoPerSecond: Double = 0.0,
     val totalMultiplier: Double = 1.0,
     val upgradeStatuses: List<com.thirdeyetimer.app.domain.UpgradeManager.UpgradeStatus> = emptyList(),
-    val sessionPranaEarned: Long = 0L,
-    val showDoubleAdButton: Boolean = true
+    val sessionSpiritualEgoEarned: Long = 0L,
+    val showDoubleAdButton: Boolean = true,
+    // Truth Punch system state
+    val allTruths: List<TruthPunchManager.TruthPunch> = emptyList(),
+    val nextUnlockThreshold: Long = 0L,
+    val truthProgress: Float = 0f,
+    val unseenTruthCount: Int = 0,
+    // Wait Wall system
+    val isWaitWallActive: Boolean = false,
+    val waitWallRemainingMs: Long = 0L
 )
 
 /**
@@ -76,7 +87,7 @@ fun ThirdEyeTimerApp(
     onPetClick: () -> Unit,
     onFeedPetClick: () -> Unit,
     onQuestsClick: () -> Unit,
-    onWatchAdForStardust: () -> Unit,
+    onWatchAdForKarma: () -> Unit,
     onBrowseSessionsClick: () -> Unit,
     onMeditationSelected: (Int) -> Unit,
     onStartAnotherClick: () -> Unit,
@@ -87,8 +98,13 @@ fun ThirdEyeTimerApp(
     // Upgrade shop callbacks
     onUpgradeShopClick: () -> Unit = {},
     onPurchaseUpgrade: (com.thirdeyetimer.app.domain.UpgradeManager.Upgrade) -> Unit = {},
-    onWatchAdForKarma: () -> Unit = {},
-    onWatchAdForDoublePrana: () -> Unit = {},
+    onWatchAdForDoubleSpiritualEgo: () -> Unit = {},
+    // Truth Punch callbacks
+    onTruthPunchesClick: () -> Unit = {},
+    onTruthClick: (TruthPunchManager.TruthPunch) -> Unit = {},
+    getTierName: (Int) -> String = { "" },
+    getTierSubtitle: (Int) -> String = { "" },
+    onWatchAdToBypassWaitWall: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     CosmicZenTheme {
@@ -105,13 +121,20 @@ fun ThirdEyeTimerApp(
                     onPetClick = onPetClick,
                     onQuestsClick = onQuestsClick,
                     onUpgradeShopClick = onUpgradeShopClick,
+                    onTruthsClick = onTruthPunchesClick,
                     onBrowseSessionsClick = onBrowseSessionsClick,
+                    unseenTruthCount = state.unseenTruthCount,
                     isTimerRunning = state.isRunning,
                     timerText = state.timerText,
                     progress = state.progress,
                     userLevel = state.userLevel,
                     karmaPoints = state.karmaPoints,
-                    totalPrana = state.totalPrana,
+                    totalSpiritualEgo = state.totalSpiritualEgo,
+                    lifetimeSpiritualEgo = state.lifetimeSpiritualEgo,
+                    allTruths = state.allTruths,
+                    isWaitWallActive = state.isWaitWallActive,
+                    waitWallRemainingMs = state.waitWallRemainingMs,
+                    onWatchAdToBypassWaitWall = onWatchAdToBypassWaitWall,
                     modifier = modifier
                 )
             }
@@ -123,10 +146,11 @@ fun ThirdEyeTimerApp(
                     isRunning = state.isRunning,
                     isPaused = state.isPaused,
                     guidedMeditationName = state.guidedMeditationName,
-                    sessionPrana = state.sessionPrana,
-                    pranaPerSecond = state.pranaPerSecond,
+                    sessionSpiritualEgo = state.sessionSpiritualEgo,
+                    spiritualEgoPerSecond = state.spiritualEgoPerSecond,
                     onPauseResumeClick = onPauseResumeClick,
                     onStopClick = onStopClick,
+                    lifetimeSpiritualEgo = state.totalSpiritualEgo,
                     modifier = modifier
                 )
             }
@@ -138,11 +162,11 @@ fun ThirdEyeTimerApp(
                     totalTime = state.totalMeditationTime,
                     heartRateReduction = state.heartRateReduction,
                     newAchievement = state.newAchievement,
-                    pranaEarned = state.sessionPranaEarned,
+                    spiritualEgoEarned = state.sessionSpiritualEgoEarned,
                     showDoubleAdButton = state.showDoubleAdButton,
                     onStartAnotherClick = onStartAnotherClick,
                     onShareClick = onShareClick,
-                    onWatchAdForDoublePrana = onWatchAdForDoublePrana,
+                    onWatchAdForDoubleSpiritualEgo = onWatchAdForDoubleSpiritualEgo,
                     onDismiss = onDismiss,
                     modifier = modifier
                 )
@@ -190,19 +214,32 @@ fun ThirdEyeTimerApp(
             is AppScreen.Quests -> {
                 com.thirdeyetimer.app.ui.screens.QuestBoardScreen(
                     onBackClick = onDismiss,
-                    onWatchAdForStardust = onWatchAdForStardust
+                    onWatchAdForKarma = onWatchAdForKarma
                 )
             }
             
             is AppScreen.UpgradeShop -> {
                 UpgradeShopScreen(
-                    totalPrana = state.totalPrana,
+                    totalSpiritualEgo = state.totalSpiritualEgo,
                     karmaBalance = state.karmaPoints,
                     upgradeStatuses = state.upgradeStatuses,
                     totalMultiplier = state.totalMultiplier,
                     onPurchaseUpgrade = onPurchaseUpgrade,
                     onWatchAdForKarma = onWatchAdForKarma,
                     onBackClick = onDismiss
+                )
+            }
+            
+            is AppScreen.TruthPunches -> {
+                TruthPunchScreen(
+                    truths = state.allTruths,
+                    currentSpiritualEgo = state.totalSpiritualEgo,
+                    nextUnlockThreshold = state.nextUnlockThreshold,
+                    overallProgress = state.truthProgress,
+                    onBackClick = onDismiss,
+                    onTruthClick = onTruthClick,
+                    getTierName = getTierName,
+                    getTierSubtitle = getTierSubtitle
                 )
             }
         }
@@ -240,7 +277,7 @@ fun ThirdEyeTimerAppPreview() {
         onPetClick = { },
         onFeedPetClick = { },
         onQuestsClick = { },
-        onWatchAdForStardust = { },
+        onWatchAdForKarma = { },
         onBrowseSessionsClick = { },
         onMeditationSelected = { },
         onStartAnotherClick = {

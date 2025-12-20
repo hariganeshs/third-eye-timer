@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -36,9 +37,32 @@ fun BreathingCircle(
     breathOutDuration: Int = 4000,
     ringColor: Color = CosmicColors.Primary,
     glowColor: Color = CosmicColors.GlowIndigo,
-    size: Dp = 280.dp
+    size: Dp = 280.dp,
+    disintegrationLevel: Float = 0f // 0f (perfect) to 1f (shattered)
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "breathing")
+    
+    // Disintegration animations
+    val glitchTrigger by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(100, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "glitchTrigger"
+    )
+
+    // Using disintegration level to determine intensities
+    val density = LocalDensity.current
+    val jitterIntensity = with(density) { 8.dp.toPx() } * disintegrationLevel
+    val flickerChance = 0.1f + (disintegrationLevel * 0.4f)
+    val isFlickering = disintegrationLevel > 0.1f && glitchTrigger < flickerChance
+    
+    val jitterX = if (disintegrationLevel > 0.2f && glitchTrigger < 0.3f) 
+        (Math.random() * 2 - 1).toFloat() * jitterIntensity else 0f
+    val jitterY = if (disintegrationLevel > 0.2f && glitchTrigger < 0.3f) 
+        (Math.random() * 2 - 1).toFloat() * jitterIntensity else 0f
     
     // Breathing scale animation
     val scale by infiniteTransition.animateFloat(
@@ -86,11 +110,17 @@ fun BreathingCircle(
     val currentGlowAlpha = if (isActive) glowAlpha else 0.3f
     
     Canvas(
-        modifier = modifier.size(size)
+        modifier = modifier
+            .size(size)
+            .offset(x = jitterX.dp, y = jitterY.dp)
     ) {
         val center = Offset(size.toPx() / 2, size.toPx() / 2)
         val baseRadius = (size.toPx() / 2) * 0.7f
         val scaledRadius = baseRadius * currentScale
+        
+        val alphaMultiplier = if (isFlickering) 0.3f else 1.0f
+        val finalGlowColor = if (disintegrationLevel > 0.7f && glitchTrigger < 0.2f) 
+            Color(0xFFFF3B3B) else glowColor // Flash red at high ego
         
         // Outer glow
         drawCircle(
@@ -125,16 +155,21 @@ fun BreathingCircle(
         rotate(rotation, center) {
             drawCircle(
                 brush = Brush.sweepGradient(
-                    colors = listOf(
-                        CosmicColors.Primary,
-                        CosmicColors.Secondary,
-                        CosmicColors.PrimaryLight,
-                        CosmicColors.Primary
-                    ),
+                    colors = if (disintegrationLevel > 0.8f && glitchTrigger < 0.15f) {
+                        listOf(Color.White, Color.Red, Color.White)
+                    } else {
+                        listOf(
+                            CosmicColors.Primary,
+                            CosmicColors.Secondary,
+                            CosmicColors.PrimaryLight,
+                            CosmicColors.Primary
+                        )
+                    },
                     center = center
                 ),
                 radius = scaledRadius,
                 center = center,
+                alpha = alphaMultiplier,
                 style = Stroke(
                     width = 4.dp.toPx(),
                     cap = StrokeCap.Round
@@ -228,13 +263,29 @@ fun ProgressRing(
     strokeWidth: Dp = 8.dp,
     trackColor: Color = CosmicColors.GlassBackground,
     progressColor: Color = CosmicColors.Secondary,
-    glowColor: Color = CosmicColors.GlowTeal
+    glowColor: Color = CosmicColors.GlowTeal,
+    disintegrationLevel: Float = 0f
 ) {
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
         animationSpec = tween(300, easing = EaseInOutCubic),
         label = "progressAnimation"
     )
+
+    // Glitch for progress ring
+    val infiniteTransition = rememberInfiniteTransition(label = "progressGlitch")
+    val glitchTrigger by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(150),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "glitch"
+    )
+    
+    val isFlickering = disintegrationLevel > 0.4f && glitchTrigger < (disintegrationLevel * 0.3f)
+    val alphaMultiplier = if (isFlickering) 0.5f else 1.0f
     
     Canvas(
         modifier = modifier.size(size)
@@ -301,6 +352,7 @@ fun ProgressRing(
                 startAngle = -90f,
                 sweepAngle = sweepAngle,
                 useCenter = false,
+                alpha = alphaMultiplier,
                 style = Stroke(
                     width = strokeWidth.toPx(),
                     cap = StrokeCap.Round
@@ -326,7 +378,8 @@ fun MeditationTimer(
     progress: Float,
     isRunning: Boolean,
     modifier: Modifier = Modifier,
-    size: Dp = 320.dp
+    size: Dp = 320.dp,
+    disintegrationLevel: Float = 0f
 ) {
     Box(
         modifier = modifier.size(size),
@@ -336,6 +389,7 @@ fun MeditationTimer(
         BreathingCircle(
             isActive = isRunning,
             size = size,
+            disintegrationLevel = disintegrationLevel,
             modifier = Modifier.align(Alignment.Center)
         )
         
@@ -343,6 +397,7 @@ fun MeditationTimer(
         ProgressRing(
             progress = progress,
             size = size - 20.dp,
+            disintegrationLevel = disintegrationLevel,
             modifier = Modifier.align(Alignment.Center)
         )
         

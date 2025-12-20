@@ -21,26 +21,26 @@ import com.thirdeyetimer.app.ui.theme.CosmicColors
 import kotlinx.coroutines.delay
 
 /**
- * PranaCounter
+ * SpiritualEgoCounter
  * 
- * Animated counter component for displaying Prana (spiritual energy).
+ * Animated counter component for displaying Spiritual Ego (XP/XP levels).
  * Features smooth counting animation and glow effects for that
- * satisfying idle game feel.
+ * satisfyingly hollow idle game feel.
  */
 @Composable
-fun PranaCounter(
-    currentPrana: Long,
-    pranaPerSecond: Double = 0.0,
+fun SpiritualEgoCounter(
+    currentSpiritualEgo: Long,
+    spiritualEgoPerSecond: Double = 0.0,
     showRate: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     // Animate the displayed value for smooth counting
-    var displayedPrana by remember { mutableStateOf(currentPrana) }
+    var displayedSpiritualEgo by remember { mutableStateOf(currentSpiritualEgo) }
     
-    LaunchedEffect(currentPrana) {
+    LaunchedEffect(currentSpiritualEgo) {
         // Smooth animation to new value
-        val startValue = displayedPrana
-        val endValue = currentPrana
+        val startValue = displayedSpiritualEgo
+        val endValue = currentSpiritualEgo
         val difference = endValue - startValue
         
         if (difference > 0) {
@@ -50,16 +50,16 @@ fun PranaCounter(
             
             repeat(steps) { i ->
                 delay(stepDelay)
-                displayedPrana = startValue + (stepSize * (i + 1))
+                displayedSpiritualEgo = startValue + (stepSize * (i + 1))
             }
-            displayedPrana = endValue
+            displayedSpiritualEgo = endValue
         } else {
-            displayedPrana = endValue
+            displayedSpiritualEgo = endValue
         }
     }
     
     // Pulsing glow effect
-    val infiniteTransition = rememberInfiniteTransition(label = "pranaGlow")
+    val infiniteTransition = rememberInfiniteTransition(label = "spiritualEgoGlow")
     val glowAlpha by infiniteTransition.animateFloat(
         initialValue = 0.3f,
         targetValue = 0.7f,
@@ -98,18 +98,18 @@ fun PranaCounter(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Prana icon (spiritual orb)
+                // Spiritual Ego icon (spiritual orb)
                 Icon(
                     imageVector = Icons.Filled.AutoAwesome,
-                    contentDescription = "Prana",
+                    contentDescription = "Spiritual Ego",
                     tint = CosmicColors.Accent,
                     modifier = Modifier.size(28.dp)
                 )
                 
                 Column {
-                    // Prana value
+                    // Spiritual Ego value
                     Text(
-                        text = formatPrana(displayedPrana),
+                        text = formatSpiritualEgo(displayedSpiritualEgo),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 22.sp
@@ -118,9 +118,9 @@ fun PranaCounter(
                     )
                     
                     // Rate display
-                    if (showRate && pranaPerSecond > 0) {
+                    if (showRate && spiritualEgoPerSecond > 0) {
                         Text(
-                            text = "+${formatRate(pranaPerSecond)} Prana",
+                            text = "+${formatRateSpiritualEgo(spiritualEgoPerSecond)} Spiritual Ego",
                             style = MaterialTheme.typography.labelSmall,
                             color = CosmicColors.Accent
                         )
@@ -132,28 +132,28 @@ fun PranaCounter(
 }
 
 /**
- * Compact Prana display for the meditation screen
+ * Compact Spiritual Ego display for the meditation screen
  */
 @Composable
-fun PranaCounterCompact(
-    sessionPrana: Long,
-    pranaPerSecond: Double,
+fun SpiritualEgoCounterCompact(
+    sessionSpiritualEgo: Long,
+    spiritualEgoPerSecond: Double,
     modifier: Modifier = Modifier
 ) {
-    var displayedPrana by remember { mutableStateOf(sessionPrana) }
+    var displayedSpiritualEgo by remember { mutableStateOf(sessionSpiritualEgo) }
     
-    LaunchedEffect(sessionPrana) {
-        displayedPrana = sessionPrana
+    LaunchedEffect(sessionSpiritualEgo) {
+        displayedSpiritualEgo = sessionSpiritualEgo
     }
     
-    // Subtle pulse when prana increases
+    // Subtle pulse when spiritual ego increases
     val scale by animateFloatAsState(
         targetValue = 1f,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
         ),
-        label = "pranaScale"
+        label = "spiritualEgoScale"
     )
     
     Row(
@@ -166,13 +166,13 @@ fun PranaCounterCompact(
     ) {
         Icon(
             imageVector = Icons.Filled.AutoAwesome,
-            contentDescription = "Prana",
+            contentDescription = "Spiritual Ego",
             tint = CosmicColors.Accent,
             modifier = Modifier.size(20.dp)
         )
         
         Text(
-            text = "+${formatPrana(displayedPrana)}",
+            text = "+${formatSpiritualEgo(displayedSpiritualEgo)}",
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.SemiBold
             ),
@@ -180,7 +180,7 @@ fun PranaCounterCompact(
         )
         
         Text(
-            text = "(${formatRate(pranaPerSecond)})",
+            text = "(${formatRateSpiritualEgo(spiritualEgoPerSecond)})",
             style = MaterialTheme.typography.labelSmall,
             color = CosmicColors.TextTertiary
         )
@@ -188,11 +188,11 @@ fun PranaCounterCompact(
 }
 
 /**
- * Prana earned summary for completion screen
+ * Spiritual Ego earned summary for completion screen
  */
 @Composable
-fun PranaEarnedSummary(
-    pranaEarned: Long,
+fun SpiritualEgoEarnedSummary(
+    spiritualEgoEarned: Long,
     bonusMultiplier: Double = 1.0,
     onWatchAdClick: () -> Unit,
     showAdButton: Boolean = true,
@@ -221,12 +221,12 @@ fun PranaEarnedSummary(
         ) {
             // Title
             Text(
-                text = "Prana Earned",
+                text = "Spiritual Ego Accumulated",
                 style = MaterialTheme.typography.titleMedium,
                 color = CosmicColors.TextTertiary
             )
             
-            // Big prana number
+            // Big Spiritual Ego number
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -238,7 +238,7 @@ fun PranaEarnedSummary(
                     modifier = Modifier.size(32.dp)
                 )
                 Text(
-                    text = "+${formatPrana(pranaEarned)}",
+                    text = "+${formatSpiritualEgo(spiritualEgoEarned)}",
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -249,7 +249,7 @@ fun PranaEarnedSummary(
             // Multiplier info if not 1.0
             if (bonusMultiplier > 1.0) {
                 Text(
-                    text = "${String.format("%.1f", bonusMultiplier)}x Bonus Active!",
+                    text = "${String.format("%.1f", bonusMultiplier)}x False Wisdom Active!",
                     style = MaterialTheme.typography.labelMedium,
                     color = CosmicColors.Success
                 )
@@ -265,7 +265,7 @@ fun PranaEarnedSummary(
                     contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
                 ) {
                     Text(
-                        text = "Watch Ad for 2x Prana",
+                        text = "Double Your Spiritual Ego",
                         style = MaterialTheme.typography.labelLarge,
                         color = CosmicColors.TextPrimary,
                         fontWeight = FontWeight.Bold
@@ -278,17 +278,17 @@ fun PranaEarnedSummary(
 
 // Helper functions
 
-private fun formatPrana(prana: Long): String {
+private fun formatSpiritualEgo(spiritualEgo: Long): String {
     return when {
-        prana >= 1_000_000_000_000L -> String.format("%.2fT", prana / 1_000_000_000_000.0)
-        prana >= 1_000_000_000L -> String.format("%.2fB", prana / 1_000_000_000.0)
-        prana >= 1_000_000L -> String.format("%.2fM", prana / 1_000_000.0)
-        prana >= 1_000L -> String.format("%.1fK", prana / 1_000.0)
-        else -> prana.toString()
+        spiritualEgo >= 1_000_000_000_000L -> String.format("%.2fT", spiritualEgo / 1_000_000_000_000.0)
+        spiritualEgo >= 1_000_000_000L -> String.format("%.2fB", spiritualEgo / 1_000_000_000.0)
+        spiritualEgo >= 1_000_000L -> String.format("%.2fM", spiritualEgo / 1_000_000.0)
+        spiritualEgo >= 1_000L -> String.format("%.1fK", spiritualEgo / 1_000.0)
+        else -> spiritualEgo.toString()
     }
 }
 
-private fun formatRate(rate: Double): String {
+private fun formatRateSpiritualEgo(rate: Double): String {
     return when {
         rate >= 1_000_000L -> String.format("%.1fM/s", rate / 1_000_000.0)
         rate >= 1_000L -> String.format("%.1fK/s", rate / 1_000.0)
@@ -296,3 +296,4 @@ private fun formatRate(rate: Double): String {
         else -> String.format("%.1f/s", rate)
     }
 }
+

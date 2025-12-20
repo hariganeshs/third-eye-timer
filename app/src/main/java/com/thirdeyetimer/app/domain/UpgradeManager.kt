@@ -8,7 +8,7 @@ import android.content.SharedPreferences
  * 
  * Manages the upgrade system for the idle game mechanics.
  * Players spend Karma to purchase permanent upgrades that
- * increase their Prana accumulation rate.
+ * increase their Spiritual Ego accumulation rate.
  * 
  * All upgrades scale with levels, creating the satisfying
  * progression loop typical of idle games.
@@ -25,6 +25,7 @@ class UpgradeManager(context: Context, private val idleGameManager: IdleGameMana
         val id: String,
         val name: String,
         val description: String,
+        val ironicDescription: String = "",  // Satirical "truth punch" after purchase
         val baseCost: Int,
         val costMultiplier: Double,  // Cost increases by this factor per level
         val effectPerLevel: Double,  // Multiplier bonus per level
@@ -33,12 +34,13 @@ class UpgradeManager(context: Context, private val idleGameManager: IdleGameMana
     )
     
     companion object {
-        // All available upgrades
+        // All available upgrades with ironic descriptions for the Anti-Idle philosophy
         val UPGRADES = listOf(
             Upgrade(
                 id = "inner_focus",
                 name = "Inner Focus",
-                description = "Channel your awareness. +10% Prana per level.",
+                description = "Channel your awareness. +10% Spiritual Ego per level.",
+                ironicDescription = "You bought focus. Focus cannot be bought. But here you are, purchasing the illusion of progress.",
                 baseCost = 100,
                 costMultiplier = 1.5,
                 effectPerLevel = 0.10,
@@ -48,7 +50,8 @@ class UpgradeManager(context: Context, private val idleGameManager: IdleGameMana
             Upgrade(
                 id = "chakra_alignment",
                 name = "Chakra Alignment",
-                description = "Align your energy centers. +25% Prana per level.",
+                description = "Align your energy centers. +25% Spiritual Ego per level.",
+                ironicDescription = "Energy centers are a concept. You just paid imaginary currency for an imaginary alignment of imaginary things.",
                 baseCost = 500,
                 costMultiplier = 2.0,
                 effectPerLevel = 0.25,
@@ -58,7 +61,8 @@ class UpgradeManager(context: Context, private val idleGameManager: IdleGameMana
             Upgrade(
                 id = "third_eye_opening",
                 name = "Third Eye Opening",
-                description = "Awaken your inner vision. 2x Prana permanently.",
+                description = "Awaken your inner vision. 2x Spiritual Ego permanently.",
+                ironicDescription = "The third eye sees nothing but your own desperate need to accumulate. Congratulations, you can now see your Spiritual Ego more clearly.",
                 baseCost = 2000,
                 costMultiplier = 1.0,  // Only one level
                 effectPerLevel = 1.0,  // Doubles the rate
@@ -69,6 +73,7 @@ class UpgradeManager(context: Context, private val idleGameManager: IdleGameMana
                 id = "cosmic_consciousness",
                 name = "Cosmic Consciousness",
                 description = "Connect to the universe. +50% all sources per level.",
+                ironicDescription = "You are not connecting to the universe. You are connecting to a piece of glass and metal. The cosmos does not operate in-app.",
                 baseCost = 10000,
                 costMultiplier = 3.0,
                 effectPerLevel = 0.50,
@@ -78,7 +83,8 @@ class UpgradeManager(context: Context, private val idleGameManager: IdleGameMana
             Upgrade(
                 id = "breath_mastery",
                 name = "Breath Mastery",
-                description = "Perfect your breathing. +15% Prana per level.",
+                description = "Perfect your breathing. +15% Spiritual Ego per level.",
+                ironicDescription = "You have been breathing your entire life without improvement. A purchase will not change this. But here is your receipt.",
                 baseCost = 250,
                 costMultiplier = 1.8,
                 effectPerLevel = 0.15,
@@ -88,7 +94,8 @@ class UpgradeManager(context: Context, private val idleGameManager: IdleGameMana
             Upgrade(
                 id = "lotus_position",
                 name = "Lotus Position",
-                description = "Perfect form brings clarity. +20% Prana per level.",
+                description = "Perfect form brings clarity. +20% Spiritual Ego per level.",
+                ironicDescription = "Methods are for those who do not desire the destination. You just bought a method. Enjoy the endless journey to nowhere.",
                 baseCost = 750,
                 costMultiplier = 2.2,
                 effectPerLevel = 0.20,

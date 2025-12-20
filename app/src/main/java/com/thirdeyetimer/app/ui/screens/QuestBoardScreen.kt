@@ -27,7 +27,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun QuestBoardScreen(
     onBackClick: () -> Unit,
-    onWatchAdForStardust: () -> Unit // Renamed but kept for compatibility
+    onWatchAdForKarma: () -> Unit // Renamed but kept for compatibility
 ) {
     val context = LocalContext.current
     val questManager = remember { QuestManager(context) }
@@ -110,7 +110,7 @@ fun QuestBoardScreen(
                     Button(
                         onClick = { 
                             if (isAdAvailable) {
-                                onWatchAdForStardust()  // Uses the callback which now handles cooldown
+                                onWatchAdForKarma()  // Uses the callback which now handles cooldown
                             }
                         },
                         modifier = Modifier

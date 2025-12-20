@@ -398,7 +398,7 @@ class GuidedMeditationData {
             ),
             MeditationItem(
                 id = 32,
-                title = "Hindu 2 - Prana Body Scan",
+                title = "Hindu 2 - Spiritual Ego Body Scan",
                 resourceId = R.raw.hindu_2_prana_body_scan,
                 icon = Icons.Filled.PlayCircle,
                 description = "Energetic body scan practice",
