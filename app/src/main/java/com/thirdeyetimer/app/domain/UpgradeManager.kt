@@ -35,70 +35,71 @@ class UpgradeManager(context: Context, private val idleGameManager: IdleGameMana
     
     companion object {
         // All available upgrades with ironic descriptions for the Anti-Idle philosophy
+        // DOUBLED all effects for more impactful progression
         val UPGRADES = listOf(
             Upgrade(
                 id = "inner_focus",
                 name = "Inner Focus",
-                description = "Channel your awareness. +10% Spiritual Ego per level.",
+                description = "Channel your awareness. +25% Spiritual Ego per level.",
                 ironicDescription = "You bought focus. Focus cannot be bought. But here you are, purchasing the illusion of progress.",
                 baseCost = 100,
                 costMultiplier = 1.5,
-                effectPerLevel = 0.10,
+                effectPerLevel = 0.25,  // Doubled from 0.10
                 maxLevel = 10,
                 iconName = "focus"
             ),
             Upgrade(
                 id = "chakra_alignment",
                 name = "Chakra Alignment",
-                description = "Align your energy centers. +25% Spiritual Ego per level.",
+                description = "Align your energy centers. +50% Spiritual Ego per level.",
                 ironicDescription = "Energy centers are a concept. You just paid imaginary currency for an imaginary alignment of imaginary things.",
                 baseCost = 500,
                 costMultiplier = 2.0,
-                effectPerLevel = 0.25,
+                effectPerLevel = 0.50,  // Doubled from 0.25
                 maxLevel = 5,
                 iconName = "chakra"
             ),
             Upgrade(
                 id = "third_eye_opening",
                 name = "Third Eye Opening",
-                description = "Awaken your inner vision. 2x Spiritual Ego permanently.",
+                description = "Awaken your inner vision. 3x Spiritual Ego permanently.",
                 ironicDescription = "The third eye sees nothing but your own desperate need to accumulate. Congratulations, you can now see your Spiritual Ego more clearly.",
                 baseCost = 2000,
                 costMultiplier = 1.0,  // Only one level
-                effectPerLevel = 1.0,  // Doubles the rate
+                effectPerLevel = 2.0,  // Increased from 1.0 (gives 3x total)
                 maxLevel = 1,
                 iconName = "third_eye"
             ),
             Upgrade(
                 id = "cosmic_consciousness",
                 name = "Cosmic Consciousness",
-                description = "Connect to the universe. +50% all sources per level.",
+                description = "Connect to the universe. +100% all sources per level.",
                 ironicDescription = "You are not connecting to the universe. You are connecting to a piece of glass and metal. The cosmos does not operate in-app.",
                 baseCost = 10000,
                 costMultiplier = 3.0,
-                effectPerLevel = 0.50,
+                effectPerLevel = 1.00,  // Doubled from 0.50
                 maxLevel = 3,
                 iconName = "cosmic"
             ),
             Upgrade(
                 id = "breath_mastery",
                 name = "Breath Mastery",
-                description = "Perfect your breathing. +15% Spiritual Ego per level.",
+                description = "Perfect your breathing. +30% Spiritual Ego per level.",
                 ironicDescription = "You have been breathing your entire life without improvement. A purchase will not change this. But here is your receipt.",
                 baseCost = 250,
                 costMultiplier = 1.8,
-                effectPerLevel = 0.15,
+                effectPerLevel = 0.30,  // Doubled from 0.15
                 maxLevel = 8,
                 iconName = "breath"
             ),
             Upgrade(
                 id = "lotus_position",
                 name = "Lotus Position",
-                description = "Perfect form brings clarity. +20% Spiritual Ego per level.",
+                description = "Perfect form brings clarity. +40% Spiritual Ego per level.",
                 ironicDescription = "Methods are for those who do not desire the destination. You just bought a method. Enjoy the endless journey to nowhere.",
                 baseCost = 750,
                 costMultiplier = 2.2,
-                effectPerLevel = 0.20,
+                effectPerLevel = 0.40,  // Doubled from 0.20
                 maxLevel = 5,
                 iconName = "lotus"
             )

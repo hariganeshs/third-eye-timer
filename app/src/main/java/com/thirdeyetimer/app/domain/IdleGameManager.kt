@@ -36,11 +36,20 @@ class IdleGameManager(context: Context) {
         // Base rate: 1 Spiritual Ego per second at the start
         const val BASE_RATE = 1.0
         
-        // Session bonus increases by 2% per minute of meditation (faster growth)
-        const val SESSION_BONUS_PER_MINUTE = 0.02
+        // Session bonus increases by 10% per minute of meditation (dramatic growth to hook players)
+        const val SESSION_BONUS_PER_MINUTE = 0.10
         
-        // Maximum session bonus to prevent overflow
-        const val MAX_SESSION_BONUS = 10.0
+        // Maximum session bonus to prevent overflow (allow long sessions to feel powerful)
+        const val MAX_SESSION_BONUS = 50.0
+        
+        // Milestone bonuses - dramatic increases to reward continued meditation
+        // These create "hooks" that encourage players to meditate longer
+        val MILESTONE_BONUSES = mapOf(
+            1.0 to 2.0,    // 1 minute: "Settling In" - 2x bonus
+            5.0 to 3.0,    // 5 minutes: "Deep Focus" - 3x bonus
+            10.0 to 5.0,   // 10 minutes: "Flow State" - 5x bonus
+            20.0 to 10.0   // 20 minutes: "Transcendence" - 10x bonus
+        )
         
         // Streak multiplier thresholds
         val STREAK_MULTIPLIERS = mapOf(
@@ -114,7 +123,22 @@ class IdleGameManager(context: Context) {
     }
     
     /**
+     * Get the milestone bonus based on meditation duration
+     * These are dramatic bonuses to hook players into longer sessions
+     */
+    fun getMilestoneBonus(elapsedMinutes: Double): Double {
+        var bonus = 1.0
+        for ((threshold, mult) in MILESTONE_BONUSES) {
+            if (elapsedMinutes >= threshold) {
+                bonus = mult
+            }
+        }
+        return bonus
+    }
+    
+    /**
      * Calculate Spiritual Ego per second at the current moment
+     * Formula includes milestone bonuses for dramatic progression
      */
     fun calculateSpiritualEgoPerSecond(
         streakDays: Int,
@@ -122,9 +146,10 @@ class IdleGameManager(context: Context) {
     ): Double {
         val streakMult = getStreakMultiplier(streakDays)
         val sessionBonus = getSessionBonus(elapsedMinutes)
+        val milestoneBonus = getMilestoneBonus(elapsedMinutes)
         val adBoost = if (isAdBoostActive) AD_BOOST_MULTIPLIER else 1.0
         
-        return BASE_RATE * streakMult * upgradeMultiplier * sessionBonus * adBoost
+        return BASE_RATE * streakMult * upgradeMultiplier * sessionBonus * milestoneBonus * adBoost
     }
     
     /**

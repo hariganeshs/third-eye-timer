@@ -29,49 +29,50 @@ class TruthPunchManager(context: Context) {
     
     companion object {
         // Spiritual Ego thresholds for unlocking truths (exponential scaling)
-        // First truths are easy, later ones require massive meditation time
+        // ADJUSTED: First truths unlock faster to hook players early
+        // With new progression: ~50 SE/min base, players unlock frequently
         private val UNLOCK_THRESHOLDS = mapOf(
             100 to 0L,           // Truth 100 unlocked at start
-            99 to 100L,
-            98 to 250L,
-            97 to 500L,
-            96 to 750L,
-            95 to 1_000L,
-            94 to 1_500L,
-            93 to 2_000L,
-            92 to 3_000L,
-            91 to 4_000L,
-            90 to 5_000L,
-            89 to 6_500L,
-            88 to 8_000L,
-            87 to 10_000L,
-            86 to 12_500L,
-            85 to 15_000L,
-            84 to 18_000L,
-            83 to 22_000L,
-            82 to 27_000L,
-            81 to 33_000L,
-            // Tier 4 (Rank 61-80)
-            80 to 40_000L,
-            79 to 48_000L,
-            78 to 57_000L,
-            77 to 67_000L,
-            76 to 78_000L,
-            75 to 90_000L,
-            74 to 105_000L,
-            73 to 120_000L,
-            72 to 140_000L,
-            71 to 160_000L,
-            70 to 185_000L,
-            69 to 210_000L,
-            68 to 240_000L,
+            99 to 50L,           // ~50 sec of meditation
+            98 to 120L,          // ~2 min total
+            97 to 200L,          // ~3 min
+            96 to 300L,          // ~4 min
+            95 to 450L,          // ~5 min
+            94 to 650L,          // ~6 min
+            93 to 900L,          // ~7 min
+            92 to 1_200L,        // ~8 min
+            91 to 1_600L,        // ~9 min
+            90 to 2_100L,        // ~10 min (first 10 truths in 10 min!)
+            89 to 2_700L,        // ~11 min
+            88 to 3_400L,        // ~12 min
+            87 to 4_200L,        // ~13 min
+            86 to 5_200L,        // ~14 min
+            85 to 6_400L,        // ~15 min
+            84 to 7_800L,        // ~16 min
+            83 to 9_500L,        // ~17 min
+            82 to 11_500L,       // ~18 min
+            81 to 14_000L,       // ~19 min (all Tier 5 in ~20 min)
+            // Tier 4 (Rank 61-80) - Medium progression
+            80 to 17_000L,
+            79 to 21_000L,
+            78 to 26_000L,
+            77 to 32_000L,
+            76 to 40_000L,
+            75 to 50_000L,
+            74 to 62_000L,
+            73 to 77_000L,
+            72 to 95_000L,
+            71 to 118_000L,
+            70 to 145_000L,
+            69 to 180_000L,
+            68 to 220_000L,
             67 to 275_000L,
-            66 to 315_000L,
-            65 to 360_000L,
-            64 to 410_000L,
-            63 to 470_000L,
-            62 to 540_000L,
-            61 to 620_000L,
+            66 to 340_000L,
+            65 to 420_000L,
+            64 to 520_000L,
+            63 to 640_000L,
+            62 to 790_000L,
+            61 to 980_000L,
             // Tier 3 (Rank 41-60)
             60 to 710_000L,
             59 to 810_000L,
