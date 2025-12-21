@@ -7,8 +7,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.ui.platform.LocalContext
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
@@ -419,6 +426,32 @@ private fun TruthDetailPopup(
     truth: TruthPunchManager.TruthPunch,
     onDismiss: () -> Unit
 ) {
+    val context = LocalContext.current
+    
+    // Trigger vibration when revealing the truth
+    LaunchedEffect(Unit) {
+        try {
+            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vibratorManager = context.getSystemService(android.content.Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                vibratorManager.defaultVibrator
+            } else {
+                @Suppress("DEPRECATION")
+                context.getSystemService(android.content.Context.VIBRATOR_SERVICE) as Vibrator
+            }
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // Strong "impact" pattern for revealing truth
+                val pattern = longArrayOf(0, 80, 40, 150)
+                vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1))
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(longArrayOf(0, 80, 40, 150), -1)
+            }
+        } catch (e: Exception) {
+            // Ignore vibration errors
+        }
+    }
+    
     // Screen shake animation
     val shakeOffset by rememberInfiniteTransition(label = "shake").animateFloat(
         initialValue = -2f,
@@ -440,17 +473,18 @@ private fun TruthDetailPopup(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.9f))
+            .background(Color.Black.copy(alpha = 0.95f))
             .clickable { onDismiss() }
             .offset(x = if (shouldShake) shakeOffset.dp else 0.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth(0.9f)
+                .fillMaxWidth(0.92f)
+                .fillMaxHeight(0.85f)
                 .background(TerminalDarkGray, RoundedCornerShape(8.dp))
                 .border(2.dp, TerminalRed, RoundedCornerShape(8.dp))
-                .padding(24.dp),
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Header
@@ -458,55 +492,92 @@ private fun TruthDetailPopup(
                 text = "TRUTH #${truth.rank}",
                 fontFamily = FontFamily.Monospace,
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 color = TerminalRed
             )
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             
             Text(
                 text = truth.title,
                 fontFamily = FontFamily.Monospace,
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 color = TerminalAmber,
                 textAlign = TextAlign.Center
             )
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
             // Divider
             Divider(color = TerminalRed.copy(alpha = 0.5f))
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
-            // The Truth
-            Text(
-                text = "\"${truth.truth}\"",
-                fontFamily = FontFamily.Monospace,
-                fontSize = 16.sp,
-                color = TerminalWhite,
-                textAlign = TextAlign.Center,
-                lineHeight = 24.sp
-            )
+            // Scrollable content area
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // The Truth statement (highlighted)
+                Text(
+                    text = "\"${truth.truth}\"",
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                    color = TerminalWhite,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 22.sp
+                )
+                
+                Spacer(modifier = Modifier.height(20.dp))
+                
+                // Thin divider between truth and article
+                Divider(
+                    color = TerminalGray.copy(alpha = 0.3f),
+                    modifier = Modifier.fillMaxWidth(0.6f)
+                )
+                
+                Spacer(modifier = Modifier.height(20.dp))
+                
+                // The expanded article
+                if (truth.article.isNotEmpty()) {
+                    Text(
+                        text = truth.article.trim(),
+                        fontFamily = FontFamily.Monospace,
+                        fontSize = 13.sp,
+                        color = TerminalGray,
+                        textAlign = TextAlign.Start,
+                        lineHeight = 20.sp,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+            }
             
-            Spacer(modifier = Modifier.height(24.dp))
+            // Bottom section (fixed)
+            Divider(color = TerminalGray.copy(alpha = 0.3f))
+            
+            Spacer(modifier = Modifier.height(12.dp))
             
             // Tier indicator
             Text(
                 text = "TIER ${truth.tier} • ${getTierNameLocal(truth.tier)}",
                 fontFamily = FontFamily.Monospace,
-                fontSize = 12.sp,
+                fontSize = 11.sp,
                 color = TerminalGray
             )
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
             // Dismiss hint
             Text(
                 text = "[ TAP ANYWHERE TO DISMISS ]",
                 fontFamily = FontFamily.Monospace,
-                fontSize = 10.sp,
+                fontSize = 9.sp,
                 color = TerminalGray.copy(alpha = 0.5f)
             )
         }
