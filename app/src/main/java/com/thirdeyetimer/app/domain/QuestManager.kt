@@ -19,6 +19,8 @@ class QuestManager(context: Context) {
     private val KEY_LAST_QUEST_DATE = "last_quest_date"
     private val KEY_QUESTS_JSON = "quests_json"
     private val KEY_LAST_AD_REWARD_TIME = "last_ad_reward_time"
+    private val KEY_LAST_VIBE_CHECK_TIME = "last_vibe_check_time"
+    private val KEY_LAST_SCREAM_JAR_TIME = "last_scream_jar_time"
     
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     
@@ -27,10 +29,17 @@ class QuestManager(context: Context) {
         const val QUEST_USE_BELL = "use_bell"
         const val QUEST_VISIT_PET = "visit_pet"
         const val QUEST_SHARE_STREAK = "share_streak"
+        const val QUEST_VIBE_CHECK = "vibe_check"
         
         const val REWARD_STANDARD = 50  // Karma per quest
         const val AD_REWARD_KARMA = 25  // Karma per ad
+        const val VIBE_CHECK_KARMA = 30  // Karma per Vibe Check
         const val AD_COOLDOWN_MS = 5 * 60 * 1000L  // 5 minutes cooldown
+        const val VIBE_CHECK_COOLDOWN_MS = 3 * 60 * 1000L  // 3 minutes cooldown
+        
+        // Scream Jar
+        const val SCREAM_JAR_KARMA = 100 // High reward for viral sharing
+        const val SCREAM_JAR_COOLDOWN_MS = 10 * 60 * 1000L // 10 minutes cooldown (intense activity)
     }
     
     data class Quest(
@@ -90,6 +99,80 @@ class QuestManager(context: Context) {
      */
     fun recordAdWatched() {
         prefs.edit().putLong(KEY_LAST_AD_REWARD_TIME, System.currentTimeMillis()).apply()
+    }
+    
+    /**
+     * Check if Vibe Check reward is available (cooldown expired)
+     */
+    fun isVibeCheckAvailable(): Boolean {
+        val lastTime = prefs.getLong(KEY_LAST_VIBE_CHECK_TIME, 0L)
+        return System.currentTimeMillis() - lastTime >= VIBE_CHECK_COOLDOWN_MS
+    }
+    
+    /**
+     * Get remaining Vibe Check cooldown in milliseconds
+     */
+    fun getVibeCheckCooldownRemaining(): Long {
+        val lastTime = prefs.getLong(KEY_LAST_VIBE_CHECK_TIME, 0L)
+        val elapsed = System.currentTimeMillis() - lastTime
+        val remaining = VIBE_CHECK_COOLDOWN_MS - elapsed
+        return if (remaining > 0) remaining else 0L
+    }
+    
+    /**
+     * Record that Vibe Check was completed and award karma
+     */
+    fun recordVibeCheckCompleted() {
+        prefs.edit().putLong(KEY_LAST_VIBE_CHECK_TIME, System.currentTimeMillis()).apply()
+        addKarma(VIBE_CHECK_KARMA)
+    }
+    
+    /**
+     * Format Vibe Check cooldown for display
+     */
+    fun formatVibeCheckCooldown(): String {
+        val remaining = getVibeCheckCooldownRemaining()
+        if (remaining <= 0) return "Ready!"
+        val minutes = (remaining / 60000).toInt()
+        val seconds = ((remaining % 60000) / 1000).toInt()
+        return String.format(Locale.US, "%d:%02d", minutes, seconds)
+    }
+
+    /**
+     * Check if Scream Jar reward is available
+     */
+    fun isScreamJarAvailable(): Boolean {
+        val lastTime = prefs.getLong(KEY_LAST_SCREAM_JAR_TIME, 0L)
+        return System.currentTimeMillis() - lastTime >= SCREAM_JAR_COOLDOWN_MS
+    }
+
+    /**
+     * Get remaining Scream Jar cooldown
+     */
+    fun getScreamJarCooldownRemaining(): Long {
+        val lastTime = prefs.getLong(KEY_LAST_SCREAM_JAR_TIME, 0L)
+        val elapsed = System.currentTimeMillis() - lastTime
+        val remaining = SCREAM_JAR_COOLDOWN_MS - elapsed
+        return if (remaining > 0) remaining else 0L
+    }
+
+    /**
+     * Record Scream Jar share and award Karma
+     */
+    fun recordScreamJarShared() {
+        prefs.edit().putLong(KEY_LAST_SCREAM_JAR_TIME, System.currentTimeMillis()).apply()
+        addKarma(SCREAM_JAR_KARMA)
+    }
+
+    /**
+     * Format Scream Jar cooldown for display
+     */
+    fun formatScreamJarCooldown(): String {
+        val remaining = getScreamJarCooldownRemaining()
+        if (remaining <= 0) return "Ready!"
+        val minutes = (remaining / 60000).toInt()
+        val seconds = ((remaining % 60000) / 1000).toInt()
+        return String.format(Locale.US, "%d:%02d", minutes, seconds)
     }
     
     /**

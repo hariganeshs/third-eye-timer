@@ -27,6 +27,7 @@ import com.thirdeyetimer.app.ui.theme.CosmicColors
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.thirdeyetimer.app.ui.components.MeditatingAvatar
 
 /**
  * UpgradeShopScreen
@@ -38,6 +39,7 @@ import androidx.compose.ui.window.DialogProperties
 @Composable
 fun UpgradeShopScreen(
     totalSpiritualEgo: Long,
+    userLevelInt: Int = 1,
     karmaBalance: Int,
     upgradeStatuses: List<UpgradeManager.UpgradeStatus>,
     totalMultiplier: Double,
@@ -89,12 +91,21 @@ fun UpgradeShopScreen(
             // Top bar
             TopAppBar(
                 title = {
-                    Text(
-                        text = "Upgrades",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = CosmicColors.TextPrimary,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        MeditatingAvatar(
+                            level = userLevelInt,
+                            size = 32.dp
+                        )
+                        Text(
+                            text = "Upgrades",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = CosmicColors.TextPrimary,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {

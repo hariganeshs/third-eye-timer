@@ -1,5 +1,6 @@
 package com.thirdeyetimer.app.ui
 
+import android.net.Uri
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.thirdeyetimer.app.ui.screens.*
@@ -23,6 +24,8 @@ sealed class AppScreen {
     object Quests : AppScreen()
     object UpgradeShop : AppScreen()
     object TruthPunches : AppScreen()
+    object AuraSelfie : AppScreen()
+    object ScreamJar : AppScreen()
 }
 
 /**
@@ -49,6 +52,7 @@ data class MeditationAppState(
     val availableBells: List<SoundOption> = emptyList(),
     val availableBackgrounds: List<SoundOption> = emptyList(),
     val userLevel: String = "Seeker",
+    val userLevelInt: Int = 1,
     val karmaPoints: Int = 0,
     // Idle game state
     val totalSpiritualEgo: Long = 0L,
@@ -105,6 +109,12 @@ fun ThirdEyeTimerApp(
     getTierName: (Int) -> String = { "" },
     getTierSubtitle: (Int) -> String = { "" },
     onWatchAdToBypassWaitWall: () -> Unit = {},
+    // Aura Selfie callbacks
+    // Aura Selfie callbacks
+    onVibeCheckClick: () -> Unit = {},
+    onAuraShare: (Uri) -> Unit = {},
+    // Scream Jar callbacks
+    onScreamJarClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     CosmicZenTheme {
@@ -128,6 +138,7 @@ fun ThirdEyeTimerApp(
                     timerText = state.timerText,
                     progress = state.progress,
                     userLevel = state.userLevel,
+                    userLevelInt = state.userLevelInt,
                     karmaPoints = state.karmaPoints,
                     totalSpiritualEgo = state.totalSpiritualEgo,
                     lifetimeSpiritualEgo = state.lifetimeSpiritualEgo,
@@ -214,13 +225,16 @@ fun ThirdEyeTimerApp(
             is AppScreen.Quests -> {
                 com.thirdeyetimer.app.ui.screens.QuestBoardScreen(
                     onBackClick = onDismiss,
-                    onWatchAdForKarma = onWatchAdForKarma
+                    onWatchAdForKarma = onWatchAdForKarma,
+                    onVibeCheckClick = onVibeCheckClick,
+                    onScreamJarClick = onScreamJarClick
                 )
             }
             
             is AppScreen.UpgradeShop -> {
                 UpgradeShopScreen(
                     totalSpiritualEgo = state.totalSpiritualEgo,
+                    userLevelInt = state.userLevelInt,
                     karmaBalance = state.karmaPoints,
                     upgradeStatuses = state.upgradeStatuses,
                     totalMultiplier = state.totalMultiplier,
@@ -240,6 +254,19 @@ fun ThirdEyeTimerApp(
                     onTruthClick = onTruthClick,
                     getTierName = getTierName,
                     getTierSubtitle = getTierSubtitle
+                )
+            }
+            
+            is AppScreen.AuraSelfie -> {
+                AuraSelfieScreen(
+                    onBackClick = onDismiss,
+                    onShareClick = onAuraShare
+                )
+            }
+            
+            is AppScreen.ScreamJar -> {
+                ScreamJarScreen(
+                    onBackClick = onDismiss
                 )
             }
         }
@@ -289,6 +316,7 @@ fun ThirdEyeTimerAppPreview() {
             currentScreen = AppScreen.Home
         },
         onShareClick = { },
+        onScreamJarClick = { },
         onDismiss = { currentScreen = AppScreen.Home }
     )
 }

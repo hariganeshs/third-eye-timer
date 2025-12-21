@@ -126,6 +126,9 @@ dependencies {
     // Apache Commons Math for signal processing
     implementation("org.apache.commons:commons-math3:3.6.1")
     
+    // Coil Compose for image loading
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    
     // Signal processing - using built-in Kotlin math functions
     // Removed external libraries to avoid dependency conflicts
     

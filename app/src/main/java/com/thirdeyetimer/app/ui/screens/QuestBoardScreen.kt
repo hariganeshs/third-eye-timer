@@ -12,9 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.thirdeyetimer.app.R
 import com.thirdeyetimer.app.domain.QuestManager
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -22,12 +24,15 @@ import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.RecordVoiceOver
 import kotlinx.coroutines.delay
 
 @Composable
 fun QuestBoardScreen(
     onBackClick: () -> Unit,
-    onWatchAdForKarma: () -> Unit // Renamed but kept for compatibility
+    onWatchAdForKarma: () -> Unit,
+    onVibeCheckClick: () -> Unit = {},
+    onScreamJarClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val questManager = remember { QuestManager(context) }
@@ -38,6 +43,10 @@ fun QuestBoardScreen(
     // Cooldown tracking
     var cooldownText by remember { mutableStateOf(questManager.formatCooldown()) }
     var isAdAvailable by remember { mutableStateOf(questManager.isAdRewardAvailable()) }
+    var vibeCheckCooldown by remember { mutableStateOf(questManager.formatVibeCheckCooldown()) }
+    var isVibeCheckAvailable by remember { mutableStateOf(questManager.isVibeCheckAvailable()) }
+    var screamJarCooldown by remember { mutableStateOf(questManager.formatScreamJarCooldown()) }
+    var isScreamJarAvailable by remember { mutableStateOf(questManager.isScreamJarAvailable()) }
     
     // Update cooldown every second
     LaunchedEffect(Unit) {
@@ -45,6 +54,10 @@ fun QuestBoardScreen(
             delay(1000)
             cooldownText = questManager.formatCooldown()
             isAdAvailable = questManager.isAdRewardAvailable()
+            vibeCheckCooldown = questManager.formatVibeCheckCooldown()
+            isVibeCheckAvailable = questManager.isVibeCheckAvailable()
+            screamJarCooldown = questManager.formatScreamJarCooldown()
+            isScreamJarAvailable = questManager.isScreamJarAvailable()
         }
     }
     
@@ -87,7 +100,7 @@ fun QuestBoardScreen(
             
             // Info text
             Text(
-                text = "Complete quests to earn Karma!",
+                text = "Complete tasks to earn Karma",
                 color = Color(0xFFB0B0B0),
                 fontSize = 14.sp,
                 modifier = Modifier.padding(start = 8.dp)
@@ -103,14 +116,152 @@ fun QuestBoardScreen(
                     QuestItem(quest)
                 }
                 
+                // Vibe Check button with karma reward
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    Button(
+                        onClick = { 
+                            if (isVibeCheckAvailable) {
+                                onVibeCheckClick()
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(64.dp),
+                        enabled = isVibeCheckAvailable,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (isVibeCheckAvailable) Color(0xFF9B59B6) else Color(0xFF3D3D5C),
+                            disabledContainerColor = Color(0xFF3D3D5C)
+                        ),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        if (isVibeCheckAvailable) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_vibe_check),
+                                contentDescription = "Vibe Check",
+                                tint = Color.Unspecified,
+                                modifier = Modifier.size(28.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = "Vibe Check",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "+${QuestManager.VIBE_CHECK_KARMA} ",
+                                        color = Color(0xFFFBBF24),
+                                        fontSize = 12.sp
+                                    )
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_karma),
+                                        contentDescription = "Karma",
+                                        tint = Color(0xFFFBBF24),
+                                        modifier = Modifier.size(12.dp)
+                                    )
+                                    Text(
+                                        text = " Karma",
+                                        color = Color(0xFFFBBF24),
+                                        fontSize = 12.sp
+                                    )
+                                }
+                            }
+                        } else {
+                            Icon(
+                                imageVector = Icons.Filled.Timer,
+                                contentDescription = "Cooldown",
+                                tint = Color(0xFFB0B0B0)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Vibe Check: $vibeCheckCooldown",
+                                color = Color(0xFFB0B0B0)
+                            )
+                        }
+                    }
+                }
+                
+
+
+                // Scream Jar button
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    Button(
+                        onClick = { 
+                            if (isScreamJarAvailable) {
+                                onScreamJarClick()
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(64.dp),
+                        enabled = isScreamJarAvailable,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (isScreamJarAvailable) Color(0xFFEF5350) else Color(0xFF3D3D5C),
+                            disabledContainerColor = Color(0xFF3D3D5C)
+                        ),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        if (isScreamJarAvailable) {
+                            Icon(
+                                imageVector = Icons.Filled.RecordVoiceOver,
+                                contentDescription = "Scream Jar",
+                                tint = Color.White,
+                                modifier = Modifier.size(28.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = "Scream Jar",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "+${QuestManager.SCREAM_JAR_KARMA} ",
+                                        color = Color(0xFFFBBF24),
+                                        fontSize = 12.sp
+                                    )
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_karma),
+                                        contentDescription = "Karma",
+                                        tint = Color(0xFFFBBF24),
+                                        modifier = Modifier.size(12.dp)
+                                    )
+                                    Text(
+                                        text = " Karma",
+                                        color = Color(0xFFFBBF24),
+                                        fontSize = 12.sp
+                                    )
+                                }
+                            }
+                        } else {
+                            Icon(
+                                imageVector = Icons.Filled.Timer,
+                                contentDescription = "Cooldown",
+                                tint = Color(0xFFB0B0B0)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Scream Jar: $screamJarCooldown",
+                                color = Color(0xFFB0B0B0)
+                            )
+                        }
+                    }
+                }
+                
                 // Watch Ad for Karma button with cooldown
                 item {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     
                     Button(
                         onClick = { 
                             if (isAdAvailable) {
-                                onWatchAdForKarma()  // Uses the callback which now handles cooldown
+                                onWatchAdForKarma()
                             }
                         },
                         modifier = Modifier

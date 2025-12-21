@@ -344,6 +344,26 @@ class MainActivityCompose : ComponentActivity() {
                                     idleGameManager.bypassWaitWall()
                                     updateAppState()
                                 }
+                            },
+                            onVibeCheckClick = {
+                                // Navigate to Aura Selfie screen
+                                _currentScreen.value = AppScreen.AuraSelfie
+                            },
+                            onScreamJarClick = {
+                                _currentScreen.value = AppScreen.ScreamJar
+                            },
+                            onAuraShare = { uri ->
+                                // Record that Vibe Check was completed and award karma
+                                questManager.recordVibeCheckCompleted()
+                                updateAppState()
+                                
+                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "image/jpeg"
+                                    putExtra(Intent.EXTRA_STREAM, uri)
+                                    putExtra(Intent.EXTRA_TEXT, "Check out my aura! #ThirdEyeTimer #VibeCheck")
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                startActivity(Intent.createChooser(shareIntent, "Share your aura"))
                             }
                         )
 
@@ -556,7 +576,8 @@ class MainActivityCompose : ComponentActivity() {
             selectedBackgroundId = selectedBackgroundResId,
             availableBells = availableBells,
             availableBackgrounds = availableBackgrounds,
-            userLevel = userLevel,
+            userLevel = truthPunchManager.getCurrentLevelTitle(),
+            userLevelInt = truthPunchManager.getLevel(),
             karmaPoints = karmaPoints,
             // Idle game state
             totalSpiritualEgo = idleGameManager.totalSpiritualEgo,
@@ -753,7 +774,8 @@ class MainActivityCompose : ComponentActivity() {
         // TODO: Could show a popup for newTruths if desired
         
         // Update Level based on lifetime Spiritual Ego (permanent XP)
-        userLevel = calculateLevel(idleGameManager.lifetimeSpiritualEgo)
+        // Update Level based on Truths Unlocked
+        userLevel = truthPunchManager.getCurrentLevelTitle()
         
         checkAchievements()
         savePreferences()
@@ -954,19 +976,7 @@ class MainActivityCompose : ComponentActivity() {
         thread.start()
     }
 
-    private fun calculateLevel(spiritualEgo: Long): String {
-        return when {
-            spiritualEgo < 100L -> "Seeker"
-            spiritualEgo < 500L -> "Initiate"
-            spiritualEgo < 2_000L -> "Adept"
-            spiritualEgo < 10_000L -> "Sage"
-            spiritualEgo < 50_000L -> "Master"
-            spiritualEgo < 200_000L -> "Guru"
-            spiritualEgo < 1_000_000L -> "Enlightened"
-            spiritualEgo < 10_000_000L -> "Transcendent"
-            else -> "Cosmic Being"
-        }
-    }
+
     
     private fun showSoundSettings() {
         // For now, use the legacy dialog - will be replaced with Compose screen

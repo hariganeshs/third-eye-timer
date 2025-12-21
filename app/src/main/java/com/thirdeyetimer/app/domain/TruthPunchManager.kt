@@ -137,6 +137,113 @@ class TruthPunchManager(context: Context) {
             2 to 2_333_300_000L,
             1 to 2_683_300_000L  // The Final Truth
         )
+
+        /**
+         * The 100 Levels of Spiritual Disillusionment
+         * Mapped to Truths Unlocked (Rank 100 -> Level 1, Rank 1 -> Level 100)
+         */
+        val LEVEL_NAMES = mapOf(
+            1 to "The Sleeper",
+            2 to "Dust Watcher",
+            3 to "Silence Cadet",
+            4 to "Breath Counter",
+            5 to "Mat Dweller",
+            6 to "Incense Burner",
+            7 to "Gong Striker",
+            8 to "Mantra Mumbler",
+            9 to "Lotus Sitter",
+            10 to "Ego Polisher",
+            11 to "Thought Watcher",
+            12 to "Shadow Boxer",
+            13 to "Dream Walker",
+            14 to "Pattern Seeker",
+            15 to "Mask Wearer",
+            16 to "Mirror Gazer",
+            17 to "Silence Hunter",
+            18 to "Noise Filter",
+            19 to "Draft Blocker",
+            20 to "Mist Gatherer",
+            21 to "Spark Catcher",
+            22 to "Flame Keeper",
+            23 to "Light Bender",
+            24 to "Time Waster",
+            25 to "Void Starer",
+            26 to "Self Doubter",
+            27 to "Truth Dodger",
+            28 to "Bliss Chaser",
+            29 to "Comfort Killer",
+            30 to "Pain Student",
+            31 to "Fear Taster",
+            32 to "Edge Walker",
+            33 to "Abyss Surfer",
+            34 to "Ghost Whisperer",
+            35 to "Chain Breaker",
+            36 to "Cage Rattler",
+            37 to "Lock Picker",
+            38 to "Wall Climber",
+            39 to "Gate Keeper",
+            40 to "Path Finder",
+            41 to "Map Burner",
+            42 to "Compass Breaker",
+            43 to "Star Navigator",
+            44 to "Night Warden",
+            45 to "Dawn Bringer",
+            46 to "Sun Eater",
+            47 to "Moon Walker",
+            48 to "Tide Turner",
+            49 to "Wave Rider",
+            50 to "Storm Center",
+            51 to "Cloud Piercer",
+            52 to "Sky Painter",
+            53 to "Wind Speaker",
+            54 to "Rain Dancer",
+            55 to "Thunder Caller",
+            56 to "Lightning Rod",
+            57 to "Earth Mover",
+            58 to "Stone Singer",
+            59 to "River Guide",
+            60 to "Ocean Drinker",
+            61 to "Fire Walker",
+            62 to "Ash Sweeper",
+            63 to "Phoenix Feeder",
+            64 to "Dragon Tamer",
+            65 to "Serpent Charmer",
+            66 to "Lion Heart",
+            67 to "Eagle Eye",
+            68 to "Owl Ear",
+            69 to "Wolf Runner",
+            70 to "Bear Sleeper",
+            71 to "Tree Talker",
+            72 to "Root Finder",
+            73 to "Leaf Turner",
+            74 to "Seed Planter",
+            75 to "Forest Ranger",
+            76 to "Jungle Guide",
+            77 to "Desert Mystic",
+            78 to "Oasis Builder",
+            79 to "Mirage Maker",
+            80 to "Sand Shifter",
+            81 to "Mountain Scaler",
+            82 to "Peak Viewer",
+            83 to "Valley Dweller",
+            84 to "Echo Creator",
+            85 to "Cave Lighter",
+            86 to "Depth Sounder",
+            87 to "Core Diver",
+            88 to "Magma Surfer",
+            89 to "Plate Shifter",
+            90 to "World Spinner",
+            91 to "Galaxy Viewer",
+            92 to "Nebula Drifter",
+            93 to "Star Forger",
+            94 to "Black Hole Surfer",
+            95 to "Event Horizon",
+            96 to "Singularity",
+            97 to "Quantum Ghost",
+            98 to "Reality Hacker",
+            99 to "Code Breaker",
+            100 to "The Nobody"
+        )
     }
     
     /**
@@ -1300,6 +1407,29 @@ When you search within, you find only echoes. This is the final truth. And with 
     fun getOverallProgress(): Float {
         val unlockedCount = getAllTruths().count { it.isUnlocked }
         return (unlockedCount.toFloat() / 100f) * 100f
+    }
+
+    /**
+     * Get current user level (1-100) based on highest unlocked truth.
+     * Rank 100 unlocked (default) = Level 1
+     * Rank 1 unlocked = Level 100
+     */
+    fun getLevel(): Int {
+        return 101 - highestUnlockedRank
+    }
+
+    /**
+     * Get the title for a specific level
+     */
+    fun getLevelTitle(level: Int): String {
+        return LEVEL_NAMES[level] ?: "Seeker"
+    }
+
+    /**
+     * Get the title for the current user level
+     */
+    fun getCurrentLevelTitle(): String {
+        return getLevelTitle(getLevel())
     }
 }
 
