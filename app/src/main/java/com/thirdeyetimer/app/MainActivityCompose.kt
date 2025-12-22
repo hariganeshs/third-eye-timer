@@ -79,10 +79,10 @@ class MainActivityCompose : ComponentActivity() {
     private val KEY_KARMA = "karma_points"
     private val KEY_LEVEL = "user_level"
     
-    // Ad Unit IDs - USING TEST IDS FOR DEVELOPMENT
-    private val PROD_TOP_BANNER_AD_ID = "ca-app-pub-3940256099942544/6300978111" // Test Banner ID
-    private val PROD_BOTTOM_BANNER_AD_ID = "ca-app-pub-3940256099942544/6300978111" // Test Banner ID
-    private val PROD_INTERSTITIAL_AD_ID = "ca-app-pub-3940256099942544/1033173712" // Test Interstitial ID
+    // Ad Unit IDs - PRODUCTION IDS
+    private val PROD_TOP_BANNER_AD_ID = "ca-app-pub-2722920301958819/3959238290"
+    private val PROD_BOTTOM_BANNER_AD_ID = "ca-app-pub-2722920301958819/2481160193"
+    private val PROD_INTERSTITIAL_AD_ID = "ca-app-pub-2722920301958819/7531366385"
     
     // State
     private var totalMeditationTimeMillis: Long = 0L
@@ -520,7 +520,7 @@ class MainActivityCompose : ComponentActivity() {
     
     // Rewarded Ads
     private var rewardedAd: com.google.android.gms.ads.rewarded.RewardedAd? = null
-    private val PROD_REWARDED_AD_ID = "ca-app-pub-3940256099942544/5224354917" // Test Rewarded ID
+    private val PROD_REWARDED_AD_ID = "ca-app-pub-2722920301958819/9461847893" // Production Rewarded ID
 
     private fun loadRewardedAd() {
         val adRequest = AdRequest.Builder().build()
