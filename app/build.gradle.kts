@@ -12,8 +12,8 @@ android {
         applicationId = "com.thirdeyetimer.app"
         minSdk = 21
         targetSdk = 36
-        versionCode = 10
-        versionName = "1.1"
+        versionCode = 11
+        versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Note: No local native build is configured in this project, so externalNativeBuild args are unnecessary.
@@ -84,11 +84,11 @@ android {
 // Removed forced versions to allow pulling latest 16KB-aligned native artifacts.
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.activity:activity-ktx:1.9.2")
+    implementation("androidx.activity:activity-ktx:1.9.3")
     
     // Compose dependencies
     implementation(libs.androidx.core.ktx)

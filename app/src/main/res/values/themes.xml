@@ -15,7 +15,7 @@
         <item name="android:editTextColor">@color/shiva_white</item>
         <item name="android:textColorHint">@color/shiva_gold_accent</item>
         <!-- Status bar color -->
-        <item name="android:statusBarColor">@color/shiva_blue</item>
+        <!-- Status bar color removed for Edge-to-Edge support -->
         <!-- No action bar -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
