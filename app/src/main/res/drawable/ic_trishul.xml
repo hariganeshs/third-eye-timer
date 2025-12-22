@@ -1,35 +1,152 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <!-- Trishul (Trident) - Symbol of Lord Shiva -->
-    <!-- Background circle -->
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <!-- Cosmic Background: Deep Blue Gradient -->
     <path
-        android:fillColor="#1A1A2E"
-        android:pathData="M54,54m-50,0a50,50 0,1 1,100 0a50,50 0,1 1,-100 0"/>
-    <!-- Center prong -->
-    <path
-        android:fillColor="#E8D5B7"
-        android:pathData="M52,18L54,14L56,18L56,70L52,70Z"/>
-    <!-- Left prong -->
-    <path
-        android:fillColor="#E8D5B7"
-        android:pathData="M38,28L40,24L44,30L44,48L40,52L38,44Z"/>
-    <!-- Right prong -->
-    <path
-        android:fillColor="#E8D5B7"
-        android:pathData="M70,28L68,24L64,30L64,48L68,52L70,44Z"/>
-    <!-- Cross bar -->
-    <path
-        android:fillColor="#E8D5B7"
-        android:pathData="M36,50L72,50L72,54L36,54Z"/>
-    <!-- Handle -->
-    <path
-        android:fillColor="#C9A86C"
-        android:pathData="M50,54L58,54L58,90L50,90Z"/>
-    <!-- Handle decoration -->
-    <path
-        android:fillColor="#E8D5B7"
-        android:pathData="M48,88L60,88L60,92L48,92Z"/>
+        android:pathData="M256,256m-256,0a256,256 0,1 1,512 0a256,256 0,1 1,-512 0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:centerX="256"
+                android:centerY="256"
+                android:gradientRadius="256"
+                android:type="radial">
+                <item android:offset="0.0" android:color="#FF001B33" />
+                <item android:offset="1.0" android:color="#FF000000" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Content Group: Scaled to fit safe zone (approx 66-72dp within 108dp canvas) -->
+    <group
+        android:pivotX="256"
+        android:pivotY="256"
+        android:scaleX="0.65"
+        android:scaleY="0.65">
+
+        <!-- Subtle Golden Halo/Aura behind the head -->
+        <path
+            android:pathData="M256,200m-130,0a130,130 0,1 1,260 0a130,130 0,1 1,-260 0"
+            android:fillAlpha="0.3">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="256"
+                    android:centerY="200"
+                    android:gradientRadius="130"
+                    android:type="radial">
+                    <item android:offset="0.0" android:color="#FFFFD700" />
+                    <item android:offset="1.0" android:color="#00FFD700" />
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- TRISHUL GROUP -->
+        <group>
+            
+            <!-- Center Staff (Danda) -->
+            <path
+                android:pathData="M246,360 L246,480 A10,10 0 0,0 266,480 L266,360 Z">
+                 <aapt:attr name="android:fillColor">
+                    <gradient
+                        android:startX="246"
+                        android:startY="360"
+                        android:endX="266"
+                        android:endY="360"
+                        android:type="linear">
+                        <item android:offset="0.0" android:color="#FFB88A00" />
+                        <item android:offset="0.5" android:color="#FFFFEB3B" />
+                        <item android:offset="1.0" android:color="#FFB88A00" />
+                    </gradient>
+                </aapt:attr>
+            </path>
+
+            <!-- Base Connector (Geometric) -->
+            <path
+                android:pathData="M230,340 L282,340 L276,360 L236,360 Z">
+                <aapt:attr name="android:fillColor">
+                    <gradient
+                        android:startX="230"
+                        android:startY="0"
+                        android:endX="282"
+                        android:endY="0"
+                        android:type="linear">
+                        <item android:offset="0.0" android:color="#FFCFA323" />
+                        <item android:offset="0.5" android:color="#FFFFF176" />
+                        <item android:offset="1.0" android:color="#FFCFA323" />
+                    </gradient>
+                </aapt:attr>
+            </path>
+
+            <!-- Center Prong (Spearhead) -->
+            <path
+                android:pathData="M256,50 L280,150 L266,340 L246,340 L232,150 Z">
+                 <aapt:attr name="android:fillColor">
+                    <gradient
+                        android:startX="232"
+                        android:startY="0"
+                        android:endX="280"
+                        android:endY="0"
+                        android:type="linear">
+                        <item android:offset="0.0" android:color="#FFCFA323" />
+                        <item android:offset="0.4" android:color="#FFFFF59D" />
+                        <item android:offset="0.6" android:color="#FFFFF59D" />
+                        <item android:offset="1.0" android:color="#FFCFA323" />
+                    </gradient>
+                </aapt:attr>
+            </path>
+
+            <!-- Left Curved Prong -->
+            <path
+                android:pathData="M236,340 C236,340 180,330 160,280 C140,230 140,160 160,110 L180,130 C170,160 170,200 180,240 C190,280 236,310 236,310 Z">
+                 <aapt:attr name="android:fillColor">
+                    <gradient
+                        android:startX="140"
+                        android:startY="0"
+                        android:endX="236"
+                        android:endY="0"
+                        android:type="linear">
+                        <item android:offset="0.0" android:color="#FFB88A00" />
+                        <item android:offset="0.5" android:color="#FFFFEB3B" />
+                        <item android:offset="1.0" android:color="#FFB88A00" />
+                    </gradient>
+                </aapt:attr>
+            </path>
+
+            <!-- Right Curved Prong -->
+            <path
+                android:pathData="M276,340 C276,340 332,330 352,280 C372,230 372,160 352,110 L332,130 C342,160 342,200 332,240 C322,280 276,310 276,310 Z">
+                 <aapt:attr name="android:fillColor">
+                    <gradient
+                        android:startX="276"
+                        android:startY="0"
+                        android:endX="372"
+                        android:endY="0"
+                        android:type="linear">
+                        <item android:offset="0.0" android:color="#FFB88A00" />
+                        <item android:offset="0.5" android:color="#FFFFEB3B" />
+                        <item android:offset="1.0" android:color="#FFB88A00" />
+                    </gradient>
+                </aapt:attr>
+            </path>
+            
+            <!-- Details: Gemstone in Center -->
+            <path
+                android:pathData="M256,310 L266,325 L256,340 L246,325 Z">
+                 <aapt:attr name="android:fillColor">
+                    <gradient
+                        android:centerX="256"
+                        android:centerY="325"
+                        android:gradientRadius="15"
+                        android:type="radial">
+                        <item android:offset="0.0" android:color="#FF00FFFF" />
+                        <item android:offset="1.0" android:color="#FF000080" />
+                    </gradient>
+                </aapt:attr>
+            </path>
+
+        </group>
+    </group>
 </vector>
