@@ -465,7 +465,7 @@ class MainActivityCompose : ComponentActivity() {
         MobileAds.initialize(this) { 
             Log.d("MainActivityCompose", "AdMob initialized")
             loadInterstitialAd()
-            // loadRewardedAd() // PRODUCTION: Disabled until Ad Unit ID is available
+            loadRewardedAd()
         }
     }
     
@@ -520,7 +520,7 @@ class MainActivityCompose : ComponentActivity() {
     
     // Rewarded Ads
     private var rewardedAd: com.google.android.gms.ads.rewarded.RewardedAd? = null
-    private val PROD_REWARDED_AD_ID = "ca-app-pub-3940256099942544/5224354917" // Test Rewarded ID
+    private val PROD_REWARDED_AD_ID = "ca-app-pub-2722920301958819/5857135718"
 
     private fun loadRewardedAd() {
         val adRequest = AdRequest.Builder().build()
@@ -545,13 +545,13 @@ class MainActivityCompose : ComponentActivity() {
             rewardedAd?.show(this) { _ ->
                 onRewardEarned()
                 rewardedAdPayoffMessage.value = rewardName
-                // loadRewardedAd() // PRODUCTION: Disabled
+                loadRewardedAd()
             }
         } else {
             Log.d("MainActivityCompose", "Ad not ready, granting reward anyway (fallback)")
             onRewardEarned()
             rewardedAdPayoffMessage.value = rewardName
-            // loadRewardedAd() // PRODUCTION: Disabled
+            loadRewardedAd()
         }
     }
     
