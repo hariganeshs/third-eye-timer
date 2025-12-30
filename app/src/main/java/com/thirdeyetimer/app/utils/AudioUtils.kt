@@ -26,7 +26,10 @@ class AudioUtils(private val context: Context? = null) {
     
     @SuppressLint("MissingPermission") // Permission must be checked by caller
     fun startListening(): Boolean {
-        if (isRecording) return true
+        if (isRecording) {
+            Log.d("AudioUtils", "Already recording")
+            return true
+        }
         
         try {
             // Create a temp file for recording (required for MediaRecorder)
@@ -37,23 +40,26 @@ class AudioUtils(private val context: Context? = null) {
                 File.createTempFile("scream_temp", ".3gp")
             }
             
-            mediaRecorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Log.d("AudioUtils", "Creating MediaRecorder with temp file: ${tempFile?.absolutePath}")
+            
+            val recorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 MediaRecorder(context!!)
             } else {
                 @Suppress("DEPRECATION")
                 MediaRecorder()
             }
             
-            mediaRecorder?.apply {
-                setAudioSource(MediaRecorder.AudioSource.MIC)
-                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-                setOutputFile(tempFile?.absolutePath)
-                prepare()
-                start()
-                isRecording = true
-                return true
-            }
+            recorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            recorder.setOutputFile(tempFile?.absolutePath)
+            recorder.prepare()
+            recorder.start()
+            
+            mediaRecorder = recorder
+            isRecording = true
+            Log.d("AudioUtils", "MediaRecorder started successfully")
+            return true
         } catch (e: IOException) {
             Log.e("AudioUtils", "prepare() failed", e)
             cleanup()
@@ -63,7 +69,6 @@ class AudioUtils(private val context: Context? = null) {
             cleanup()
             return false
         }
-        return false
     }
     
     private fun cleanup() {
@@ -93,8 +98,13 @@ class AudioUtils(private val context: Context? = null) {
     
     fun getAmplitude(): Int {
         return try {
-            mediaRecorder?.maxAmplitude ?: 0
+            val amp = mediaRecorder?.maxAmplitude ?: 0
+            if (amp > 0) {
+                Log.d("AudioUtils", "Amplitude: $amp")
+            }
+            amp
         } catch (e: Exception) {
+            Log.e("AudioUtils", "getAmplitude failed", e)
             0
         }
     }
@@ -109,6 +119,8 @@ class AudioUtils(private val context: Context? = null) {
         
         // 32767 is max amplitude for 16-bit audio
         // Using a reference amplitude of 1 for simplicity in this context
-        return 20 * log10(amplitude.toDouble())
+        val db = 20 * log10(amplitude.toDouble())
+        Log.d("AudioUtils", "dB: $db")
+        return db
     }
 }
