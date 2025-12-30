@@ -55,7 +55,7 @@ fun ScreamJarScreen(
 ) {
     val context = LocalContext.current
     val questManager = remember { QuestManager(context) }
-    val audioUtils = remember { AudioUtils() }
+    val audioUtils = remember { AudioUtils(context) }
     val scope = rememberCoroutineScope()
     
     // State
@@ -123,7 +123,7 @@ fun ScreamJarScreen(
                 }
             } else {
                 isRecording = false // Failed to start
-                errorMessage = "Microphone unavailable. Please checking settings."
+                errorMessage = "Microphone unavailable. Please check settings."
             }
         } else {
             audioUtils.stopListening()
