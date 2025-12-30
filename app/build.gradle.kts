@@ -12,8 +12,8 @@ android {
         applicationId = "com.thirdeyetimer.app"
         minSdk = 21
         targetSdk = 36
-        versionCode = 11
-        versionName = "1.2"
+        versionCode = 12
+        versionName = "1.2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Note: No local native build is configured in this project, so externalNativeBuild args are unnecessary.
