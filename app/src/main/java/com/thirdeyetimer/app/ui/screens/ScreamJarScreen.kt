@@ -95,18 +95,38 @@ fun ScreamJarScreen(
     LaunchedEffect(isRecording) {
         if (isRecording) {
             if (audioUtils.startListening()) {
+                // Track baseline for adaptive detection
+                var baselineAmplitude = 0
+                var sampleCount = 0
+                
                 while (isRecording && !isShattered) {
                     delay(50) // Update rate
-                    // Get dB, normalize to roughly 0-1 range (assuming max loud scream is ~90dB, noise floor ~30dB)
-                    val db = audioUtils.getDb()
-                    val normalized = ((db - 40) / 50).coerceIn(0.0, 1.0).toFloat()
+                    
+                    // Use amplitude directly for better cross-device compatibility
+                    val amplitude = audioUtils.getAmplitude()
+                    
+                    // Build baseline from first few samples (ambient noise level)
+                    if (sampleCount < 10) {
+                        baselineAmplitude = maxOf(baselineAmplitude, amplitude)
+                        sampleCount++
+                        continue
+                    }
+                    
+                    // Calculate relative volume above baseline
+                    // Use a low baseline (at least 10) to detect any sound
+                    val effectiveBaseline = maxOf(10, baselineAmplitude)
+                    val relativeAmplitude = (amplitude - effectiveBaseline).coerceAtLeast(0)
+                    
+                    // Normalize: anything 50+ above baseline is considered "loud"
+                    // This is much more sensitive than before
+                    val normalized = (relativeAmplitude / 100.0).coerceIn(0.0, 1.0).toFloat()
                     
                     // Smooth visual volume
                     currentVolume = (currentVolume * 0.7f + normalized * 0.3f)
                     
-                    // Add cracks if loud enough
-                    if (normalized > 0.6f) {
-                        crackLevel += 0.005f * (normalized * 2) // Faster if louder
+                    // Add cracks if loud enough (lowered threshold from 0.6 to 0.2)
+                    if (normalized > 0.2f) {
+                        crackLevel += 0.01f * (normalized * 2) // Faster crack progression
                         
                         // Add a random crack
                         if (Random.nextFloat() < normalized * 0.3f) {
