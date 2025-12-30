@@ -95,44 +95,39 @@ fun ScreamJarScreen(
     LaunchedEffect(isRecording) {
         if (isRecording) {
             if (audioUtils.startListening()) {
-                // Track baseline for adaptive detection
-                var baselineAmplitude = 0
-                var sampleCount = 0
+                // Small delay to let MediaRecorder initialize
+                delay(100)
                 
                 while (isRecording && !isShattered) {
                     delay(50) // Update rate
                     
-                    // Use amplitude directly for better cross-device compatibility
+                    // Use amplitude directly - emulators produce very low values (3-10)
+                    // Real devices produce much higher values (100-32767)
                     val amplitude = audioUtils.getAmplitude()
                     
-                    // Build baseline from first few samples (ambient noise level)
-                    if (sampleCount < 10) {
-                        baselineAmplitude = maxOf(baselineAmplitude, amplitude)
-                        sampleCount++
-                        continue
+                    // For emulator: any amplitude > 0 should register
+                    // Normalize using log scale to handle both emulator (low) and real device (high) values
+                    val normalized = if (amplitude > 0) {
+                        // Log scale: amplitude 1 -> 0.0, amplitude 100 -> 0.5, amplitude 10000 -> 1.0
+                        (kotlin.math.ln(amplitude.toDouble() + 1) / kotlin.math.ln(10000.0)).coerceIn(0.0, 1.0).toFloat()
+                    } else {
+                        0f
                     }
-                    
-                    // Calculate relative volume above baseline
-                    // Use a low baseline (at least 10) to detect any sound
-                    val effectiveBaseline = maxOf(10, baselineAmplitude)
-                    val relativeAmplitude = (amplitude - effectiveBaseline).coerceAtLeast(0)
-                    
-                    // Normalize: anything 50+ above baseline is considered "loud"
-                    // This is much more sensitive than before
-                    val normalized = (relativeAmplitude / 100.0).coerceIn(0.0, 1.0).toFloat()
                     
                     // Smooth visual volume
                     currentVolume = (currentVolume * 0.7f + normalized * 0.3f)
                     
-                    // Add cracks if loud enough (lowered threshold from 0.6 to 0.2)
-                    if (normalized > 0.2f) {
-                        crackLevel += 0.01f * (normalized * 2) // Faster crack progression
-                        
-                        // Add a random crack
-                        if (Random.nextFloat() < normalized * 0.3f) {
-                           // Logic to add a visual crack path would go here
-                           // For simplicity, we just use crackLevel to determine shattering
+                    // Any sound at all should add cracks (for emulator compatibility)
+                    if (amplitude > 0) {
+                        // Progress based on amplitude - even tiny values add up
+                        val progressRate = if (amplitude > 100) {
+                            0.02f // Real device scream
+                        } else if (amplitude > 10) {
+                            0.01f // Moderate sound
+                        } else {
+                            0.005f // Emulator low values
                         }
+                        crackLevel += progressRate
                     }
                     
                     if (crackLevel >= 1.0f) {
